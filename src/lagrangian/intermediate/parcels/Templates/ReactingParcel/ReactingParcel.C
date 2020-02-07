@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -80,8 +80,6 @@ void Foam::ReactingParcel<ParcelType>::calcPhaseChange
     const scalar Tdash = min(T, TMax);
     const scalar Tsdash = min(Ts, TMax);
 
-    scalarField hmm(dMassPC);
-
     // Calculate mass transfer due to phase change
     phaseChange.calculate
     (
@@ -127,7 +125,7 @@ void Foam::ReactingParcel<ParcelType>::calcPhaseChange
             const label cid = composition.localToCarrierId(idPhase, i);
 
             const scalar Cp = composition.carrier().Cp(cid, td.pc(), Tsdash);
-            const scalar W = composition.carrier().W(cid);
+            const scalar W = composition.carrier().Wi(cid);
             const scalar Ni = dMassPC[i]/(this->areaS(d)*dt*W);
 
             const scalar Dab =
@@ -311,7 +309,7 @@ void Foam::ReactingParcel<ParcelType>::correctSurfaceValues
 
     forAll(Xinf, i)
     {
-        Xinf[i] = thermo.carrier().Y(i)[this->cell()]/thermo.carrier().W(i);
+        Xinf[i] = thermo.carrier().Y(i)[this->cell()]/thermo.carrier().Wi(i);
     }
     Xinf /= sum(Xinf);
 
@@ -333,7 +331,7 @@ void Foam::ReactingParcel<ParcelType>::correctSurfaceValues
         const scalar Csi = Cs[i] + Xsff*Xinf[i]*CsTot;
 
         Xs[i] = (2.0*Csi + Xinf[i]*CsTot)/3.0;
-        Ys[i] = Xs[i]*thermo.carrier().W(i);
+        Ys[i] = Xs[i]*thermo.carrier().Wi(i);
     }
     Xs /= sum(Xs);
     Ys /= sum(Ys);
@@ -348,7 +346,7 @@ void Foam::ReactingParcel<ParcelType>::correctSurfaceValues
 
     forAll(Ys, i)
     {
-        const scalar W = thermo.carrier().W(i);
+        const scalar W = thermo.carrier().Wi(i);
         const scalar sqrtW = sqrt(W);
         const scalar cbrtW = cbrt(W);
 

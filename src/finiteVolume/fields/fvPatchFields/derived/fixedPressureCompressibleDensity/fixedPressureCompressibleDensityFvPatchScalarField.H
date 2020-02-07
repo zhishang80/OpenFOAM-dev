@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,9 +24,6 @@ License
 Class
     Foam::fixedPressureCompressibleDensityFvPatchScalarField
 
-Group
-    grpInletBoundaryConditions
-
 Description
     This boundary condition calculates a (liquid) compressible density as a
     function of pressure and fluid properties:
@@ -38,8 +35,8 @@ Description
     where
 
     \vartable
-        \rho    | density [kg/m3]
-        \rho_{l,sat} | saturation liquid density [kg/m3]
+        \rho    | density [kg/m^3]
+        \rho_{l,sat} | saturation liquid density [kg/m^3]
         \psi_l  | liquid compressibility
         p       | pressure [Pa]
         p_{sat} | saturation pressure [Pa]
@@ -90,7 +87,7 @@ class fixedPressureCompressibleDensityFvPatchScalarField
 :
     public fixedValueFvPatchScalarField
 {
-    // Private data
+    // Private Data
 
         //- Name of static pressure field
         word pName_;
@@ -130,7 +127,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         fixedPressureCompressibleDensityFvPatchScalarField
         (
             const fixedPressureCompressibleDensityFvPatchScalarField&
@@ -145,7 +142,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         fixedPressureCompressibleDensityFvPatchScalarField
         (
             const fixedPressureCompressibleDensityFvPatchScalarField&,
@@ -169,7 +166,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         //- Update the coefficients associated with the patch field
         virtual void updateCoeffs();

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -59,11 +59,11 @@ linearSpatial::linearSpatial
     referencePoint_(coeffsDict().lookup("referencePoint")),
     referenceCellSize_
     (
-        readScalar(coeffsDict().lookup("referenceCellSizeCoeff"))
+        coeffsDict().lookup<scalar>("referenceCellSizeCoeff")
        *defaultCellSize
     ),
     direction_(coeffsDict().lookup("direction")),
-    cellSizeGradient_(readScalar(coeffsDict().lookup("cellSizeGradient")))
+    cellSizeGradient_(coeffsDict().lookup<scalar>("cellSizeGradient"))
 {
     direction_ /= mag(direction_);
 }
@@ -150,7 +150,7 @@ bool linearSpatial::cellSize
     if
     (
         sideMode_ == smInside
-     && vTL[0] == volumeType::INSIDE
+     && vTL[0] == volumeType::inside
     )
     {
         size = sizeFunction(pt);
@@ -160,7 +160,7 @@ bool linearSpatial::cellSize
     else if
     (
         sideMode_ == smOutside
-     && vTL[0] == volumeType::OUTSIDE
+     && vTL[0] == volumeType::outside
     )
     {
         size = sizeFunction(pt);

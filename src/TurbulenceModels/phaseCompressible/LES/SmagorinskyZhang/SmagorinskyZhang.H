@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::LESModels::SmagorinskyZhang
-
-Group
-    grpLESTurbulence
 
 Description
     The Smagorinsky SGS model including bubble-generated turbulence
@@ -56,7 +53,7 @@ SourceFiles
 #ifndef SmagorinskyZhang_H
 #define SmagorinskyZhang_H
 
-#include "LESModel.H"
+#include "Smagorinsky.H"
 #include "eddyViscosity.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -75,7 +72,7 @@ class SmagorinskyZhang
 :
     public Smagorinsky<BasicTurbulenceModel>
 {
-    // Private data
+    // Private Data
 
         mutable const PhaseCompressibleTurbulenceModel
         <
@@ -91,10 +88,6 @@ class SmagorinskyZhang
             typename BasicTurbulenceModel::transportModel
         >&
         gasTurbulence() const;
-
-        // Disallow default bitwise copy construct and assignment
-        SmagorinskyZhang(const SmagorinskyZhang&);
-        void operator=(const SmagorinskyZhang&);
 
 
 protected:
@@ -137,6 +130,9 @@ public:
             const word& type = typeName
         );
 
+        //- Disallow default bitwise copy construction
+        SmagorinskyZhang(const SmagorinskyZhang&) = delete;
+
 
     //- Destructor
     virtual ~SmagorinskyZhang()
@@ -147,6 +143,12 @@ public:
 
         //- Read model coefficients if they have changed
         virtual bool read();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const SmagorinskyZhang&) = delete;
 };
 
 

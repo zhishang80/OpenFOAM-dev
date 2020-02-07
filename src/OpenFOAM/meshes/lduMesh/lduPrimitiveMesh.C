@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -302,7 +302,7 @@ Foam::lduPrimitiveMesh::lduPrimitiveMesh
                 << " at index " << i
                 << " differs from that of predecessor "
                 << currentComm
-                << endl;    //exit(FatalError);
+                << endl;    // exit(FatalError);
         }
     }
 
@@ -384,7 +384,7 @@ Foam::lduPrimitiveMesh::lduPrimitiveMesh
         const lduInterfacePtrsList interfaces =
             mesh(myMesh, otherMeshes, procMeshI).interfaces();
 
-        // Inialise all boundaries as merged
+        // Initialise all boundaries as merged
         boundaryMap[procMeshI].setSize(interfaces.size(), -1);
         boundaryFaceMap[procMeshI].setSize(interfaces.size());
 
@@ -734,7 +734,7 @@ Foam::lduPrimitiveMesh::lduPrimitiveMesh
         (
             upperTriOrder
             (
-                cellOffsets.last(), //nCells
+                cellOffsets.last(), // nCells
                 lowerAddr_,
                 upperAddr_
             )
@@ -926,7 +926,7 @@ Foam::lduPrimitiveMesh::lduPrimitiveMesh
                 comm_,
                 myAgglom,
                 neighbProcNo,
-                tensorField(),          // forwardT
+                transformer(),          // forwardT
                 Pstream::msgType()      // tag
             )
         );
@@ -988,7 +988,7 @@ void Foam::lduPrimitiveMesh::gather
         // Slave meshes
         for (label i = 1; i < procIDs.size(); i++)
         {
-            //Pout<< "on master :"
+            // Pout<< "on master :"
             //    << " receiving from slave " << procIDs[i] << endl;
 
             IPstream fromSlave

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -86,11 +86,7 @@ void Foam::regionToCell::markRegionFaces
         {
             label facei = pp.start()+i;
             label bFacei = facei-mesh_.nInternalFaces();
-            if
-            (
-                selectedCell[faceCells[i]]
-             != selectedCell[nbrSelected[bFacei]]
-            )
+            if (selectedCell[faceCells[i]] != nbrSelected[bFacei])
             {
                 regionFace[facei] = true;
             }
@@ -246,8 +242,8 @@ void Foam::regionToCell::erode
     boolList& selectedCell
 ) const
 {
-    //Info<< "Entering shrinkRegions:" << count(selectedCell) << endl;
-    //generateField("selectedCell_before", selectedCell)().write();
+    // Info<< "Entering shrinkRegions:" << count(selectedCell) << endl;
+    // generateField("selectedCell_before", selectedCell)().write();
 
     // Now erode and see which regions get disconnected
     boolList shrunkSelectedCell(selectedCell);
@@ -257,8 +253,8 @@ void Foam::regionToCell::erode
         shrinkRegions(shrunkSelectedCell);
     }
 
-    //Info<< "After shrinking:" << count(shrunkSelectedCell) << endl;
-    //generateField("shrunkSelectedCell", shrunkSelectedCell)().write();
+    // Info<< "After shrinking:" << count(shrunkSelectedCell) << endl;
+    // generateField("shrunkSelectedCell", shrunkSelectedCell)().write();
 
 
 
@@ -283,8 +279,8 @@ void Foam::regionToCell::erode
         }
     }
 
-    //Info<< "removeCell before:" << count(removeCell) << endl;
-    //generateField("removeCell_before", removeCell)().write();
+    // Info<< "removeCell before:" << count(removeCell) << endl;
+    // generateField("removeCell_before", removeCell)().write();
 
 
 
@@ -327,8 +323,8 @@ void Foam::regionToCell::erode
         }
     }
 
-    //Info<< "removeCell after:" << count(removeCell) << endl;
-    //generateField("removeCell_after", removeCell)().write();
+    // Info<< "removeCell after:" << count(removeCell) << endl;
+    // generateField("removeCell_after", removeCell)().write();
 
 
     // Unmark removeCell

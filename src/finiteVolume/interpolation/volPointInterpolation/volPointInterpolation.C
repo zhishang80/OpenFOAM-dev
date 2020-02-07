@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -263,7 +263,7 @@ void Foam::volPointInterpolation::makeWeights()
             mesh()
         ),
         pointMesh::New(mesh()),
-        dimensionedScalar("zero", dimless, 0)
+        dimensionedScalar(dimless, 0)
     );
 
 
@@ -275,7 +275,7 @@ void Foam::volPointInterpolation::makeWeights()
     makeBoundaryWeights(sumWeights);
 
 
-    //forAll(boundary.meshPoints(), i)
+    // forAll(boundary.meshPoints(), i)
     //{
     //    label pointi = boundary.meshPoints()[i];
     //

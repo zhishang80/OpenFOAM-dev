@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -37,6 +37,7 @@ SourceFiles
 
 #include "label.H"
 #include "DynamicList.H"
+#include "fileNameList.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -51,22 +52,18 @@ class dlLibraryTable
 {
     // Private Member Functions
 
+        //- List of pointers to the loaded dynamic libraries
         DynamicList<void*> libPtrs_;
 
+        //- List of names of the loaded dynamic libraries
         DynamicList<fileName> libNames_;
-
-
-        //- Disallow default bitwise copy construct
-        dlLibraryTable(const dlLibraryTable&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const dlLibraryTable&);
 
 
 public:
 
     // Declare name of the class and its debug switch
     ClassName("dlLibraryTable");
+
 
     // Constructors
 
@@ -77,6 +74,9 @@ public:
         //  the libraries to load
         dlLibraryTable(const dictionary&, const word&);
 
+        //- Disallow default bitwise copy construction
+        dlLibraryTable(const dlLibraryTable&) = delete;
+
 
     //- Destructor
     ~dlLibraryTable();
@@ -85,13 +85,10 @@ public:
     // Member Functions
 
         //- Open the named library, optionally with warnings if problems occur
-        bool open(const fileName& name, const bool verbose = true);
+        bool open(const fileName& libName, const bool verbose = true);
 
-        //- Close the named library, optionally with warnings if problems occur
-        bool close(const fileName& name, const bool verbose = true);
-
-        //- Find the handle of the named library
-        void* findLibrary(const fileName& name);
+        //- Open the named libraries, optionally with warnings if problems occur
+        bool open(const fileNameList& libNames, const bool verbose = true);
 
         //- Open all the libraries listed in the 'libsEntry' entry in the
         //  given dictionary if present
@@ -107,7 +104,23 @@ public:
             const word& libsEntry,
             const TablePtr& tablePtr
         );
+
+        //- Find the handle of the named library
+        void* findLibrary(const fileName& libName);
+
+        //- Close the named library, optionally with warnings if problems occur
+        bool close(const fileName& name, const bool verbose = true);
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const dlLibraryTable&) = delete;
 };
+
+
+//- Table of loaded dynamic libraries
+extern dlLibraryTable libs;
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

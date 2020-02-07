@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::constantSurfaceTensionCoefficient
+    Foam::surfaceTensionModels::constantSurfaceTensionCoefficient
 
 Description
     Constant value surface tension model.
@@ -52,7 +52,7 @@ class constantSurfaceTensionCoefficient
 :
     public surfaceTensionModel
 {
-    // Private data
+    // Private Data
 
         //- Constant surface tension value
         const dimensionedScalar sigma_;
@@ -81,8 +81,11 @@ public:
 
     // Member Functions
 
-        //- Aspect ratio
+        //- Surface tension
         virtual tmp<volScalarField> sigma() const;
+
+        //- Surface tension for a patch
+        virtual tmp<scalarField> sigma(label patchi) const;
 };
 
 

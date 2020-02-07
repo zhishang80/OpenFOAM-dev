@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -57,17 +57,6 @@ class force
 :
     public filmSubModelBase
 {
-private:
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        force(const force&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const force&);
-
-
 public:
 
     //- Runtime type information
@@ -101,6 +90,9 @@ public:
             const dictionary& dict
         );
 
+        //- Disallow default bitwise copy construction
+        force(const force&) = delete;
+
 
     // Selectors
 
@@ -123,6 +115,12 @@ public:
 
             //- Correct
             virtual tmp<fvVectorMatrix> correct(volVectorField& U) = 0;
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const force&) = delete;
 };
 
 

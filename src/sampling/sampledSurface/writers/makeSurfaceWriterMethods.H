@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -55,11 +55,10 @@ namespace Foam
         const faceList& faces,                                                 \
         const word& fieldName,                                                 \
         const Field<FieldType>& values,                                        \
-        const bool isNodeValues,                                               \
-        const bool verbose                                                     \
+        const bool isNodeValues                                                \
     ) const                                                                    \
     {                                                                          \
-        writeTemplate                                                          \
+        Write                                                                  \
         (                                                                      \
             outputDir,                                                         \
             surfaceName,                                                       \
@@ -67,8 +66,7 @@ namespace Foam
             faces,                                                             \
             fieldName,                                                         \
             values,                                                            \
-            isNodeValues,                                                      \
-            verbose                                                            \
+            isNodeValues                                                       \
         );                                                                     \
     }
 

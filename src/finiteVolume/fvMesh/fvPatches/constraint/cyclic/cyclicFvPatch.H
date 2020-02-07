@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -54,7 +54,7 @@ class cyclicFvPatch
     public coupledFvPatch,
     public cyclicLduInterface
 {
-    // Private data
+    // Private Data
 
         const cyclicPolyPatch& cyclicPolyPatch_;
 
@@ -83,7 +83,7 @@ public:
         {}
 
 
-    // Member functions
+    // Member Functions
 
         // Access
 
@@ -94,9 +94,9 @@ public:
             }
 
             //- Return neighbour
-            virtual label neighbPatchID() const
+            virtual label nbrPatchID() const
             {
-                return cyclicPolyPatch_.neighbPatchID();
+                return cyclicPolyPatch_.nbrPatchID();
             }
 
             virtual bool owner() const
@@ -105,37 +105,25 @@ public:
             }
 
             //- Return processor number
-            virtual const cyclicFvPatch& neighbPatch() const
+            virtual const cyclicFvPatch& nbrPatch() const
             {
                 return refCast<const cyclicFvPatch>
                 (
-                    this->boundaryMesh()[cyclicPolyPatch_.neighbPatchID()]
+                    this->boundaryMesh()[cyclicPolyPatch_.nbrPatchID()]
                 );
             }
 
-            //- Are the cyclic planes parallel
-            virtual bool parallel() const
+            //- Return transformation between the coupled patches
+            virtual const transformer& transform() const
             {
-                return cyclicPolyPatch_.parallel();
-            }
-
-            //- Return face transformation tensor
-            virtual const tensorField& forwardT() const
-            {
-                return cyclicPolyPatch_.forwardT();
-            }
-
-            //- Return neighbour-cell transformation tensor
-            virtual const tensorField& reverseT() const
-            {
-                return cyclicPolyPatch_.reverseT();
+                return cyclicPolyPatch_.transform();
             }
 
             const cyclicFvPatch& neighbFvPatch() const
             {
                 return refCast<const cyclicFvPatch>
                 (
-                    this->boundaryMesh()[cyclicPolyPatch_.neighbPatchID()]
+                    this->boundaryMesh()[cyclicPolyPatch_.nbrPatchID()]
                 );
             }
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,6 +24,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "perturbedTemperatureDependentContactAngleForce.H"
+#include "thermoSingleLayer.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -57,7 +58,7 @@ perturbedTemperatureDependentContactAngleForce
 :
     contactAngleForce(typeName, film, dict),
     thetaPtr_(Function1<scalar>::New("theta", coeffDict_)),
-    rndGen_(label(0), -1),
+    rndGen_(label(0)),
     distribution_
     (
         distributionModel::New
@@ -83,23 +84,20 @@ perturbedTemperatureDependentContactAngleForce::theta() const
 {
     tmp<volScalarField> ttheta
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                typeName + ":theta",
-                filmModel_.time().timeName(),
-                filmModel_.regionMesh()
-            ),
+            IOobject::modelName("theta", typeName),
             filmModel_.regionMesh(),
-            dimensionedScalar("0", dimless, 0)
+            dimensionedScalar(dimless, 0)
         )
     );
 
     volScalarField& theta = ttheta.ref();
     volScalarField::Internal& thetai = theta.ref();
 
-    const volScalarField& T = filmModel_.T();
+    const thermoSingleLayer& film = filmType<thermoSingleLayer>();
+
+    const volScalarField& T = film.T();
 
     // Initialize with the function of temperature
     thetai.field() = thetaPtr_->value(T());

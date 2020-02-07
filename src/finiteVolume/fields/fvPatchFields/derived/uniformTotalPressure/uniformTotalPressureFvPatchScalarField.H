@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::uniformTotalPressureFvPatchScalarField
-
-Group
-    grpInletBoundaryConditions grpOutletBoundaryConditions
 
 Description
     This boundary condition provides a time-varying form of the uniform total
@@ -55,7 +52,7 @@ Usage
     time varying functions.
 
 See also
-    Foam::Function1Types
+    Foam::Function1s
     Foam::uniformFixedValueFvPatchField
     Foam::totalPressureFvPatchField
 
@@ -83,7 +80,7 @@ class uniformTotalPressureFvPatchScalarField
 :
     public fixedValueFvPatchScalarField
 {
-    // Private data
+    // Private Data
 
         //- Name of the velocity field
         word UName_;
@@ -137,7 +134,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         uniformTotalPressureFvPatchScalarField
         (
             const uniformTotalPressureFvPatchScalarField&
@@ -152,7 +149,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         uniformTotalPressureFvPatchScalarField
         (
             const uniformTotalPressureFvPatchScalarField&,
@@ -172,7 +169,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Access
 

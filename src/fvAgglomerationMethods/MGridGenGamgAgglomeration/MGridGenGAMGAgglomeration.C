@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -170,14 +170,14 @@ Foam::MGridGenGAMGAgglomeration::MGridGenGAMGAgglomeration
     fvMesh_(refCast<const fvMesh>(mesh))
 {
     // Min, max size of agglomerated cells
-    label minSize(readLabel(controlDict.lookup("minSize")));
-    label maxSize(readLabel(controlDict.lookup("maxSize")));
+    label minSize(controlDict.lookup<label>("minSize"));
+    label maxSize(controlDict.lookup<label>("maxSize"));
 
     // Number of iterations applied to improve agglomeration consistency across
     // processor boundaries
     label nProcConsistencyIter
     (
-        readLabel(controlDict.lookup("nProcConsistencyIter"))
+        controlDict.lookup<label>("nProcConsistencyIter")
     );
 
     // Start geometric agglomeration from the cell volumes and areas of the mesh
@@ -238,7 +238,7 @@ Foam::MGridGenGAMGAgglomeration::MGridGenGAMGAgglomeration
 
             const labelField& agglom = finalAgglomPtr();
 
-            // Global nubmering
+            // Global numbering
             const globalIndex globalNumbering(nCoarseCells);
 
             labelField globalAgglom(addr.size());
@@ -265,7 +265,7 @@ Foam::MGridGenGAMGAgglomeration::MGridGenGAMGAgglomeration
 
             //- Note: in-place update of weights is more effective it seems?
             //        Should not be. fluke?
-            //scalarField weights(*faceWeightsPtr);
+            // scalarField weights(*faceWeightsPtr);
             scalarField weights = *magSfPtr;
             forAllConstIter(labelHashSet, sharedFaces, iter)
             {

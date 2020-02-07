@@ -1,9 +1,9 @@
 /*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  dev                                   |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
-|    \\/     M anipulation  |                                                 |
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  dev
+     \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
@@ -18,7 +18,7 @@ FoamFile
 thermoType
 {
     type            heRhoThermo;
-    mixture         reactingMixture;
+    mixture         multiComponentMixture;
     transport       sutherland;
     thermo          janaf;
     equationOfState perfectGas;
@@ -28,11 +28,6 @@ thermoType
 
 inertSpecie AIR;
 
-chemistryReader foamChemistryReader;
-
-foamChemistryFile "$FOAM_CASE/constant/reactions.gas";
-
-foamChemistryThermoFile "$FOAM_CASE/constant/thermo.gas";
-
+#include "thermo.gas"
 
 // ************************************************************************* //

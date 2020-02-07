@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -38,7 +38,7 @@ Foam::ConstantRateDevolatilisation<CloudType>::ConstantRateDevolatilisation
     volatileData_(this->coeffDict().lookup("volatileData")),
     YVolatile0_(volatileData_.size()),
     volatileToGasMap_(volatileData_.size()),
-    residualCoeff_(readScalar(this->coeffDict().lookup("residualCoeff")))
+    residualCoeff_(this->coeffDict().template lookup<scalar>("residualCoeff"))
 {
     if (volatileData_.empty())
     {

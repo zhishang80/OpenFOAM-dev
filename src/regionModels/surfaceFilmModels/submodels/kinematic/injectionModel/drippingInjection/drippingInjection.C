@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -55,9 +55,9 @@ drippingInjection::drippingInjection
 )
 :
     injectionModel(type(), film, dict),
-    deltaStable_(readScalar(coeffDict_.lookup("deltaStable"))),
-    particlesPerParcel_(readScalar(coeffDict_.lookup("particlesPerParcel"))),
-    rndGen_(label(0), -1),
+    deltaStable_(coeffDict_.lookup<scalar>("deltaStable")),
+    particlesPerParcel_(coeffDict_.lookup<scalar>("particlesPerParcel")),
+    rndGen_(label(0)),
     parcelDistribution_
     (
         distributionModel::New
@@ -91,8 +91,7 @@ void drippingInjection::correct
     const scalar pi = constant::mathematical::pi;
 
     // calculate available dripping mass
-    tmp<volScalarField> tgNorm(film.gNorm());
-    const scalarField& gNorm = tgNorm();
+    const scalarField gNorm(film.g() & film.nHat()());
     const scalarField& magSf = film.magSf();
 
     const scalarField& delta = film.delta();

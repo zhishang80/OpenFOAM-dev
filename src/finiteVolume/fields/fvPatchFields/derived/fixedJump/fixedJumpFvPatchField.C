@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -49,7 +49,7 @@ Foam::fixedJumpFvPatchField<Type>::fixedJumpFvPatchField
 )
 :
     jumpCyclicFvPatchField<Type>(ptf, p, iF, mapper),
-    jump_(ptf.jump_, mapper)
+    jump_(mapper(ptf.jump_))
 {}
 
 
@@ -119,7 +119,7 @@ Foam::tmp<Foam::Field<Type>> Foam::fixedJumpFvPatchField<Type>::jump() const
     {
         return refCast<const fixedJumpFvPatchField<Type>>
         (
-            this->neighbourPatchField()
+            this->nbrPatchField()
         ).jump();
     }
 }
@@ -132,7 +132,7 @@ void Foam::fixedJumpFvPatchField<Type>::autoMap
 )
 {
     jumpCyclicFvPatchField<Type>::autoMap(m);
-    jump_.autoMap(m);
+    m(jump_, jump_);
 }
 
 
@@ -155,15 +155,14 @@ template<class Type>
 void Foam::fixedJumpFvPatchField<Type>::write(Ostream& os) const
 {
     fvPatchField<Type>::write(os);
-    os.writeKeyword("patchType") << this->interfaceFieldType()
-        << token::END_STATEMENT << nl;
+    writeEntry(os, "patchType", this->interfaceFieldType());
 
     if (this->cyclicPatch().owner())
     {
-        jump_.writeEntry("jump", os);
+        writeEntry(os, "jump", jump_);
     }
 
-    this->writeEntry("value", os);
+    writeEntry(os, "value", *this);
 }
 
 

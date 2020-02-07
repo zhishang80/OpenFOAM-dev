@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -35,7 +35,10 @@ Foam::MixedDiffuseSpecular<CloudType>::MixedDiffuseSpecular
 )
 :
     WallInteractionModel<CloudType>(dict, cloud, typeName),
-    diffuseFraction_(readScalar(this->coeffDict().lookup("diffuseFraction")))
+    diffuseFraction_
+    (
+        this->coeffDict().template lookup<scalar>("diffuseFraction")
+    )
 {}
 
 
@@ -115,8 +118,8 @@ void Foam::MixedDiffuseSpecular<CloudType>::correct
         U =
             sqrt(physicoChemical::k.value()*T/mass)
            *(
-                rndGen.GaussNormal()*tw1
-              + rndGen.GaussNormal()*tw2
+                rndGen.scalarNormal()*tw1
+              + rndGen.scalarNormal()*tw2
               - sqrt(-2.0*log(max(1 - rndGen.scalar01(), vSmall)))*nw
             );
 

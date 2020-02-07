@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -90,7 +90,7 @@ Foam::relativeVelocityModel::relativeVelocityModel
             IOobject::AUTO_WRITE
         ),
         alphac_.mesh(),
-        dimensionedVector("Udm", dimVelocity, Zero),
+        dimensionedVector(dimVelocity, Zero),
         UdmPatchFieldTypes()
     )
 {}
@@ -155,13 +155,10 @@ tmp<volSymmTensorField> Foam::relativeVelocityModel::tauDm() const
     // Calculate the relative velocity of the continuous phase w.r.t the mean
     volVectorField Ucm(betad*Udm_/betac);
 
-    return tmp<volSymmTensorField>
+    return volSymmTensorField::New
     (
-        new volSymmTensorField
-        (
-            "tauDm",
-            betad*sqr(Udm_) + betac*sqr(Ucm)
-        )
+        "tauDm",
+        betad*sqr(Udm_) + betac*sqr(Ucm)
     );
 }
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2013 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -73,13 +73,11 @@ Foam::cyclicGAMGInterfaceField::cyclicGAMGInterfaceField
 :
     GAMGInterfaceField(GAMGCp, fineInterface),
     cyclicInterface_(refCast<const cyclicGAMGInterface>(GAMGCp)),
-    doTransform_(false),
     rank_(0)
 {
     const cyclicLduInterfaceField& p =
         refCast<const cyclicLduInterfaceField>(fineInterface);
 
-    doTransform_ = p.doTransform();
     rank_ = p.rank();
 }
 
@@ -87,18 +85,16 @@ Foam::cyclicGAMGInterfaceField::cyclicGAMGInterfaceField
 Foam::cyclicGAMGInterfaceField::cyclicGAMGInterfaceField
 (
     const GAMGInterface& GAMGCp,
-    const bool doTransform,
     const int rank
 )
 :
-    GAMGInterfaceField(GAMGCp, doTransform, rank),
+    GAMGInterfaceField(GAMGCp, rank),
     cyclicInterface_(refCast<const cyclicGAMGInterface>(GAMGCp)),
-    doTransform_(doTransform),
     rank_(rank)
 {}
 
 
-// * * * * * * * * * * * * * * * * Desstructor * * * * * * * * * * * * * * * //
+// * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
 Foam::cyclicGAMGInterfaceField::~cyclicGAMGInterfaceField()
 {}
@@ -118,7 +114,7 @@ void Foam::cyclicGAMGInterfaceField::updateInterfaceMatrix
     // Get neighbouring field
     scalarField pnf
     (
-        cyclicInterface_.neighbPatch().interfaceInternalField(psiInternal)
+        cyclicInterface_.nbrPatch().interfaceInternalField(psiInternal)
     );
 
     transformCoupleField(pnf, cmpt);

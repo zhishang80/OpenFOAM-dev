@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -69,12 +69,19 @@ thixotropicViscosity::thixotropicViscosity
     c_("c", pow(dimTime, d_.value() - scalar(1)), coeffDict_),
     mu0_("mu0", dimPressure*dimTime, coeffDict_),
     muInf_("muInf", mu0_.dimensions(), coeffDict_),
+    BinghamPlastic_(coeffDict_.found("tauy")),
+    tauy_
+    (
+        BinghamPlastic_
+      ? dimensionedScalar("tauy", dimPressure, coeffDict_)
+      : dimensionedScalar("tauy", dimPressure, 0)
+    ),
     K_(1 - sqrt(muInf_/mu0_)),
     lambda_
     (
         IOobject
         (
-            typeName + ":lambda",
+            IOobject::modelName("lambda", typeName),
             film.regionMesh().time().timeName(),
             film.regionMesh(),
             IOobject::MUST_READ,
@@ -108,37 +115,26 @@ void thixotropicViscosity::correct
 {
     const kinematicSingleLayer& film = filmType<kinematicSingleLayer>();
 
-    const volVectorField& U = film.U();
+    const volVectorField& Us = film.Us();
     const volVectorField& Uw = film.Uw();
     const volScalarField& delta = film.delta();
-    const volScalarField& deltaRho = film.deltaRho();
-    const surfaceScalarField& phi = film.phi();
-    const volScalarField& alpha = film.alpha();
-    const Time& runTime = this->film().regionMesh().time();
+    const volScalarField alphaRho(film.alpha()*film.rho());
+    const surfaceScalarField& phiU = film.phiU();
+    const volScalarField& coverage = film.coverage();
 
     // Shear rate
     const volScalarField gDot
     (
         "gDot",
-        alpha*mag(U - Uw)/(delta + film.deltaSmall())
+        coverage*mag(Us - Uw)/(delta + film.deltaSmall())
     );
 
-    if (debug && runTime.writeTime())
-    {
-        gDot.write();
-    }
-
-    const dimensionedScalar deltaRho0
+    const dimensionedScalar alphaRho0
     (
-        "deltaRho0",
-        deltaRho.dimensions(),
+        "alphaRho0",
+        alphaRho.dimensions(),
         rootVSmall
     );
-
-    const surfaceScalarField phiU(phi/fvc::interpolate(deltaRho + deltaRho0));
-
-    const dimensionedScalar c0("c0", dimless/dimTime, rootVSmall);
-    const volScalarField coeff("coeff", -c_*pow(gDot, d_) + c0);
 
     fvScalarMatrix lambdaEqn
     (
@@ -147,7 +143,7 @@ void thixotropicViscosity::correct
       - fvm::Sp(fvc::div(phiU), lambda_)
       ==
         a_*pow((1 - lambda_), b_)
-      + fvm::SuSp(coeff, lambda_)
+      - fvm::Sp(c_*pow(gDot, d_), lambda_)
 
         // Include the effect of the impinging droplets added with lambda = 0
       - fvm::Sp
@@ -155,8 +151,8 @@ void thixotropicViscosity::correct
             max
             (
                -film.rhoSp(),
-                dimensionedScalar("zero", film.rhoSp().dimensions(), 0)
-            )/(deltaRho + deltaRho0),
+                dimensionedScalar(film.rhoSp().dimensions(), 0)
+            )/(alphaRho() + alphaRho0),
             lambda_
         )
     );
@@ -168,6 +164,20 @@ void thixotropicViscosity::correct
     lambda_.max(0);
 
     mu_ = muInf_/(sqr(1 - K_*lambda_) + rootVSmall);
+
+    // Add optional yield stress contribution to the viscosity
+    if (BinghamPlastic_)
+    {
+        dimensionedScalar tauySmall("tauySmall", tauy_.dimensions(), small);
+        dimensionedScalar muMax_("muMax", 100*mu0_);
+
+        mu_ = min
+        (
+            tauy_/(gDot + 1.0e-4*(tauy_ + tauySmall)/mu0_) + mu_,
+            muMax_
+        );
+    }
+
     mu_.correctBoundaryConditions();
 }
 

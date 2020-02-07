@@ -14,7 +14,7 @@ surfaceScalarField phiHbyA
 (
     "phiHbyA",
     (
-        fvc::flux(rho*HbyA)
+        fvc::interpolate(rho)*fvc::flux(HbyA)
       + MRF.zeroFilter(rhorAUf*fvc::ddtCorr(rho, U, phi))
     )
   + phig
@@ -46,7 +46,7 @@ while (pimple.correctNonOrthogonal())
         p_rghEqn.setReference(pRefCell, getRefCellValue(p_rgh, pRefCell));
     }
 
-    p_rghEqn.solve(mesh.solver(p_rgh.select(pimple.finalInnerIter())));
+    p_rghEqn.solve();
 
     if (pimple.finalNonOrthogonalIter())
     {

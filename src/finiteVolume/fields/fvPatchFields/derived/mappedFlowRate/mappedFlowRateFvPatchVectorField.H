@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::mappedFlowRateFvPatchVectorField
-
-Group
-    grpInletBoundaryConditions grpCoupledBoundaryConditions
 
 Description
     Describes a volumetric/mass flow normal vector boundary condition by its
@@ -79,7 +76,7 @@ class mappedFlowRateFvPatchVectorField
 :
     public fixedValueFvPatchVectorField
 {
-    // Private data
+    // Private Data
 
         //- Name of the neighbor flux setting the inlet mass flux
         word nbrPhiName_;
@@ -125,7 +122,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         mappedFlowRateFvPatchVectorField
         (
             const mappedFlowRateFvPatchVectorField&
@@ -140,7 +137,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         mappedFlowRateFvPatchVectorField
         (
             const mappedFlowRateFvPatchVectorField&,
@@ -160,7 +157,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
 
         //- Update the coefficients associated with the patch field

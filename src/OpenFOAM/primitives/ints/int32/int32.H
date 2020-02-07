@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -72,6 +72,11 @@ Ostream& operator<<(Ostream&, const int32_t);
     Ostream& operator<<(Ostream&, const long);
 #endif
 
+inline void writeEntry(Ostream& os, const int32_t value)
+{
+    os << value;
+}
+
 
 //- Template specialization for pTraits<int32_t>
 template<>
@@ -97,7 +102,7 @@ public:
         static const direction nComponents = 1;
 
 
-    // Static data members
+    // Static Data Members
 
         static const char* const typeName;
         static const char* const componentNames[];

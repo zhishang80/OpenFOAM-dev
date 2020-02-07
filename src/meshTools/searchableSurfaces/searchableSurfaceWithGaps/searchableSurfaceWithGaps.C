@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -178,7 +178,7 @@ Foam::searchableSurfaceWithGaps::searchableSurfaceWithGaps
 )
 :
     searchableSurface(io),
-    gap_(readScalar(dict.lookup("gap"))),
+    gap_(dict.lookup<scalar>("gap")),
     subGeom_(1)
 {
     const word subGeomName(dict.lookup("surface"));
@@ -219,7 +219,7 @@ void Foam::searchableSurfaceWithGaps::findLine
 
     if (returnReduce(nMiss, sumOp<label>()) > 0)
     {
-        //Pout<< "** retesting with offset0 " << nMiss << " misses out of "
+        // Pout<< "** retesting with offset0 " << nMiss << " misses out of "
         //    << start.size() << endl;
 
         // extract segments according to map
@@ -274,7 +274,7 @@ void Foam::searchableSurfaceWithGaps::findLine
 
         if (returnReduce(nMiss, sumOp<label>()) > 0)
         {
-            //Pout<< "** retesting with offset1 " << nMiss << " misses out of "
+            // Pout<< "** retesting with offset1 " << nMiss << " misses out of "
             //    << start.size() << endl;
 
             // Test with offset1 perturbed vectors

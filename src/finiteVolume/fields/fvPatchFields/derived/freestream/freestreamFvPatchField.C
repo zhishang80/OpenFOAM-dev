@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -108,11 +108,10 @@ void Foam::freestreamFvPatchField<Type>::write(Ostream& os) const
     fvPatchField<Type>::write(os);
     if (this->phiName_ != "phi")
     {
-        os.writeKeyword("phi")
-            << this->phiName_ << token::END_STATEMENT << nl;
+        writeEntry(os, "phi", this->phiName_);
     }
-    freestreamValue().writeEntry("freestreamValue", os);
-    this->writeEntry("value", os);
+    writeEntry(os, "freestreamValue", freestreamValue());
+    writeEntry(os, "value", *this);
 }
 
 

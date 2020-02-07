@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -62,7 +62,7 @@ Foam::jumpCyclicFvPatchField<Type>::jumpCyclicFvPatchField
     cyclicFvPatchField<Type>(p, iF, dict)
 {
     // Call this evaluation in derived classes
-    //this->evaluate(Pstream::commsTypes::blocking);
+    // this->evaluate(Pstream::commsTypes::blocking);
 }
 
 
@@ -106,22 +106,11 @@ Foam::jumpCyclicFvPatchField<Type>::patchNeighbourField() const
         jf *= -1.0;
     }
 
-    if (this->doTransform())
+    forAll(*this, facei)
     {
-        forAll(*this, facei)
-        {
-            pnf[facei] = transform
-            (
-                this->forwardT()[0], iField[nbrFaceCells[facei]]
-            ) - jf[facei];
-        }
-    }
-    else
-    {
-        forAll(*this, facei)
-        {
-            pnf[facei] = iField[nbrFaceCells[facei]] - jf[facei];
-        }
+        pnf[facei] =
+            this->transform().transform(iField[nbrFaceCells[facei]])
+          - jf[facei];
     }
 
     return tpnf;

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -58,7 +58,7 @@ class COxidationIntrinsicRate
 :
     public SurfaceReactionModel<CloudType>
 {
-    // Private data
+    // Private Data
 
         // Model constants
 
@@ -80,7 +80,7 @@ class COxidationIntrinsicRate
             //- Activation energy
             const scalar Ei_;
 
-            //- Char specific internal area [m2/kg]
+            //- Char specific internal area [m^2/kg]
             const scalar Ag_;
 
             //- Pore tortuosity []; default to sqrt(2)

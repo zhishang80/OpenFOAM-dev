@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2013 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -66,11 +66,10 @@ Foam::regionCoupledWallGAMGInterfaceField::regionCoupledWallGAMGInterfaceField
 Foam::regionCoupledWallGAMGInterfaceField::regionCoupledWallGAMGInterfaceField
 (
     const GAMGInterface& GAMGCp,
-    const bool doTransform,
     const int rank
 )
 :
-    GAMGInterfaceField(GAMGCp, doTransform, rank),
+    GAMGInterfaceField(GAMGCp, rank),
     regionCoupledGAMGInterface_
     (
         refCast<const regionCoupledWallGAMGInterface>(GAMGCp)
@@ -78,7 +77,7 @@ Foam::regionCoupledWallGAMGInterfaceField::regionCoupledWallGAMGInterfaceField
 {}
 
 
-// * * * * * * * * * * * * * * * * Desstructor * * * * * * * * * * * * * * * //
+// * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
 Foam::regionCoupledWallGAMGInterfaceField::~regionCoupledWallGAMGInterfaceField
 ()

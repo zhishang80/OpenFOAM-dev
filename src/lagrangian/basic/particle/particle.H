@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -44,7 +44,7 @@ Description
 #include "FixedList.H"
 #include "polyMeshTetDecomposition.H"
 #include "particleMacros.H"
-#include "vectorTensorTransform.H"
+#include "transformer.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -59,6 +59,7 @@ class polyPatch;
 class cyclicPolyPatch;
 class cyclicAMIPolyPatch;
 class cyclicACMIPolyPatch;
+class cyclicRepeatAMIPolyPatch;
 class processorPolyPatch;
 class symmetryPlanePolyPatch;
 class symmetryPolyPatch;
@@ -93,15 +94,9 @@ class particle
         //- Size in bytes of the fields
         static const std::size_t sizeofFields_;
 
-        //- The factor by which the displacement is increased when passing
-        //  through negative space. This should be slightly bigger than one.
-        //  This is needed as a straight trajectory can form a closed loop
-        //  through regions of overlapping positive and negative space, leading
-        //  to a track which never ends. By increasing the rate of displacement
-        //  through negative regions, the change in track fraction over this
-        //  part of the loop no longer exactly cancels the change over the
-        //  positive part, and the track therefore terminates.
-        static const scalar negativeSpaceDisplacementFactor;
+        //- The value of nBehind_ at which tracking is abandoned. See the
+        //  description of nBehind_.
+        static const label maxNBehind_;
 
 
 public:
@@ -128,7 +123,7 @@ public:
 
 private:
 
-    // Private data
+    // Private Data
 
         //- Reference to the polyMesh database
         const polyMesh& mesh_;
@@ -153,6 +148,18 @@ private:
 
         //- Fraction of time-step completed
         scalar stepFraction_;
+
+        //- The distance behind the maximum distance reached so far
+        scalar behind_;
+
+        //- The number of tracks carried out that ended in a distance behind the
+        //  maximum distance reached so far. Once this reaches maxNBehind_,
+        //  tracking is abandoned for the current step. This is needed because
+        //  when tetrahedra are inverted a straight trajectory can form a closed
+        //  loop through regions of overlapping positive and negative space.
+        //  Without this break clause, such loops can result in a valid track
+        //  which never ends.
+        label nBehind_;
 
         //- Originating processor id
         label origProc_;
@@ -273,8 +280,7 @@ private:
             void locate
             (
                 const vector& position,
-                const vector* direction,
-                const label celli,
+                label celli,
                 const bool boundaryFail,
                 const string boundaryMsg
             );
@@ -308,12 +314,35 @@ protected:
 
         //- Overridable function to handle the particle hitting a cyclicAMIPatch
         template<class TrackCloudType>
-        void hitCyclicAMIPatch(TrackCloudType&, trackingData&, const vector&);
+        void hitCyclicAMIPatch
+        (
+            const vector& displacement,
+            const scalar fraction,
+            TrackCloudType& cloud,
+            trackingData& td
+        );
 
         //- Overridable function to handle the particle hitting a
         //  cyclicACMIPatch
         template<class TrackCloudType>
-        void hitCyclicACMIPatch(TrackCloudType&, trackingData&, const vector&);
+        void hitCyclicACMIPatch
+        (
+            const vector& displacement,
+            const scalar fraction,
+            TrackCloudType& cloud,
+            trackingData& td
+        );
+
+        //- Overridable function to handle the particle hitting an
+        //  cyclicRepeatAMIPolyPatch
+        template<class TrackCloudType>
+        void hitCyclicRepeatAMIPatch
+        (
+            const vector& displacement,
+            const scalar fraction,
+            TrackCloudType& cloud,
+            trackingData& td
+        );
 
         //- Overridable function to handle the particle hitting a processorPatch
         template<class TrackCloudType>
@@ -326,7 +355,7 @@ protected:
 
 public:
 
-    // Static data members
+    // Static Data Members
 
         //- Runtime type information
         TypeName("particle");
@@ -335,10 +364,11 @@ public:
         DefinePropertyList
         (
             "(coordinatesa coordinatesb coordinatesc coordinatesd) "
-            "celli tetFacei tetPti facei stepFraction origProc origId"
+            "celli tetFacei tetPti facei stepFraction "
+            "behind nBehind origProc origId"
         );
 
-        //- Cumulative particle counter - used to provode unique ID
+        //- Cumulative particle counter - used to provide unique ID
         static label particleCount_;
 
 
@@ -489,6 +519,10 @@ public:
 
     // Track
 
+        //- Set step fraction and behind data to zero in preparation for a new
+        //  track
+        inline void reset();
+
         //- Track along the displacement for a given fraction of the overall
         //  step. End when the track is complete, or when a boundary is hit.
         //  On exit, stepFraction_ will have been incremented to the current
@@ -502,16 +536,23 @@ public:
             const scalar fraction
         );
 
-        //- As particle::track, but also stops on internal faces.
+        //- As particle::track, but stops when a new cell is reached.
+        scalar trackToCell
+        (
+            const vector& displacement,
+            const scalar fraction
+        );
+
+        //- As particle::track, but stops when a face is hit.
         scalar trackToFace
         (
             const vector& displacement,
             const scalar fraction
         );
 
-        //- As particle::trackToFace, but also stops on tet triangles. On
-        //  exit, tetTriI is set to the index of the tet triangle that was
-        //  hit, or -1 if the end position was reached.
+        //- As particle::trackToFace, but stops when a tet triangle is hit. On
+        //  exit, tetTriI is set to the index of the tet triangle that was hit,
+        //  or -1 if the end position was reached.
         scalar trackToTri
         (
             const vector& displacement,
@@ -541,16 +582,28 @@ public:
         template<class TrackCloudType>
         void hitFace
         (
-            const vector& direction,
+            const vector& displacement,
+            const scalar fraction,
             TrackCloudType& cloud,
             trackingData& td
         );
 
-        //- Convenience function. Cobines trackToFace and hitFace
+        //- As above, but does not change the master patch. Needed in order for
+        //  ACMI to be able to delegate a hit to the non-overlap patch.
         template<class TrackCloudType>
-        void trackToAndHitFace
+        void hitFaceNoChangeToMasterPatch
         (
-            const vector& direction,
+            const vector& displacement,
+            const scalar fraction,
+            TrackCloudType& cloud,
+            trackingData& td
+        );
+
+        //- Convenience function. Combines trackToFace and hitFace
+        template<class TrackCloudType>
+        scalar trackToAndHitFace
+        (
+            const vector& displacement,
             const scalar fraction,
             TrackCloudType& cloud,
             trackingData& td
@@ -564,19 +617,15 @@ public:
 
     // Patch data
 
-        //- Get the normal and velocity of the current patch location
-        inline void patchData(vector& n, vector& U) const;
+        //- Get the normal and displacement of the current patch location
+        inline void patchData(vector& normal, vector& displacement) const;
 
 
     // Transformations
 
         //- Transform the physical properties of the particle
         //  according to the given transformation tensor
-        virtual void transformProperties(const tensor& T);
-
-        //- Transform the physical properties of the particle
-        //  according to the given separation vector
-        virtual void transformProperties(const vector& separation);
+        virtual void transformProperties(const transformer&);
 
 
     // Parallel transfer
@@ -595,7 +644,7 @@ public:
         //  particle can be referred.
         void prepareForInteractionListReferral
         (
-            const vectorTensorTransform& transform
+            const transformer& transform
         );
 
         //- Correct the topology after referral. The particle may still be

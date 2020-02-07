@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -79,7 +79,7 @@ void Foam::RBD::rigidBodySolvers::Newmark::solve
     // Accumulate the restraint forces
     scalarField rtau(tau);
     Field<spatialVector> rfx(fx);
-    model_.applyRestraints(rtau, rfx);
+    model_.applyRestraints(rtau, rfx, state());
 
     // Calculate the accelerations for the given state and forces
     model_.forwardDynamics(state(), rtau, rfx);

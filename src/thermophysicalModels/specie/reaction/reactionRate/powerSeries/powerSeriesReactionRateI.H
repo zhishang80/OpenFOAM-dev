@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -46,9 +46,9 @@ inline Foam::powerSeriesReactionRate::powerSeriesReactionRate
     const dictionary& dict
 )
 :
-    A_(readScalar(dict.lookup("A"))),
-    beta_(readScalar(dict.lookup("beta"))),
-    Ta_(readScalar(dict.lookup("Ta"))),
+    A_(dict.lookup<scalar>("A")),
+    beta_(dict.lookup<scalar>("beta")),
+    Ta_(dict.lookup<scalar>("Ta")),
     coeffs_(dict.lookup("coeffs"))
 {}
 
@@ -59,7 +59,8 @@ inline Foam::scalar Foam::powerSeriesReactionRate::operator()
 (
     const scalar p,
     const scalar T,
-    const scalarField&
+    const scalarField&,
+    const label
 ) const
 {
     scalar lta = A_;
@@ -69,7 +70,7 @@ inline Foam::scalar Foam::powerSeriesReactionRate::operator()
         lta *= pow(T, beta_);
     }
 
-    scalar expArg = 0.0;
+    scalar expArg = 0;
 
     forAll(coeffs_, n)
     {
@@ -82,12 +83,73 @@ inline Foam::scalar Foam::powerSeriesReactionRate::operator()
 }
 
 
+inline Foam::scalar Foam::powerSeriesReactionRate::ddT
+(
+    const scalar p,
+    const scalar T,
+    const scalarField&,
+    const label
+) const
+{
+    scalar lta = A_;
+
+    if (mag(beta_) > vSmall)
+    {
+        lta *= pow(T, beta_);
+    }
+
+    scalar expArg = 0;
+    scalar deriv = 0;
+
+    forAll(coeffs_, n)
+    {
+        scalar cT = coeffs_[n]/pow(T, n + 1);
+        expArg += cT;
+        deriv -= (n + 1)*cT;
+    }
+
+    lta *= exp(expArg);
+
+    return lta*(beta_+deriv)/T;
+}
+
+
+inline const Foam::List<Foam::Tuple2<Foam::label, Foam::scalar>>&
+Foam::powerSeriesReactionRate::beta() const
+{
+    return NullObjectRef<List<Tuple2<label, scalar>>>();
+}
+
+
+inline void Foam::powerSeriesReactionRate::dcidc
+(
+    const scalar p,
+    const scalar T,
+    const scalarField& c,
+    const label li,
+    scalarField& dcidc
+) const
+{}
+
+
+inline Foam::scalar Foam::powerSeriesReactionRate::dcidT
+(
+    const scalar p,
+    const scalar T,
+    const scalarField& c,
+    const label li
+) const
+{
+    return 0;
+}
+
+
 inline void Foam::powerSeriesReactionRate::write(Ostream& os) const
 {
-    os.writeKeyword("A") << A_ << token::END_STATEMENT << nl;
-    os.writeKeyword("beta") << beta_ << token::END_STATEMENT << nl;
-    os.writeKeyword("Ta") << Ta_ << token::END_STATEMENT << nl;
-    os.writeKeyword("coeffs") << coeffs_ << token::END_STATEMENT << nl;
+    writeEntry(os, "A", A_);
+    writeEntry(os, "beta", beta_);
+    writeEntry(os, "Ta", Ta_);
+    writeEntry(os, "coeffs", coeffs_);
 }
 
 

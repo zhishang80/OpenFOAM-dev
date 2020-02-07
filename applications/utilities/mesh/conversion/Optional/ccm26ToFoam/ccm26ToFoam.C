@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -204,12 +204,12 @@ void ReadVertices
     );
     CCMIOReadMap(&err, mapID, mapData.begin(), offset, offsetPlusSize);
 
-    //CCMIOSize size;
-    //CCMIOEntityDescription(&err, vertices, &size, nullptr);
-    //char *desc = new char[size + 1];
-    //CCMIOEntityDescription(&err, vertices, nullptr, desc);
-    //Pout<< "label: '" << desc << "'" << endl;
-    //delete [] desc;
+    // CCMIOSize size;
+    // CCMIOEntityDescription(&err, vertices, &size, nullptr);
+    // char *desc = new char[size + 1];
+    // CCMIOEntityDescription(&err, vertices, nullptr, desc);
+    // Pout<< "label: '" << desc << "'" << endl;
+    // delete [] desc;
 
     // Convert to foamPoints
     foamPoints.setSize(nVertices);
@@ -336,7 +336,7 @@ void ReadProblem
             }
 
 
-            //foamPatchMap.append(prostarI);
+            // foamPatchMap.append(prostarI);
 
 
             // Read boundary name:
@@ -948,10 +948,10 @@ int main(int argc, char *argv[])
             runTime.constant(),
             runTime
         ),
-        xferMove<pointField>(foamPoints),
-        xferMove<faceList>(foamFaces),
-        xferCopy<labelList>(foamOwner),
-        xferMove<labelList>(foamNeighbour)
+        move(foamPoints),
+        move(foamFaces),
+        clone(foamOwner),
+        move(foamNeighbour)
     );
 
     // Create patches. Use patch types to determine what Foam types to generate.
@@ -1103,7 +1103,7 @@ int main(int argc, char *argv[])
     }
 
 
-    Info<< "Writing mesh to " << mesh.objectRegistry::objectPath()
+    Info<< "Writing mesh to " << mesh.objectRegistry::localObjectPath()
         << "..." << nl << endl;
 
 
@@ -1119,7 +1119,7 @@ int main(int argc, char *argv[])
             IOobject::AUTO_WRITE
         ),
         mesh,
-        dimensionedScalar("cellId", dimless, 0.0)
+        dimensionedScalar(dimless, 0)
     );
 
     forAll(foamCellMap, celli)
@@ -1139,7 +1139,7 @@ int main(int argc, char *argv[])
             IOobject::AUTO_WRITE
         ),
         mesh,
-        dimensionedScalar("cellType", dimless, 0.0)
+        dimensionedScalar(dimless, 0)
     );
 
     forAll(foamCellType, celli)
@@ -1147,8 +1147,8 @@ int main(int argc, char *argv[])
         cellTypeField[celli] = foamCellType[celli];
     }
 
-    Info<< "Writing cellIds as volScalarField to " << cellIdField.objectPath()
-        << "..." << nl << endl;
+    Info<< "Writing cellIds as volScalarField to "
+        << cellIdField.localObjectPath() << "..." << nl << endl;
     mesh.write();
 
     Info<< "End\n" << endl;

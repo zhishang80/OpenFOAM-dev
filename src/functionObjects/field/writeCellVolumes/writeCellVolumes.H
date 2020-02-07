@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::functionObjects::writeCellVolumes
-
-Group
-    grpFieldFunctionObjects
 
 Description
     Writes the cell-volumes volScalarField.
@@ -74,15 +71,6 @@ class writeCellVolumes
 :
     public fvMeshFunctionObject
 {
-    // Private member functions
-
-        //- Disallow default bitwise copy construct
-        writeCellVolumes(const writeCellVolumes&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const writeCellVolumes&);
-
-
 public:
 
     //- Runtime type information
@@ -99,6 +87,9 @@ public:
             const dictionary& dict
         );
 
+        //- Disallow default bitwise copy construction
+        writeCellVolumes(const writeCellVolumes&) = delete;
+
 
     //- Destructor
     virtual ~writeCellVolumes();
@@ -111,6 +102,12 @@ public:
 
         //- Write the cell-centre fields
         virtual bool write();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const writeCellVolumes&) = delete;
 };
 
 

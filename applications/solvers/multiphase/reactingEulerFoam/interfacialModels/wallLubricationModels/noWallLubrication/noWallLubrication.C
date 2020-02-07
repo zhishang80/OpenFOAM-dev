@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -69,22 +69,11 @@ Foam::wallLubricationModels::noWallLubrication::Fi() const
 {
     const fvMesh& mesh(this->pair_.phase1().mesh());
 
-    return tmp<volVectorField>
+    return volVectorField::New
     (
-        new volVectorField
-        (
-            IOobject
-            (
-                "noWallLubrication:Fi",
-                mesh.time().timeName(),
-                mesh,
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
-            mesh,
-            dimensionedVector("zero", dimF, Zero)
-        )
+        "noWallLubrication:Fi",
+        mesh,
+        dimensionedVector(dimF, Zero)
     );
 }
 
@@ -94,22 +83,11 @@ Foam::wallLubricationModels::noWallLubrication::F() const
 {
     const fvMesh& mesh(this->pair_.phase1().mesh());
 
-    return tmp<volVectorField>
+    return volVectorField::New
     (
-        new volVectorField
-        (
-            IOobject
-            (
-                "noWallLubrication:F",
-                mesh.time().timeName(),
-                mesh,
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
-            mesh,
-            dimensionedVector("zero", dimF, Zero)
-        )
+        "noWallLubrication:F",
+        mesh,
+        dimensionedVector(dimF, Zero)
     );
 }
 

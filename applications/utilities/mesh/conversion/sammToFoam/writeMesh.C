@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -29,6 +29,7 @@ Description
 #include "sammMesh.H"
 #include "Time.H"
 #include "polyMesh.H"
+#include "polyMeshUnMergeCyclics.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -46,7 +47,7 @@ void Foam::sammMesh::writeMesh()
                 runTime_.constant(),
                 runTime_
             ),
-            xferCopy(points_),           // we could probably re-use the data
+            clone(points_),           // we could probably re-use the data
             cellShapes_,
             boundary_,
             patchNames_,
@@ -55,6 +56,8 @@ void Foam::sammMesh::writeMesh()
             defaultFacesType_,
             patchPhysicalTypes_
         );
+
+        polyMeshUnMergeCyclics(pShapeMesh);
 
         Info<< "Writing polyMesh" << endl;
         pShapeMesh.write();
@@ -75,12 +78,14 @@ void Foam::sammMesh::writeMesh()
                 runTime_.constant(),
                 runTime_
             ),
-            xferCopy(points_),           // we could probably re-use the data
-            xferCopy(meshFaces_),
-            xferCopy(cellPolys_)
+            move(points_),           // we could probably re-use the data
+            move(meshFaces_),
+            move(cellPolys_)
         );
 
         pMesh.addPatches(polyBoundaryPatches(pMesh));
+
+        polyMeshUnMergeCyclics(pMesh);
 
         Info<< "Writing polyMesh" << endl;
         pMesh.write();

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::slipFvPatchField
-
-Group
-    grpWallBoundaryConditions grpGenericBoundaryConditions
 
 Description
     This boundary condition provides a slip constraint.
@@ -96,7 +93,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         slipFvPatchField
         (
             const slipFvPatchField<Type>&
@@ -111,7 +108,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         slipFvPatchField
         (
             const slipFvPatchField<Type>&,
@@ -131,7 +128,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Attributes
 
@@ -142,7 +139,7 @@ public:
             }
 
 
-    // Member operators
+    // Member Operators
 
         // virtual void operator=(const UList<Type>&) {}
 

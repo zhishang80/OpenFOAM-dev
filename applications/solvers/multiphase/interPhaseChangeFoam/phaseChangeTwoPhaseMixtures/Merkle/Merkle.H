@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -38,29 +38,29 @@ Description
 SourceFiles
     Merkle.C
 
-\*--------------------------------------------------------------------*/
+\*---------------------------------------------------------------------------*/
 
 #ifndef Merkle_H
 #define Merkle_H
 
 #include "phaseChangeTwoPhaseMixture.H"
 
-// * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * //
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
 {
 namespace phaseChangeTwoPhaseMixtures
 {
 
-/*--------------------------------------------------------------------*\
-                              Class Merkle
-\*--------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*\
+                                 Class Merkle
+\*---------------------------------------------------------------------------*/
 
 class Merkle
 :
     public phaseChangeTwoPhaseMixture
 {
-    // Private data
+    // Private Data
 
         dimensionedScalar UInf_;
         dimensionedScalar tInf_;

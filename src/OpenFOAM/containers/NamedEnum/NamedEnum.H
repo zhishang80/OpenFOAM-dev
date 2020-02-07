@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -38,7 +38,6 @@ SourceFiles
 #include "HashTable.H"
 #include "stringList.H"
 #include "wordList.H"
-#include <type_traits>
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -56,16 +55,16 @@ class NamedEnum
 {
     // Private Member Functions
 
-        //- Disallow default bitwise copy construct
-        NamedEnum(const NamedEnum&);
+        //- Disallow default bitwise copy construction
+        NamedEnum(const NamedEnum&) = delete;
 
         //- Disallow default bitwise assignment
-        void operator=(const NamedEnum&);
+        void operator=(const NamedEnum&) = delete;
 
 
 public:
 
-    // Static data members
+    // Static Data Members
 
         //- The set of names corresponding to the enumeration Enum
         static const char* names[nEnum];
@@ -108,10 +107,7 @@ public:
         }
 
         //- Return the name of the given enumeration element
-        const char* operator[](const Enum e) const
-        {
-            return names[unsigned(e)];
-        }
+        const char* operator[](const Enum e) const;
 };
 
 

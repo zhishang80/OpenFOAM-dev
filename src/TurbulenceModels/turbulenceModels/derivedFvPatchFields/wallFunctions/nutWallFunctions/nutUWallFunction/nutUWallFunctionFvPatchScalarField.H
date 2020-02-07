@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,9 +24,6 @@ License
 Class
     Foam::nutUWallFunctionFvPatchScalarField
 
-Group
-    grpWallFunctions
-
 Description
     This boundary condition provides a turbulent kinematic viscosity condition
     when using wall functions, based on velocity.
@@ -37,6 +34,7 @@ Usage
     <patchName>
     {
         type            nutUWallFunction;
+        value           uniform 0;
     }
     \endverbatim
 
@@ -71,10 +69,10 @@ protected:
     // Protected Member Functions
 
         //- Calculate yPLus
-        virtual tmp<scalarField> calcYPlus(const scalarField& magUp) const;
+        virtual tmp<scalarField> yPlus(const scalarField& magUp) const;
 
         //- Calculate the turbulence viscosity
-        virtual tmp<scalarField> calcNut() const;
+        virtual tmp<scalarField> nut() const;
 
 
 public:
@@ -111,7 +109,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         nutUWallFunctionFvPatchScalarField
         (
             const nutUWallFunctionFvPatchScalarField&
@@ -126,7 +124,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         nutUWallFunctionFvPatchScalarField
         (
             const nutUWallFunctionFvPatchScalarField&,
@@ -146,7 +144,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Evaluation functions
 

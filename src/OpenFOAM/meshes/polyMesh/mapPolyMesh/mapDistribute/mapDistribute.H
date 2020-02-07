@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -134,9 +134,9 @@ SourceFiles
 #define mapDistribute_H
 
 #include "mapDistributeBase.H"
-#include "transformList.H"
-#include "vectorTensorTransform.H"
+#include "transformer.H"
 #include "coupledPolyPatch.H"
+#include "EdgeMap.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -162,7 +162,7 @@ class mapDistribute
 :
     public mapDistributeBase
 {
-    // Private data
+    // Private Data
 
         //- For every globalIndexAndTransform::transformPermutations
         //  gives the elements that need to be transformed
@@ -170,6 +170,7 @@ class mapDistribute
 
         //- Destination in constructMap for transformed elements
         labelList transformStart_;
+
 
     // Private Member Functions
 
@@ -197,6 +198,7 @@ class mapDistribute
             const TransformOp& top
         ) const;
 
+
 public:
 
     // Public classes
@@ -209,19 +211,25 @@ public:
             template<class Type>
             void operator()
             (
-                const vectorTensorTransform& vt,
+                const transformer& vt,
                 const bool forward,
                 List<Type>& fld
             ) const
             {
-                const tensor T(forward ? vt.R() : vt.R().T());
-                transformList(T, fld);
+                if (forward)
+                {
+                    vt.transformList(fld);
+                }
+                else
+                {
+                    vt.invTransformList(fld);
+                }
             }
 
             template<class Type>
             void operator()
             (
-                const vectorTensorTransform& vt,
+                const transformer& vt,
                 const bool forward,
                 List<List<Type>>& flds
             ) const
@@ -236,9 +244,9 @@ public:
             template<class Type>
             void operator()(const coupledPolyPatch& cpp, UList<Type>& fld) const
             {
-                if (!cpp.parallel())
+                if (cpp.transform().transforms())
                 {
-                    transformList(cpp.forwardT(), fld);
+                    cpp.transform().transformList(fld);
                 }
             }
 
@@ -247,9 +255,9 @@ public:
             void operator()(const coupledPolyPatch& cpp, Container<Type>& map)
             const
             {
-                if (!cpp.parallel())
+                if (cpp.transform().transforms())
                 {
-                    transformList(cpp.forwardT(), map);
+                    cpp.transform().transformList(map);
                 }
             }
         };
@@ -261,12 +269,12 @@ public:
 
             void operator()
             (
-                const vectorTensorTransform& vt,
+                const transformer& vt,
                 const bool forward,
                 List<point>& fld
             ) const
             {
-                pointField pfld(fld.xfer());
+                pointField pfld(move(fld));
                 if (forward)
                 {
                     fld = vt.transformPosition(pfld);
@@ -276,9 +284,10 @@ public:
                     fld = vt.invTransformPosition(pfld);
                 }
             }
+
             void operator()
             (
-                const vectorTensorTransform& vt,
+                const transformer& vt,
                 const bool forward,
                 List<List<point>>& flds
             ) const
@@ -288,22 +297,27 @@ public:
                     operator()(vt, forward, flds[i]);
                 }
             }
+
             //- Transform patch-based field
             void operator()(const coupledPolyPatch& cpp, pointField& fld) const
             {
-                cpp.transformPosition(fld);
+                cpp.transform().transformPosition(fld, fld);
             }
+
             template<template<class> class Container>
             void operator()(const coupledPolyPatch& cpp, Container<point>& map)
             const
             {
                 Field<point> fld(map.size());
+
                 label i = 0;
                 forAllConstIter(typename Container<point>, map, iter)
                 {
                     fld[i++] = iter();
                 }
-                cpp.transformPosition(fld);
+
+                cpp.transform().transformPosition(fld, fld);
+
                 i = 0;
                 forAllIter(typename Container<point>, map, iter)
                 {
@@ -326,8 +340,8 @@ public:
         mapDistribute
         (
             const label constructSize,
-            const Xfer<labelListList>& subMap,
-            const Xfer<labelListList>& constructMap,
+            labelListList&& subMap,
+            labelListList&& constructMap,
             const bool subHasFlip = false,
             const bool constructHasFlip = false
         );
@@ -336,10 +350,10 @@ public:
         mapDistribute
         (
             const label constructSize,
-            const Xfer<labelListList>& subMap,
-            const Xfer<labelListList>& constructMap,
-            const Xfer<labelListList>& transformElements,
-            const Xfer<labelList>& transformStart,
+            labelListList&& subMap,
+            labelListList&& constructMap,
+            labelListList&& transformElements,
+            labelList&& transformStart,
             const bool subHasFlip = false,
             const bool constructHasFlip = false
         );
@@ -405,11 +419,11 @@ public:
             const int tag = Pstream::msgType()
         );
 
-        //- Construct by transferring parameter content
-        mapDistribute(const Xfer<mapDistribute>&);
-
-        //- Construct copy
+        //- Copy constructor
         mapDistribute(const mapDistribute&);
+
+        //- Move constructor
+        mapDistribute(mapDistribute&&);
 
         //- Construct from Istream
         mapDistribute(Istream&);
@@ -448,10 +462,6 @@ public:
 
             //- Transfer the contents of the argument and annul the argument.
             void transfer(mapDistribute&);
-
-            //- Transfer contents to the Xfer container
-            Xfer<mapDistribute> xfer();
-
 
             //- Distribute data using default commsType.
             template<class T>
@@ -554,7 +564,7 @@ public:
 
         void operator=(const mapDistribute&);
 
-    // IOstream operators
+    // IOstream Operators
 
         //- Read dictionary from Istream
         friend Istream& operator>>(Istream&, mapDistribute&);
@@ -569,7 +579,7 @@ public:
 template<>
 void mapDistribute::transform::operator()
 (
-    const vectorTensorTransform&,
+    const transformer&,
     const bool,
     List<label>&
 ) const;
@@ -601,7 +611,7 @@ void mapDistribute::transform::operator()
 template<>
 void mapDistribute::transform::operator()
 (
-    const vectorTensorTransform&,
+    const transformer&,
     const bool,
     List<scalar>&
 ) const;
@@ -627,7 +637,7 @@ void mapDistribute::transform::operator()
 template<>
 void mapDistribute::transform::operator()
 (
-    const vectorTensorTransform&,
+    const transformer&,
     const bool,
     List<bool>&
 ) const;

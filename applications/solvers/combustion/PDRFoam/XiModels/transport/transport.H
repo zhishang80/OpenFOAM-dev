@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -57,21 +57,12 @@ class transport
 :
     public XiModel
 {
-    // Private data
+    // Private Data
 
         scalar XiShapeCoef;
 
         autoPtr<XiEqModel> XiEqModel_;
         autoPtr<XiGModel> XiGModel_;
-
-
-    // Private Member Functions
-
-        //- Disallow copy construct
-        transport(const transport&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const transport&);
 
 
 public:
@@ -94,6 +85,9 @@ public:
             const surfaceScalarField& phi
         );
 
+        //- Disallow default bitwise copy construction
+        transport(const transport&);
+
 
     //- Destructor
     virtual ~transport();
@@ -113,13 +107,13 @@ public:
             fields.add(Xi_);
         }
 
-        //- Correct the flame-wrinking Xi
+        //- Correct the flame-wrinkling Xi
         virtual void correct()
         {
             NotImplemented;
         }
 
-        //- Correct the flame-wrinking Xi using the given convection scheme
+        //- Correct the flame-wrinkling Xi using the given convection scheme
         virtual void correct(const fv::convectionScheme<scalar>& mvConvection);
 
         //- Update properties from given dictionary
@@ -130,6 +124,12 @@ public:
         {
             XiEqModel_().writeFields();
         }
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const transport&) = delete;
 };
 
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -49,7 +49,7 @@ Foam::XiEqModels::instability::instability
 )
 :
     XiEqModel(XiEqProperties, thermo, turbulence, Su),
-    XiEqIn(readScalar(XiEqModelCoeffs_.lookup("XiEqIn"))),
+    XiEqIn(XiEqModelCoeffs_.lookup<scalar>("XiEqIn")),
     XiEqModel_(XiEqModel::New(XiEqModelCoeffs_, thermo, turbulence, Su))
 {}
 

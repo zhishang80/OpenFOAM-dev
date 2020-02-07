@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::functionObjects::streamLine
-
-Group
-    grpFieldFunctionObjects
 
 Description
     Generates streamline data by sampling a set of user-specified fields along a
@@ -58,7 +55,7 @@ Description
         seedSampleSet
         {
             type        uniform;
-            axis        x;  //distance;
+            axis        x;  // distance;
             start       (-0.0205 0.0001 0.00001);
             end         (-0.0205 0.0005 0.00001);
             nPoints     100;
@@ -139,11 +136,11 @@ public:
     // Public data types
 
         //- Track direction enumerations
-        enum trackDirection
+        enum class trackDirection
         {
-            FORWARD,
-            BACKWARD,
-            BOTH
+            forward,
+            backward,
+            both
         };
 
         //- Track direction enumeration names
@@ -152,7 +149,7 @@ public:
 
 private:
 
-    // Private data
+    // Private Data
 
         //- Input dictionary
         dictionary dict_;
@@ -193,7 +190,7 @@ private:
 
         // Demand driven
 
-            //- Mesh searching enigne
+            //- Mesh searching engine
             autoPtr<meshSearch> meshSearchPtr_;
 
             //- Seed set engine
@@ -227,12 +224,6 @@ private:
         //- Do all seeding and tracking
         void track();
 
-        //- Disallow default bitwise copy construct
-        streamLine(const streamLine&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const streamLine&);
-
 
 public:
 
@@ -250,6 +241,9 @@ public:
             const dictionary& dict
         );
 
+        //- Disallow default bitwise copy construction
+        streamLine(const streamLine&) = delete;
+
 
     //- Destructor
     virtual ~streamLine();
@@ -263,7 +257,7 @@ public:
         //- Do nothing
         virtual bool execute();
 
-        //- Calculate and write the steamlines
+        //- Calculate and write the streamlines
         virtual bool write();
 
         //- Update for changes of mesh
@@ -271,6 +265,12 @@ public:
 
         //- Update for mesh point-motion
         virtual void movePoints(const polyMesh&);
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const streamLine&) = delete;
 };
 
 

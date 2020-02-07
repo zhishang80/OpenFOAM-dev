@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -104,21 +104,11 @@ template<class TransportModel>
 Foam::tmp<Foam::volScalarField>
 Foam::PhaseCompressibleTurbulenceModel<TransportModel>::pPrime() const
 {
-    return tmp<volScalarField>
+    return volScalarField::New
     (
-        new volScalarField
-        (
-            IOobject
-            (
-                IOobject::groupName("pPrime", this->alphaRhoPhi_.group()),
-                this->runTime_.timeName(),
-                this->mesh_,
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
-            this->mesh_,
-            dimensionedScalar("pPrimef", dimPressure, 0.0)
-        )
+        IOobject::groupName("pPrime", this->alphaRhoPhi_.group()),
+        this->mesh_,
+        dimensionedScalar(dimPressure, 0)
     );
 }
 
@@ -127,21 +117,11 @@ template<class TransportModel>
 Foam::tmp<Foam::surfaceScalarField>
 Foam::PhaseCompressibleTurbulenceModel<TransportModel>::pPrimef() const
 {
-    return tmp<surfaceScalarField>
+    return surfaceScalarField::New
     (
-        new surfaceScalarField
-        (
-            IOobject
-            (
-                IOobject::groupName("pPrimef", this->alphaRhoPhi_.group()),
-                this->runTime_.timeName(),
-                this->mesh_,
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
-            this->mesh_,
-            dimensionedScalar("pPrimef", dimPressure, 0.0)
-        )
+        IOobject::groupName("pPrimef", this->alphaRhoPhi_.group()),
+        this->mesh_,
+        dimensionedScalar(dimPressure, 0)
     );
 }
 

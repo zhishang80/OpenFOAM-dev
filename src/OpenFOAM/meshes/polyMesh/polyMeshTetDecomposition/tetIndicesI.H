@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -69,20 +69,18 @@ inline Foam::triFace Foam::tetIndices::faceTriIs(const polyMesh& mesh) const
 
     if (faceBasePtI < 0)
     {
-        faceBasePtI = 0;
-        if (nWarnings < maxNWarnings)
+        static label badFacei = -1;
+
+        if (badFacei != face())
         {
             WarningInFunction
                 << "No base point for face " << face() << ", " << f
                 << ", produces a valid tet decomposition." << endl;
-            ++ nWarnings;
+
+            badFacei = face();
         }
-        if (nWarnings == maxNWarnings)
-        {
-            Warning
-                << "Suppressing any further warnings." << endl;
-            ++ nWarnings;
-        }
+
+        faceBasePtI = 0;
     }
 
     label facePtI = (tetPt() + faceBasePtI) % f.size();

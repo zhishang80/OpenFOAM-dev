@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2018-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -37,7 +37,7 @@ namespace Foam
 
 Foam::pimpleControl::pimpleControl(fvMesh& mesh, const word& algorithmName)
 :
-    pimpleNoLoopControl(mesh, algorithmName),
+    pimpleNoLoopControl(mesh, algorithmName, *this),
     pimpleLoop(static_cast<solutionControl&>(*this))
 {
     read();
@@ -48,11 +48,19 @@ Foam::pimpleControl::pimpleControl(fvMesh& mesh, const word& algorithmName)
     {
         printCorrResidualControls(nCorrPimple_);
     }
-    else
+
+    Info<< nl << algorithmName << ": Operating solver in "
+        << (mesh.steady() ? "steady-state" : mesh.transient() ? "transient" :
+            "mixed steady-state/transient") << " mode with " << nCorrPimple_
+        << " outer corrector" << (nCorrPimple_ == 1 ? "" : "s") << nl;
+
+    if (nCorrPimple_ == 1)
     {
-        Info<< nl << algorithmName << ": Operating solver in PISO mode" << nl
-            << endl;
+        Info<< algorithmName << ": Operating solver in "
+            << (mesh.steady() ? "SIMPLE" : "PISO") << " mode" << nl;
     }
+
+    Info<< nl << endl;
 }
 
 
@@ -66,14 +74,7 @@ Foam::pimpleControl::~pimpleControl()
 
 bool Foam::pimpleControl::read()
 {
-    if (!pimpleNoLoopControl::read() || !pimpleLoop::read())
-    {
-        return false;
-    }
-
-    nCorrPimple_ = dict().lookupOrDefault<label>("nOuterCorrectors", 1);
-
-    return true;
+    return pimpleNoLoopControl::read() && pimpleLoop::read();
 }
 
 
@@ -83,17 +84,14 @@ bool Foam::pimpleControl::loop()
 
     if (!pimpleLoop::loop(*this))
     {
-        mesh().data::remove("finalIteration");
+        updateFinal();
 
         return false;
     }
 
     storePrevIterFields();
 
-    if (finalIter())
-    {
-        mesh().data::add("finalIteration", true);
-    }
+    updateFinal();
 
     return true;
 }

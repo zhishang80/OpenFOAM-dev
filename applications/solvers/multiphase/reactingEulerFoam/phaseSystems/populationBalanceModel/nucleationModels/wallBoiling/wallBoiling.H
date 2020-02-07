@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2018-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::diameterModels::nucleationModels::wall
+    Foam::diameterModels::nucleationModels::wallBoiling
 
 Description
     Wall-boiling model which requires a velocityGroup (i.e. phase) to be
@@ -60,7 +60,7 @@ class wallBoiling
 :
     public nucleationModel
 {
-    // Private data
+    // Private Data
 
         //- Velocity group in which the nucleation occurs
         const velocityGroup& velGroup_;

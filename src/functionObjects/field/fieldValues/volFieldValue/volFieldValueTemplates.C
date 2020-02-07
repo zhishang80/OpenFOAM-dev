@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -82,62 +82,63 @@ Type Foam::functionObjects::fieldValues::volFieldValue::processValues
     Type result = Zero;
     switch (operation_)
     {
-        case opSum:
+        case operationType::sum:
         {
             result = gSum(values);
             break;
         }
-        case opWeightedSum:
+        case operationType::weightedSum:
         {
             result = gSum(weightField*values);
             break;
         }
-        case opSumMag:
+        case operationType::sumMag:
         {
             result = gSum(cmptMag(values));
             break;
         }
-        case opAverage:
+        case operationType::average:
         {
             result = gSum(values)/nCells();
             break;
         }
-        case opWeightedAverage:
+        case operationType::weightedAverage:
         {
-            result = gSum(weightField*values)/gSum(weightField);
+            result = gSum(weightField*values)/max(gSum(weightField), vSmall);
             break;
         }
-        case opVolAverage:
+        case operationType::volAverage:
         {
             result = gSum(V*values)/this->V();
             break;
         }
-        case opWeightedVolAverage:
+        case operationType::weightedVolAverage:
         {
-            result = gSum(weightField*V*values)/gSum(weightField*V);
+            result =
+                gSum(weightField*V*values)/max(gSum(weightField*V), vSmall);
             break;
         }
-        case opVolIntegrate:
+        case operationType::volIntegrate:
         {
             result = gSum(V*values);
             break;
         }
-        case opWeightedVolIntegrate:
+        case operationType::weightedVolIntegrate:
         {
             result = gSum(weightField*V*values);
             break;
         }
-        case opMin:
+        case operationType::min:
         {
             result = gMin(values);
             break;
         }
-        case opMax:
+        case operationType::max:
         {
             result = gMax(values);
             break;
         }
-        case opCoV:
+        case operationType::CoV:
         {
             Type meanValue = gSum(values*V)/this->V();
 
@@ -154,7 +155,7 @@ Type Foam::functionObjects::fieldValues::volFieldValue::processValues
 
             break;
         }
-        case opNone:
+        case operationType::none:
         {}
     }
 
@@ -203,7 +204,7 @@ bool Foam::functionObjects::fieldValues::volFieldValue::writeValues
                         IOobject::NO_READ,
                         IOobject::NO_WRITE
                     ),
-                    weightField*values
+                    (weightField*values).ref()
                 ).write();
             }
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -132,10 +132,10 @@ Foam::autoPtr<Foam::fvMesh> Foam::loadOrCreateMesh
         fvMesh dummyMesh
         (
             noReadIO,
-            xferCopy(pointField()),
-            xferCopy(faceList()),
-            xferCopy(labelList()),
-            xferCopy(labelList()),
+            pointField(),
+            faceList(),
+            labelList(),
+            labelList(),
             false
         );
 
@@ -209,14 +209,11 @@ Foam::autoPtr<Foam::fvMesh> Foam::loadOrCreateMesh
             )
         );
         dummyMesh.addZones(pz, fz, cz);
-        //Pout<< "Writing dummy mesh to " << dummyMesh.polyMesh::objectPath()
-        //    << endl;
         dummyMesh.write();
 
         Pstream::parRun() = oldParRun;
     }
 
-    //Pout<< "Reading mesh from " << io.objectPath() << endl;
     autoPtr<fvMesh> meshPtr(new fvMesh(io));
     fvMesh& mesh = meshPtr();
 
@@ -334,7 +331,7 @@ Foam::autoPtr<Foam::fvMesh> Foam::loadOrCreateMesh
     {
         // We created a dummy mesh file above. Delete it.
         const fileName meshFiles = io.time().path()/io.instance()/meshSubDir;
-        //Pout<< "Removing dummy mesh " << meshFiles << endl;
+        // Pout<< "Removing dummy mesh " << meshFiles << endl;
         mesh.removeFiles();
         rmDir(meshFiles);
     }

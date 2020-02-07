@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -65,21 +65,11 @@ Foam::tmp<Foam::volScalarField> Foam::functionObjects::scalarTransport::D
 
     if (constantD_)
     {
-        return tmp<volScalarField>
+        return volScalarField::New
         (
-            new volScalarField
-            (
-                IOobject
-                (
-                    Dname,
-                    mesh_.time().timeName(),
-                    mesh_.time(),
-                    IOobject::NO_READ,
-                    IOobject::NO_WRITE
-                ),
-                mesh_,
-                dimensionedScalar(Dname, phi.dimensions()/dimLength, D_)
-            )
+            Dname,
+            mesh_,
+            dimensionedScalar(Dname, phi.dimensions()/dimLength, D_)
         );
     }
     else if (mesh_.foundObject<icoModel>(turbulenceModel::propertiesName))
@@ -102,21 +92,11 @@ Foam::tmp<Foam::volScalarField> Foam::functionObjects::scalarTransport::D
     }
     else
     {
-        return tmp<volScalarField>
+        return volScalarField::New
         (
-            new volScalarField
-            (
-                IOobject
-                (
-                    Dname,
-                    mesh_.time().timeName(),
-                    mesh_.time(),
-                    IOobject::NO_READ,
-                    IOobject::NO_WRITE
-                ),
-                mesh_,
-                dimensionedScalar(Dname, phi.dimensions()/dimLength, 0.0)
-            )
+            Dname,
+            mesh_,
+            dimensionedScalar(Dname, phi.dimensions()/dimLength, 0)
         );
     }
 }
@@ -192,7 +172,7 @@ bool Foam::functionObjects::scalarTransport::execute()
         mesh_.lookupObject<surfaceScalarField>(phiName_);
 
     // Calculate the diffusivity
-    volScalarField D(this->D(phi));
+    volScalarField D("D" + s_.name(), this->D(phi));
 
     word divScheme("div(phi," + schemesField_ + ")");
     word laplacianScheme("laplacian(" + D.name() + "," + schemesField_ + ")");
@@ -209,7 +189,7 @@ bool Foam::functionObjects::scalarTransport::execute()
         const volScalarField& rho =
             mesh_.lookupObject<volScalarField>(rhoName_);
 
-        for (label i = 0; i <= nCorr_; i++)
+        for (int i=0; i<=nCorr_; i++)
         {
             fvScalarMatrix sEqn
             (
@@ -224,12 +204,12 @@ bool Foam::functionObjects::scalarTransport::execute()
 
             fvOptions_.constrain(sEqn);
 
-            sEqn.solve(mesh_.solverDict(schemesField_));
+            sEqn.solve(schemesField_);
         }
     }
     else if (phi.dimensions() == dimVolume/dimTime)
     {
-        for (label i = 0; i <= nCorr_; i++)
+        for (int i=0; i<=nCorr_; i++)
         {
             fvScalarMatrix sEqn
             (
@@ -244,7 +224,7 @@ bool Foam::functionObjects::scalarTransport::execute()
 
             fvOptions_.constrain(sEqn);
 
-            sEqn.solve(mesh_.solverDict(schemesField_));
+            sEqn.solve(schemesField_);
         }
     }
     else

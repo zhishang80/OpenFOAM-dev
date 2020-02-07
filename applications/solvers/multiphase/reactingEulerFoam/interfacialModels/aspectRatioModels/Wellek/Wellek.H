@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -29,17 +29,16 @@ Description
 
     References:
     \verbatim
-        "Implementation and Comparison of Correlations for interfacial Forces
-         in a Gas-Liquid System within an Euler-Euler Framework"
-        Otromke, M.,
-        PhD Thesis, April 2013
+        Otromke, M. (2013).
+        Implementation and Comparison of Correlations for interfacial Forces in
+        a Gas-Liquid System within an Euler-Euler Framework.
+        PhD Thesis.
     \endverbatim
 
     \verbatim
-        "Shape of liquid drops moving in liquid media"
-        Wellek, R.M., Agrawal, A.K., Skelland, A.H.P.,
-        International Journal of Multiphase Flow
-        Volume 12, Issue 5, September 1966, pp. 854-862
+        Wellek, R. M., Agrawal, A. K., & Skelland, A. H. P. (1966).
+        Shape of liquid drops moving in liquid media.
+        AIChE Journal, 12(5), 854-862.
     \endverbatim
 
 SourceFiles

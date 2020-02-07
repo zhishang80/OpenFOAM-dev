@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,12 +24,9 @@ License
 Class
     Foam::functionObjects::yPlus
 
-Group
-    grpFieldFunctionObjects
-
 Description
     Evaluates and outputs turbulence y+ for models. Values written to
-    time directories as field 'yPlus'.
+    time directories as field 'yPlus' or 'yPlus.phase'.
 
     Example of function object specification:
     \verbatim
@@ -45,6 +42,7 @@ Usage
     \table
         Property | Description                | Required   | Default value
         type     | type name: yPlus           | yes        |
+        phase    | phase name                 | no         | none
     \endtable
 
 Note
@@ -92,23 +90,26 @@ class yPlus
     public logFiles,
     public writeLocalObjects
 {
+protected:
+
+    // Protected data
+
+        //- Optional phase name
+        word phaseName_;
+
+
+private:
+
     // Private Member Functions
 
         //- File header information
         virtual void writeFileHeader(const label i);
 
         //- Calculate y+
-        void calcYPlus
+        tmp<volScalarField> calcYPlus
         (
-            const turbulenceModel& turbModel,
-            volScalarField& yPlus
+            const turbulenceModel& turbModel
         );
-
-        //- Disallow default bitwise copy construct
-        yPlus(const yPlus&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const yPlus&);
 
 
 public:
@@ -127,6 +128,9 @@ public:
             const dictionary& dict
         );
 
+        //- Disallow default bitwise copy construction
+        yPlus(const yPlus&) = delete;
+
 
     //- Destructor
     virtual ~yPlus();
@@ -142,6 +146,12 @@ public:
 
         //- Write the yPlus field
         virtual bool write();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const yPlus&) = delete;
 };
 
 

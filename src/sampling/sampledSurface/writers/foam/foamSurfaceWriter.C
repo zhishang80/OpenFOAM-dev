@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,10 +24,8 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "foamSurfaceWriter.H"
-
 #include "OFstream.H"
 #include "OSspecific.H"
-
 #include "makeSurfaceWriterMethods.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -41,7 +39,7 @@ namespace Foam
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
 template<class Type>
-void Foam::foamSurfaceWriter::writeTemplate
+void Foam::foamSurfaceWriter::Write
 (
     const fileName& outputDir,
     const fileName& surfaceName,
@@ -49,43 +47,44 @@ void Foam::foamSurfaceWriter::writeTemplate
     const faceList& faces,
     const word& fieldName,
     const Field<Type>& values,
-    const bool isNodeValues,
-    const bool verbose
+    const bool isNodeValues
 ) const
 {
-    fileName surfaceDir(outputDir/surfaceName);
+    const fileName surfaceDir(outputDir/surfaceName);
 
     if (!isDir(surfaceDir))
     {
         mkDir(surfaceDir);
     }
 
-    if (verbose)
+    if (debug)
     {
         Info<< "Writing field " << fieldName << " to " << surfaceDir << endl;
     }
 
-    // geometry should already have been written
+    // Geometry should already have been written
     // Values to separate directory (e.g. "scalarField/p")
 
-    fileName foamName(pTraits<Type>::typeName);
-    fileName valuesDir(surfaceDir  / (foamName + Field<Type>::typeName));
+    const fileName foamName(pTraits<Type>::typeName);
+    const fileName valuesDir(surfaceDir/(foamName + Field<Type>::typeName));
 
     if (!isDir(valuesDir))
     {
         mkDir(valuesDir);
     }
 
-    // values
-    OFstream(valuesDir/fieldName)()  << values;
+    OFstream(valuesDir/fieldName, writeFormat_)()  << values;
 }
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::foamSurfaceWriter::foamSurfaceWriter()
+Foam::foamSurfaceWriter::foamSurfaceWriter
+(
+    const IOstream::streamFormat writeFormat
+)
 :
-    surfaceWriter()
+    surfaceWriter(writeFormat)
 {}
 
 
@@ -102,39 +101,37 @@ void Foam::foamSurfaceWriter::write
     const fileName& outputDir,
     const fileName& surfaceName,
     const pointField& points,
-    const faceList& faces,
-    const bool verbose
+    const faceList& faces
 ) const
 {
-    fileName surfaceDir(outputDir/surfaceName);
+    const fileName surfaceDir(outputDir/surfaceName);
 
     if (!isDir(surfaceDir))
     {
         mkDir(surfaceDir);
     }
 
-    if (verbose)
+    if (debug)
     {
         Info<< "Writing geometry to " << surfaceDir << endl;
     }
 
-
     // Points
-    OFstream(surfaceDir/"points")() << points;
+    OFstream(surfaceDir/"points", writeFormat_)() << points;
 
     // Faces
-    OFstream(surfaceDir/"faces")() << faces;
+    OFstream(surfaceDir/"faces", writeFormat_)() << faces;
 
     // Face centers. Not really necessary but very handy when reusing as inputs
     // for e.g. timeVaryingMapped bc.
-    pointField faceCentres(faces.size(),point::zero);
+    pointField faceCentres(faces.size(), Zero);
 
     forAll(faces, facei)
     {
         faceCentres[facei] = faces[facei].centre(points);
     }
 
-    OFstream(surfaceDir/"faceCentres")() << faceCentres;
+    OFstream(surfaceDir/"faceCentres", writeFormat_)() << faceCentres;
 }
 
 

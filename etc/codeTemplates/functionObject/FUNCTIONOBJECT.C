@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
+   \\    /   O peration     | Website:  https://openfoam.org
     \\  /    A nd           | Copyright (C) YEAR OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
@@ -51,8 +51,8 @@ Foam::functionObjects::FUNCTIONOBJECT::FUNCTIONOBJECT
 :
     fvMeshFunctionObject(name, runTime, dict),
     wordData_(dict.lookupOrDefault<word>("wordData", "defaultWord")),
-    scalarData_(readScalar(dict.lookup("scalarData"))),
-    labelData_(readLabel(dict.lookup("labelData")))
+    scalarData_(dict.lookup<scalar>("scalarData")),
+    labelData_(dict.lookup<label>("labelData"))
 {
     read(dict);
 }

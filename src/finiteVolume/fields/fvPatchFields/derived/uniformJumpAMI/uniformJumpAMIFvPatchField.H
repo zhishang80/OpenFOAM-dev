@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::uniformJumpAMIFvPatchField
-
-Group
-    grpCoupledBoundaryConditions
 
 Description
     This boundary condition provides a jump condition, using the \c cyclicAMI
@@ -60,7 +57,7 @@ Note
 
 See also
     Foam::jumpCyclicAMIFvPatchField
-    Foam::Function1Types
+    Foam::Function1s
 
 SourceFiles
     uniformJumpAMIFvPatchField.C
@@ -128,7 +125,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         uniformJumpAMIFvPatchField
         (
             const uniformJumpAMIFvPatchField<Type>&
@@ -143,7 +140,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         uniformJumpAMIFvPatchField
         (
             const uniformJumpAMIFvPatchField<Type>&,
@@ -163,7 +160,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         //- Update the coefficients
         virtual void updateCoeffs();

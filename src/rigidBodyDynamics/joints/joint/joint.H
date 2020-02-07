@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -66,6 +66,7 @@ namespace RBD
 
 // Forward declaration of classes
 class rigidBodyModel;
+class rigidBodyModelState;
 
 // Forward declaration of friend functions and operators
 class joint;
@@ -84,19 +85,22 @@ protected:
 
     // Protected data
 
-    //- Joint motion sub-space
-    List<spatialVector> S_;
+        //- Reference to the model
+        const rigidBodyModel& model_;
 
-    //- Index of this joint in the rigidBodyModel
-    label index_;
+        //- Joint motion sub-space
+        List<spatialVector> S_;
 
-    //- Index of this joints data in the rigidBodyModel state
-    label qIndex_;
+        //- Index of this joint in the rigidBodyModel
+        label index_;
+
+        //- Index of this joints data in the rigidBodyModel state
+        label qIndex_;
 
 
 private:
 
-    // Private member functions to be used by rigidBodyModel
+    // Private Member Functions to be used by rigidBodyModel
 
         //- Allow the rigidBodyModel to set the index for this joint
         label& index()
@@ -160,8 +164,8 @@ public:
             autoPtr,
             joint,
             dictionary,
-            (const dictionary& dict),
-            (dict)
+            (const rigidBodyModel& model, const dictionary& dict),
+            (model, dict)
         );
 
 
@@ -169,7 +173,10 @@ public:
 
         //- Construct joint setting the size of the motion sub-space
         //  to the given degrees of freedom of the joint
-        inline joint(const label nDoF);
+        inline joint(const rigidBodyModel& model, const label nDoF);
+
+        //- Copy constructor
+        joint(const joint&) = default;
 
         //- Clone this joint (needed by PtrList)
         virtual autoPtr<joint> clone() const = 0;
@@ -177,9 +184,13 @@ public:
         class iNew
         {
 
+            const rigidBodyModel& model_;
+
         public:
 
-            iNew()
+            iNew(const rigidBodyModel& model)
+            :
+                model_(model)
             {}
 
             inline autoPtr<joint> operator()(Istream& is) const;
@@ -196,7 +207,11 @@ public:
         static autoPtr<joint> New(joint* jointPtr);
 
         //- Select from dictionary
-        static autoPtr<joint> New(const dictionary& dict);
+        static autoPtr<joint> New
+        (
+            const rigidBodyModel& model,
+            const dictionary& dict
+        );
 
 
     // Member Functions
@@ -222,8 +237,7 @@ public:
         virtual void jcalc
         (
             XSvc& J,
-            const scalarField& q,
-            const scalarField& qDot
+            const rigidBodyModelState& state
         ) const = 0;
 
         //- Write
@@ -231,6 +245,9 @@ public:
 
 
     // Member Operators
+
+        //- Assignment
+        inline void operator=(const joint& j);
 
         //- Return the unit quaternion for this joint
         //  if it uses a quaternion representation for rotation

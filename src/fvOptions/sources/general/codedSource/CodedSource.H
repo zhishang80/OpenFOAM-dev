@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::fv::codedSource
+    Foam::fv::CodedSource
 
 Description
    Constructs on-the-fly fvOption source
@@ -89,15 +89,6 @@ Usage
             #{
                 Pout<< "**codeSetValue**" << endl;
             #};
-
-            // Dummy entry. Make dependent on above to trigger recompilation
-            code
-            #{
-                $codeInclude
-                $codeCorrect
-                $codeAddSup
-                $codeSetValue
-            #};
         }
 
         sourceTimeCoeffs
@@ -136,16 +127,18 @@ class CodedSource
     public cellSetOption,
     public codedBase
 {
-
 protected:
+
+    // Protected static data
+
+        //- The keywords associated with source code
+        static const wordList codeKeys_;
+
 
     // Protected data
 
+        //- The name
         word name_;
-
-        string codeCorrect_;
-        string codeAddSup_;
-        string codeSetValue_;
 
         //- Underlying functionObject
         mutable autoPtr<option> redirectFvOptionPtr_;
@@ -153,20 +146,26 @@ protected:
 
     // Protected Member Functions
 
-        //- Get the loaded dynamic libraries
-        virtual dlLibraryTable& libs() const;
-
         //- Adapt the context for the current object
         virtual void prepare(dynamicCode&, const dynamicCodeContext&) const;
 
-        // Return a description (type + name) for the output
+        //- Name of the dynamically generated CodedType
+        virtual const word& codeName() const
+        {
+            return name_;
+        }
+
+        //- Return a description (type + name) for the output
         virtual string description() const;
 
-        // Clear any redirected objects
+        //- Clear any redirected objects
         virtual void clearRedirect() const;
 
-        // Get the dictionary to initialize the codeContext
+        //- Get the dictionary to initialize the codeContext
         virtual const dictionary& codeDict() const;
+
+        //- Get the keywords associated with source code
+        virtual const wordList& codeKeys() const;
 
 
 public:

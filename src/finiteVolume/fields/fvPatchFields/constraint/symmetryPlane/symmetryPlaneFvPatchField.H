@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::symmetryPlaneFvPatchField
-
-Group
-    grpConstraintBoundaryConditions
 
 Description
     This boundary condition enforces a symmetryPlane constraint
@@ -67,7 +64,7 @@ class symmetryPlaneFvPatchField
 :
     public basicSymmetryFvPatchField<Type>
 {
-    // Private data
+    // Private Data
 
         //- Local reference cast into the symmetryPlane patch
         const symmetryPlaneFvPatch& symmetryPlanePatch_;
@@ -106,7 +103,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         symmetryPlaneFvPatchField
         (
             const symmetryPlaneFvPatchField<Type>&
@@ -121,7 +118,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         symmetryPlaneFvPatchField
         (
             const symmetryPlaneFvPatchField<Type>&,
@@ -141,7 +138,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         //- Return gradient at boundary
         virtual tmp<Field<Type>> snGrad() const;

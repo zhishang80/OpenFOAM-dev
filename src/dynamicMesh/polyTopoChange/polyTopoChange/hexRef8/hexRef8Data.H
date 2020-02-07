@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -60,7 +60,7 @@ class hexRef8Data
 
 private:
 
-    // Private data
+    // Private Data
 
         autoPtr<labelIOList> cellLevelPtr_;
 
@@ -69,15 +69,6 @@ private:
         autoPtr<uniformDimensionedScalarField> level0EdgePtr_;
 
         autoPtr<refinementHistory> refHistoryPtr_;
-
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        hexRef8Data(const hexRef8Data&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const hexRef8Data&);
 
 
 public:
@@ -106,6 +97,9 @@ public:
             const UPtrList<const hexRef8Data>&
         );
 
+        //- Disallow default bitwise copy construction
+        hexRef8Data(const hexRef8Data&) = delete;
+
 
     //- Destructor
     ~hexRef8Data();
@@ -125,6 +119,12 @@ public:
 
         //- Write
         bool write() const;
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const hexRef8Data&) = delete;
 };
 
 

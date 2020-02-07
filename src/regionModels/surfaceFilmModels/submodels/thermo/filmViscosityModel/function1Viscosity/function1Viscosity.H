@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -56,13 +56,13 @@ class function1Viscosity
 :
     public filmViscosityModel
 {
-    // Private member functions
+    // Private Member Functions
 
-        //- Disallow default bitwise copy construct
-        function1Viscosity(const function1Viscosity&);
+        //- Disallow default bitwise copy construction
+        function1Viscosity(const function1Viscosity&) = delete;
 
         //- Disallow default bitwise assignment
-        void operator=(const function1Viscosity&);
+        void operator=(const function1Viscosity&) = delete;
 
 
 protected:

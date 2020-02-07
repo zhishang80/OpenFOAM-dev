@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -47,30 +47,15 @@ namespace Foam
              Class NonEquilibriumReversibleReaction Declaration
 \*---------------------------------------------------------------------------*/
 
-template
-<
-    template<class> class ReactionType,
-    class ReactionThermo,
-    class ReactionRate
->
+template<class ReactionThermo, class ReactionRate>
 class NonEquilibriumReversibleReaction
 :
-    public ReactionType<ReactionThermo>
+    public Reaction<ReactionThermo>
 {
-    // Private data
+    // Private Data
 
         ReactionRate fk_;
         ReactionRate rk_;
-
-
-    // Private Member Functions
-
-        //- Disallow default bitwise assignment
-        void operator=
-        (
-            const NonEquilibriumReversibleReaction
-                <ReactionType, ReactionThermo, ReactionRate>&
-        );
 
 
 public:
@@ -84,7 +69,7 @@ public:
         //- Construct from components
         NonEquilibriumReversibleReaction
         (
-            const ReactionType<ReactionThermo>& reaction,
+            const Reaction<ReactionThermo>& reaction,
             const ReactionRate& forwardReactionRate,
             const ReactionRate& reverseReactionRate
         );
@@ -93,7 +78,10 @@ public:
         NonEquilibriumReversibleReaction
         (
             const NonEquilibriumReversibleReaction
-                <ReactionType, ReactionThermo, ReactionRate>&,
+            <
+                ReactionThermo,
+                ReactionRate
+            >&,
             const speciesTable& species
         );
 
@@ -105,27 +93,45 @@ public:
             const dictionary& dict
         );
 
+        //- Construct from objectRegistry and dictionary
+        NonEquilibriumReversibleReaction
+        (
+            const speciesTable& species,
+            const HashPtrTable<ReactionThermo>& thermoDatabase,
+            const objectRegistry& ob,
+            const dictionary& dict
+        );
+
         //- Construct and return a clone
-        virtual autoPtr<ReactionType<ReactionThermo>> clone() const
+        virtual autoPtr<Reaction<ReactionThermo>> clone() const
         {
-            return autoPtr<ReactionType<ReactionThermo>>
+            return autoPtr<Reaction<ReactionThermo>>
             (
                 new NonEquilibriumReversibleReaction
-                    <ReactionType, ReactionThermo, ReactionRate>(*this)
+                <
+                    ReactionThermo,
+                    ReactionRate
+                >(*this)
             );
         }
 
         //- Construct and return a clone with new speciesTable
-        virtual autoPtr<ReactionType<ReactionThermo>> clone
+        virtual autoPtr<Reaction<ReactionThermo>> clone
         (
             const speciesTable& species
         ) const
         {
-            return autoPtr<ReactionType<ReactionThermo>>
+            return autoPtr<Reaction<ReactionThermo>>
             (
                 new NonEquilibriumReversibleReaction
-                    <ReactionType, ReactionThermo, ReactionRate>
-                    (*this, species)
+                <
+                    ReactionThermo,
+                    ReactionRate
+                >
+                (
+                    *this,
+                    species
+                )
             );
         }
 
@@ -144,7 +150,8 @@ public:
             (
                 const scalar p,
                 const scalar T,
-                const scalarField& c
+                const scalarField& c,
+                const label li
             ) const;
 
             //- Reverse rate constant from the given formard rate constant
@@ -153,7 +160,8 @@ public:
                 const scalar kfwd,
                 const scalar p,
                 const scalar T,
-                const scalarField& c
+                const scalarField& c,
+                const label li
             ) const;
 
             //- Reverse rate constant.
@@ -163,12 +171,75 @@ public:
             (
                 const scalar p,
                 const scalar T,
-                const scalarField& c
+                const scalarField& c,
+                const label li
+            ) const;
+
+
+        // ReversibleReaction Jacobian functions
+
+            //- Temperature derivative of forward rate
+            virtual scalar dkfdT
+            (
+                const scalar p,
+                const scalar T,
+                const scalarField& c,
+                const label li
+            ) const;
+
+            //- Temperature derivative of backward rate
+            virtual scalar dkrdT
+            (
+                const scalar p,
+                const scalar T,
+                const scalarField& c,
+                const label li,
+                const scalar dkfdT,
+                const scalar kr
+            ) const;
+
+            //- Third-body efficiencies (beta = 1-alpha)
+            //  non-empty only for third-body reactions
+            //  with enhanced molecularity (alpha != 1)
+            virtual const List<Tuple2<label, scalar>>& beta() const;
+
+            //- Species concentration derivative of the pressure dependent term
+            //  By default this value is 1 as it multiplies the third-body term
+            virtual void dcidc
+            (
+                const scalar p,
+                const scalar T,
+                const scalarField& c,
+                const label li,
+                scalarField& dcidc
+            ) const;
+
+            //- Temperature derivative of the pressure dependent term
+            //  By default this value is 0 since ddT of molecularity is approx.0
+            virtual scalar dcidT
+            (
+                const scalar p,
+                const scalar T,
+                const scalarField& c,
+                const label li
             ) const;
 
 
         //- Write
         virtual void write(Ostream&) const;
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=
+        (
+            const NonEquilibriumReversibleReaction
+            <
+                ReactionThermo,
+                ReactionRate
+            >&
+        ) = delete;
 };
 
 

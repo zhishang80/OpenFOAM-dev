@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::vanDriestDelta
+    Foam::LESModels::vanDriestDelta
 
 Description
     Apply van Driest damping function to the specified geometric delta to
@@ -53,7 +53,7 @@ class vanDriestDelta
 :
     public LESdelta
 {
-    // Private data
+    // Private Data
 
         autoPtr<LESdelta> geometricDelta_;
         scalar kappa_;
@@ -63,10 +63,6 @@ class vanDriestDelta
 
 
     // Private Member Functions
-
-        //- Disallow default bitwise copy construct and assignment
-        vanDriestDelta(const vanDriestDelta&);
-        void operator=(const vanDriestDelta&);
 
         // Calculate the delta values
         void calcDelta();
@@ -88,6 +84,9 @@ public:
             const dictionary&
         );
 
+        //- Disallow default bitwise copy construction
+        vanDriestDelta(const vanDriestDelta&) = delete;
+
 
     //- Destructor
     virtual ~vanDriestDelta()
@@ -101,6 +100,12 @@ public:
 
         // Correct values
         virtual void correct();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const vanDriestDelta&) = delete;
 };
 
 

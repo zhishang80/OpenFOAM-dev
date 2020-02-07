@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -48,15 +48,6 @@ namespace Foam
 
 class DSMCBaseCloud
 {
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        DSMCBaseCloud(const DSMCBaseCloud&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const DSMCBaseCloud&);
-
-
 public:
 
     //- Runtime type information
@@ -67,8 +58,18 @@ public:
         //- Null constructor
         DSMCBaseCloud();
 
+        //- Disallow default bitwise copy construction
+        DSMCBaseCloud(const DSMCBaseCloud&) = delete;
+
+
     //- Destructor
     virtual ~DSMCBaseCloud();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const DSMCBaseCloud&) = delete;
 };
 
 

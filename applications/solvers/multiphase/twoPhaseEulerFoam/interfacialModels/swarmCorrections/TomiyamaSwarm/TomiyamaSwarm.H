@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::TomiyamaSwarm
+    Foam::swarmCorrections::TomiyamaSwarm
 
 Description
     Swarm correction of Tomiyama et al.
@@ -61,7 +61,7 @@ class TomiyamaSwarm
 :
     public swarmCorrection
 {
-    // Private data
+    // Private Data
 
         //- Residual phase fraction
         const dimensionedScalar residualAlpha_;

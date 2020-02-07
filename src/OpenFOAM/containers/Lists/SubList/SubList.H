@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -81,8 +81,11 @@ public:
             const label startIndex
         );
 
+        //- Copy constructor
+        inline SubList(const SubList<T>& sl) = default;
 
-    // Member operators
+
+    // Member Operators
 
         //- Allow cast to a const List<T>&
         inline operator const Foam::List<T>&() const;

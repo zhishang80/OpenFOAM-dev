@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,6 +24,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "thermo.H"
+#include "IOmanip.H"
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
@@ -40,13 +41,14 @@ inline Foam::species::thermo<Thermo, Type>::thermo
 template<class Thermo, template<class> class Type>
 inline Foam::scalar Foam::species::thermo<Thermo, Type>::T
 (
-    scalar f,
-    scalar p,
-    scalar T0,
+    const scalar f,
+    const scalar p,
+    const scalar T0,
     scalar (thermo<Thermo, Type>::*F)(const scalar, const scalar) const,
     scalar (thermo<Thermo, Type>::*dFdT)(const scalar, const scalar)
         const,
-    scalar (thermo<Thermo, Type>::*limit)(const scalar) const
+    scalar (thermo<Thermo, Type>::*limit)(const scalar) const,
+    const bool diagnostics
 ) const
 {
     if (T0 < 0)
@@ -61,6 +63,20 @@ inline Foam::scalar Foam::species::thermo<Thermo, Type>::T
     scalar Ttol = T0*tol_;
     int    iter = 0;
 
+    if (diagnostics)
+    {
+        const unsigned int width = IOstream::defaultPrecision() + 8;
+
+        InfoInFunction
+            << "Energy -> temperature conversion failed to converge:" << endl;
+        Pout<< setw(width) << "iter"
+            << setw(width) << "Test"
+            << setw(width) << "e/h"
+            << setw(width) << "Cv/p"
+            << setw(width) << "Tnew"
+            << endl;
+    }
+
     do
     {
         Test = Tnew;
@@ -68,8 +84,25 @@ inline Foam::scalar Foam::species::thermo<Thermo, Type>::T
             (this->*limit)
             (Test - ((this->*F)(p, Test) - f)/(this->*dFdT)(p, Test));
 
+        if (diagnostics)
+        {
+            const unsigned int width = IOstream::defaultPrecision() + 8;
+
+            Pout<< setw(width) << iter
+                << setw(width) << Test
+                << setw(width) << ((this->*F)(p, Test))
+                << setw(width) << ((this->*dFdT)(p, Test))
+                << setw(width) << Tnew
+                << endl;
+        }
+
         if (iter++ > maxIter_)
         {
+            if (!diagnostics)
+            {
+                T(f, p, T0, F, dFdT, limit, true);
+            }
+
             FatalErrorInFunction
                 << "Maximum number of iterations exceeded: " << maxIter_
                 << abort(FatalError);
@@ -101,14 +134,6 @@ inline Foam::word
 Foam::species::thermo<Thermo, Type>::heName()
 {
     return Type<thermo<Thermo, Type>>::energyName();
-}
-
-
-template<class Thermo, template<class> class Type>
-inline Foam::scalar
-Foam::species::thermo<Thermo, Type>::Cv(const scalar p, const scalar T) const
-{
-    return this->Cp(p, T) - this->CpMCv(p, T);
 }
 
 
@@ -146,22 +171,6 @@ inline Foam::scalar
 Foam::species::thermo<Thermo, Type>::HE(const scalar p, const scalar T) const
 {
     return Type<thermo<Thermo, Type>>::HE(*this, p, T);
-}
-
-
-template<class Thermo, template<class> class Type>
-inline Foam::scalar
-Foam::species::thermo<Thermo, Type>::Es(const scalar p, const scalar T) const
-{
-    return this->Hs(p, T) - p/this->rho(p, T);
-}
-
-
-template<class Thermo, template<class> class Type>
-inline Foam::scalar
-Foam::species::thermo<Thermo, Type>::Ea(const scalar p, const scalar T) const
-{
-    return this->Ha(p, T) - p/this->rho(p, T);
 }
 
 
@@ -273,7 +282,7 @@ template<class Thermo, template<class> class Type>
 inline Foam::scalar
 Foam::species::thermo<Thermo, Type>::K(const scalar p, const scalar T) const
 {
-    scalar arg = -this->Y()*this->G(Pstd, T)/(RR*T);
+    scalar arg = -this->Y()*this->Gstd(T)/(RR*T);
 
     if (arg < 600)
     {
@@ -441,6 +450,35 @@ inline Foam::scalar Foam::species::thermo<Thermo, Type>::TEa
         &thermo<Thermo, Type>::Cv,
         &thermo<Thermo, Type>::limit
     );
+}
+
+
+template<class Thermo, template<class> class Type>
+inline Foam::scalar
+Foam::species::thermo<Thermo, Type>::dKcdTbyKc
+(
+    const scalar p,
+    const scalar T
+) const
+{
+    const scalar nm = this->Y()/this->W();
+
+    if (equal(nm, small))
+    {
+        return -this->dGdT(Pstd, T)*this->Y()/RR;
+    }
+    else
+    {
+        return -(nm/T + this->dGdT(Pstd, T)*this->Y()/RR);
+    }
+}
+
+
+template<class Thermo, template<class> class Type>
+inline Foam::scalar
+Foam::species::thermo<Thermo, Type>::dcpdT(const scalar p, const scalar T) const
+{
+    return this->dCpdT(p, T)*this->W();;
 }
 
 

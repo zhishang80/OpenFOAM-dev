@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -115,9 +115,9 @@ public:
         // Access
 
             //- Return neighbour
-            virtual label neighbPatchID() const
+            virtual label nbrPatchID() const
             {
-                return regionCoupledBase_.neighbPatchID();
+                return regionCoupledBase_.nbrPatchID();
             }
 
             //- Is it the owner?
@@ -127,19 +127,19 @@ public:
             }
 
             //- Return regionCoupledBase neighb Patch
-            virtual const regionCoupledBaseFvPatch& neighbPatch() const
+            virtual const regionCoupledBaseFvPatch& nbrPatch() const
             {
                 return refCast<const regionCoupledBaseFvPatch>
                 (
                     nbrFvMesh().boundary()
                     [
-                        regionCoupledBase_.neighbPatchID()
+                        regionCoupledBase_.nbrPatchID()
                     ]
                 );
             }
 
             //- Return a reference to the AMI interpolator
-            virtual const AMIPatchToPatchInterpolation& AMI() const
+            virtual const AMIInterpolation& AMI() const
             {
                 return regionCoupledBase_.AMI();
             }
@@ -181,7 +181,7 @@ public:
                 (
                     nbrFvMesh().boundary()
                     [
-                        regionCoupledBase_.neighbPatchID()
+                        regionCoupledBase_.nbrPatchID()
                     ]
                 );
             }

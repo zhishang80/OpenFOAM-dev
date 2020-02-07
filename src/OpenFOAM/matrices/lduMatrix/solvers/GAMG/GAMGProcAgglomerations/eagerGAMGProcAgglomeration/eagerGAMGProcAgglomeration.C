@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -136,7 +136,7 @@ bool Foam::eagerGAMGProcAgglomeration::agglomerate()
                         )
                     );
 
-                    // Use procesor agglomeration maps to do the actual
+                    // Use processor agglomeration maps to do the actual
                     // collecting.
                     if (Pstream::myProcNo(levelComm) != -1)
                     {

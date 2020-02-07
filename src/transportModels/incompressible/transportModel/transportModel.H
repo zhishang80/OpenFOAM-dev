@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2013 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -51,15 +51,6 @@ namespace Foam
 
 class transportModel
 {
-    // Private Member Functions
-
-        //- Disallow copy construct
-        transportModel(const transportModel&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const transportModel&);
-
-
 public:
 
     //- Runtime type information
@@ -71,6 +62,9 @@ public:
         //- Construct from components
         transportModel
         ();
+
+        //- Disallow default bitwise copy construction
+        transportModel(const transportModel&);
 
 
     //- Destructor
@@ -90,6 +84,12 @@ public:
 
         //- Read transportProperties dictionary
         virtual bool read() = 0;
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const transportModel&) = delete;
 };
 
 

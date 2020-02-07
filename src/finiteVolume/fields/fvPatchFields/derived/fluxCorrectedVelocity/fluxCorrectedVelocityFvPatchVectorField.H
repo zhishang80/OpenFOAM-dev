@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,9 +24,6 @@ License
 Class
     Foam::fluxCorrectedVelocityFvPatchVectorField
 
-Group
-    grpOutletBoundaryConditions
-
 Description
     This boundary condition provides a velocity outlet boundary condition for
     patches where the pressure is specified.  The outflow velocity is obtained
@@ -42,8 +39,8 @@ Description
         U_p | velocity at the patch [m/s]
         U_c | velocity in cells adjacent to the patch [m/s]
         n   | patch normal vectors
-        \phi_p | flux at the patch [m3/s or kg/s]
-        S_f | patch face area vectors [m2]
+        \phi_p | flux at the patch [m^3/s or kg/s]
+        S_f | patch face area vectors [m^2]
     \endvartable
 
     where
@@ -96,7 +93,7 @@ class fluxCorrectedVelocityFvPatchVectorField
 :
     public zeroGradientFvPatchVectorField
 {
-    // Private data
+    // Private Data
 
         //- Name of flux field
         word phiName_;
@@ -167,7 +164,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         //- Evaluate the patch field
         virtual void evaluate

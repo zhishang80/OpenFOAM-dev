@@ -1,9 +1,9 @@
 /*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  dev                                   |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
-|    \\/     M anipulation  |                                                 |
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  dev
+     \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
@@ -30,7 +30,6 @@ steam
         d0              3e-3;
         p0              1e5;
     }
-    Sc              0.7;
 
     residualAlpha   1e-3;
 }
@@ -43,7 +42,6 @@ water
     {
         d               1e-4;
     }
-    Sc              0.7;
 
     residualAlpha   1e-3;
 }
@@ -66,13 +64,15 @@ surfaceTension
     }
 );
 
-saturationModel
-{
-    type constant;
-    pSat 1e5;
-    Tsat 372.76;
-};
-
+saturation
+(
+    (steam and water)
+    {
+        type constant;
+        pSat 1e5;
+        Tsat 372.76;
+    }
+);
 
 aspectRatio
 (
@@ -104,9 +104,6 @@ virtualMass
         Cvm             0.5;
     }
 );
-
-interfaceComposition
-();
 
 heatTransfer.steam
 (

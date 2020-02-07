@@ -1,8 +1,8 @@
-/*---------------------------------------------------------------------------* \
+/*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -86,14 +86,12 @@ class eConstThermo
 :
     public EquationOfState
 {
-    // Private data
+    // Private Data
 
-        //- Heat capacity at constant volume
-        //  Note: input in [J/(kg K)], but internally uses [J/(kmol K)]
+        //- Heat capacity at constant volume [J/kg/K]
         scalar Cv_;
 
-        //- Heat of formation
-        //  Note: input in [J/kg], but internally uses [J/kmol]
+        //- Heat of formation [J/kg]
         scalar Hf_;
 
 
@@ -139,20 +137,34 @@ public:
 
         // Fundamental properties
 
-            //- Heat capacity at constant pressure [J/(kg K)]
-            inline scalar Cp(const scalar p, const scalar T) const;
+            //- Heat capacity at constant volume [J/kg/K]
+            inline scalar Cv(const scalar p, const scalar T) const;
 
-            //- Absolute Enthalpy [J/kg]
-            inline scalar Ha(const scalar p, const scalar T) const;
+            //- Sensible internal energy [J/kg]
+            inline scalar Es(const scalar p, const scalar T) const;
 
-            //- Sensible enthalpy [J/kg]
-            inline scalar Hs(const scalar p, const scalar T) const;
+            //- Absolute internal energy [J/kg]
+            inline scalar Ea(const scalar p, const scalar T) const;
 
             //- Chemical enthalpy [J/kg]
             inline scalar Hc() const;
 
-            //- Entropy [J/(kg K)]
+            //- Entropy [J/kg/K]
             inline scalar S(const scalar p, const scalar T) const;
+
+            //- Gibbs free energy of the mixture in the standard state [J/kg]
+            inline scalar Gstd(const scalar T) const;
+
+            #include "EtoHthermo.H"
+
+
+        // Derivative term used for Jacobian
+
+            //- Derivative of Gibbs free energy w.r.t. temperature
+            inline scalar dGdT(const scalar p, const scalar T) const;
+
+            //- Temperature derivative of heat capacity at constant pressure
+            inline scalar dCpdT(const scalar p, const scalar T) const;
 
 
         // I-O
@@ -161,7 +173,7 @@ public:
             void write(Ostream& os) const;
 
 
-    // Member operators
+    // Member Operators
 
         inline void operator+=(const eConstThermo&);
 

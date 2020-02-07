@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::functionObjects::timeActivatedFileUpdate
-
-Group
-    grpUtilitiesFunctionObjects
 
 Description
     Performs a file copy/replacement once a specified time has been reached.
@@ -81,7 +78,7 @@ class timeActivatedFileUpdate
 :
     public functionObject
 {
-    // Private data
+    // Private Data
 
         //- Reference to Time
         const Time& time_;
@@ -101,11 +98,11 @@ class timeActivatedFileUpdate
         //- Update file
         void updateFile();
 
-        //- Disallow default bitwise copy construct
-        timeActivatedFileUpdate(const timeActivatedFileUpdate&);
+        //- Disallow default bitwise copy construction
+        timeActivatedFileUpdate(const timeActivatedFileUpdate&) = delete;
 
         //- Disallow default bitwise assignment
-        void operator=(const timeActivatedFileUpdate&);
+        void operator=(const timeActivatedFileUpdate&) = delete;
 
 
 public:

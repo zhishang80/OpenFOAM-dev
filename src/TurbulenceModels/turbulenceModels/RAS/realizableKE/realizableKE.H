@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::RASModels::realizableKE
-
-Group
-    grpRASTurbulence
 
 Description
     Realizable k-epsilon turbulence model for incompressible and compressible
@@ -82,6 +79,10 @@ class realizableKE
 :
     public eddyViscosity<RASModel<BasicTurbulenceModel>>
 {
+    // Private Member Functions
+
+        using IOobject::modelName;
+
 
 protected:
 
@@ -161,26 +162,20 @@ public:
         //- Return the effective diffusivity for k
         tmp<volScalarField> DkEff() const
         {
-            return tmp<volScalarField>
+            return volScalarField::New
             (
-                new volScalarField
-                (
-                    "DkEff",
-                    (this->nut_/sigmak_ + this->nu())
-                )
+                "DkEff",
+                (this->nut_/sigmak_ + this->nu())
             );
         }
 
         //- Return the effective diffusivity for epsilon
         tmp<volScalarField> DepsilonEff() const
         {
-            return tmp<volScalarField>
+            return volScalarField::New
             (
-                new volScalarField
-                (
-                    "DepsilonEff",
-                    (this->nut_/sigmaEps_ + this->nu())
-                )
+                "DepsilonEff",
+                (this->nut_/sigmaEps_ + this->nu())
             );
         }
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -57,8 +57,8 @@ SourceFiles
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef compressiblePDRkEpsilon_H
-#define compressiblePDRkEpsilon_H
+#ifndef compressible_PDRkEpsilon_H
+#define compressible_PDRkEpsilon_H
 
 #include "kEpsilon.H"
 #include "turbulentFluidThermoModel.H"
@@ -86,7 +86,7 @@ class PDRkEpsilon
         >
     >
 {
-    // Private data
+    // Private Data
 
         // Model coefficients
         dimensionedScalar C4_;

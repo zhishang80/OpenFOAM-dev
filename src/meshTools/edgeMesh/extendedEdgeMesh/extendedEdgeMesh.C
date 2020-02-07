@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -311,6 +311,30 @@ Foam::extendedEdgeMesh::extendedEdgeMesh(const extendedEdgeMesh& fem)
 {}
 
 
+Foam::extendedEdgeMesh::extendedEdgeMesh(extendedEdgeMesh&& fem)
+:
+    edgeMesh(move(fem)),
+    concaveStart_(fem.concaveStart()),
+    mixedStart_(fem.mixedStart()),
+    nonFeatureStart_(fem.nonFeatureStart()),
+    internalStart_(fem.internalStart()),
+    flatStart_(fem.flatStart()),
+    openStart_(fem.openStart()),
+    multipleStart_(fem.multipleStart()),
+    normals_(move(fem.normals())),
+    normalVolumeTypes_(move(fem.normalVolumeTypes())),
+    edgeDirections_(move(fem.edgeDirections())),
+    normalDirections_(move(fem.normalDirections())),
+    edgeNormals_(move(fem.edgeNormals())),
+    featurePointNormals_(move(fem.featurePointNormals())),
+    featurePointEdges_(move(fem.featurePointEdges())),
+    regionEdges_(move(fem.regionEdges())),
+    pointTree_(),
+    edgeTree_(),
+    edgeTreesByType_()
+{}
+
+
 Foam::extendedEdgeMesh::extendedEdgeMesh(Istream& is)
 {
     is >> *this;
@@ -319,11 +343,11 @@ Foam::extendedEdgeMesh::extendedEdgeMesh(Istream& is)
 
 Foam::extendedEdgeMesh::extendedEdgeMesh
 (
-    const Xfer<pointField>& pointLst,
-    const Xfer<edgeList>& edgeLst
+    pointField&& pointLst,
+    edgeList&& edgeLst
 )
 :
-    edgeMesh(pointLst, edgeLst),
+    edgeMesh(move(pointLst), move(edgeLst)),
     concaveStart_(0),
     mixedStart_(0),
     nonFeatureStart_(0),
@@ -426,7 +450,7 @@ Foam::extendedEdgeMesh::extendedEdgeMesh
 
 Foam::extendedEdgeMesh::extendedEdgeMesh
 (
-    const PrimitivePatch<face, List, pointField, point>& surf,
+    const PrimitivePatch<faceList, pointField>& surf,
     const labelList& featureEdges,
     const labelList& regionFeatureEdges,
     const labelList& featurePoints
@@ -826,17 +850,9 @@ Foam::extendedEdgeMesh::pointTree() const
 {
     if (pointTree_.empty())
     {
-        Random rndGen(17301893);
-
         // Slightly extended bb. Slightly off-centred just so on symmetric
         // geometry there are less face/edge aligned items.
-        treeBoundBox bb
-        (
-            treeBoundBox(points()).extend(rndGen, 1e-4)
-        );
-
-        bb.min() -= point(rootVSmall, rootVSmall, rootVSmall);
-        bb.max() += point(rootVSmall, rootVSmall, rootVSmall);
+        treeBoundBox bb(treeBoundBox(points()).extend(1e-4));
 
         const labelList featurePointLabels = identity(nonFeatureStart_);
 
@@ -866,17 +882,9 @@ Foam::extendedEdgeMesh::edgeTree() const
 {
     if (edgeTree_.empty())
     {
-        Random rndGen(17301893);
-
         // Slightly extended bb. Slightly off-centred just so on symmetric
         // geometry there are less face/edge aligned items.
-        treeBoundBox bb
-        (
-            treeBoundBox(points()).extend(rndGen, 1e-4)
-        );
-
-        bb.min() -= point(rootVSmall, rootVSmall, rootVSmall);
-        bb.max() += point(rootVSmall, rootVSmall, rootVSmall);
+        treeBoundBox bb(treeBoundBox(points()).extend(1e-4));
 
         labelList allEdges(identity(edges().size()));
 
@@ -910,17 +918,9 @@ Foam::extendedEdgeMesh::edgeTreesByType() const
     {
         edgeTreesByType_.setSize(nEdgeTypes);
 
-        Random rndGen(872141);
-
         // Slightly extended bb. Slightly off-centred just so on symmetric
         // geometry there are less face/edge aligned items.
-        treeBoundBox bb
-        (
-            treeBoundBox(points()).extend(rndGen, 1e-4)
-        );
-
-        bb.min() -= point(rootVSmall, rootVSmall, rootVSmall);
-        bb.max() += point(rootVSmall, rootVSmall, rootVSmall);
+        treeBoundBox bb(treeBoundBox(points()).extend(1e-4));
 
         labelListList sliceEdges(nEdgeTypes);
 
@@ -990,12 +990,6 @@ void Foam::extendedEdgeMesh::transfer(extendedEdgeMesh& mesh)
     pointTree_ = mesh.pointTree_;
     edgeTree_ = mesh.edgeTree_;
     edgeTreesByType_.transfer(mesh.edgeTreesByType_);
-}
-
-
-Foam::Xfer<Foam::extendedEdgeMesh> Foam::extendedEdgeMesh::xfer()
-{
-    return xferMoveTo<extendedEdgeMesh, extendedEdgeMesh>(*this);
 }
 
 
@@ -1249,7 +1243,7 @@ void Foam::extendedEdgeMesh::add(const extendedEdgeMesh& fem)
     nonFeatureStart_ = newNonFeatureStart;
 
     // Reset points and edges
-    reset(xferMove(newPoints), newEdges.xfer());
+    reset(move(newPoints), move(newEdges));
 
     // Transfer
     internalStart_ = newInternalStart;
@@ -1362,7 +1356,7 @@ void Foam::extendedEdgeMesh::flipNormals()
     concaveStart_ = newConcaveStart;
 
     // Reset points and edges
-    reset(xferMove(newPoints), newEdges.xfer());
+    reset(move(newPoints), move(newEdges));
 
     // Transfer
     internalStart_ = newInternalStart;
@@ -1581,7 +1575,7 @@ Foam::Ostream& Foam::operator<<
 
 Foam::Ostream& Foam::operator<<(Ostream& os, const extendedEdgeMesh& em)
 {
-    //fileFormats::extendedEdgeMeshFormat::write(os, em.points_, em.edges_);
+    // fileFormats::extendedEdgeMeshFormat::write(os, em.points_, em.edges_);
     os  << "// points" << nl
         << em.points() << nl
         << "// edges" << nl
@@ -1620,7 +1614,7 @@ Foam::Ostream& Foam::operator<<(Ostream& os, const extendedEdgeMesh& em)
 
 Foam::Istream& Foam::operator>>(Istream& is, extendedEdgeMesh& em)
 {
-    //fileFormats::extendedEdgeMeshFormat::read(is, em.points_, em.edges_);
+    // fileFormats::extendedEdgeMeshFormat::read(is, em.points_, em.edges_);
     is  >> static_cast<edgeMesh&>(em)
         >> em.concaveStart_
         >> em.mixedStart_

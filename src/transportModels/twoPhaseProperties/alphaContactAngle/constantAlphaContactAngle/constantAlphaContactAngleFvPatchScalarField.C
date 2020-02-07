@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -51,7 +51,7 @@ constantAlphaContactAngleFvPatchScalarField
 )
 :
     alphaContactAngleFvPatchScalarField(p, iF, dict),
-    theta0_(readScalar(dict.lookup("theta0")))
+    theta0_(dict.lookup<scalar>("theta0"))
 {
     evaluate();
 }
@@ -113,8 +113,8 @@ void Foam::constantAlphaContactAngleFvPatchScalarField::write
 ) const
 {
     alphaContactAngleFvPatchScalarField::write(os);
-    os.writeKeyword("theta0") << theta0_ << token::END_STATEMENT << nl;
-    writeEntry("value", os);
+    writeEntry(os, "theta0", theta0_);
+    writeEntry(os, "value", *this);
 }
 
 

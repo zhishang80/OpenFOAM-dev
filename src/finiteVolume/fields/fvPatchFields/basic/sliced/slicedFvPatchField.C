@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -256,7 +256,7 @@ template<class Type>
 void Foam::slicedFvPatchField<Type>::write(Ostream& os) const
 {
     fvPatchField<Type>::write(os);
-    this->writeEntry("value", os);
+    writeEntry(os, "value", *this);
 }
 
 

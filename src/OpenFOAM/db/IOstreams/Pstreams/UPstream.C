@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -26,6 +26,7 @@ License
 #include "UPstream.H"
 #include "debug.H"
 #include "registerSwitch.H"
+#include "registerNamedEnum.H"
 #include "dictionary.H"
 #include "IOstreams.H"
 
@@ -36,11 +37,7 @@ namespace Foam
     defineTypeNameAndDebug(UPstream, 0);
 
     template<>
-    const char* Foam::NamedEnum
-    <
-        Foam::UPstream::commsTypes,
-        3
-    >::names[] =
+    const char* Foam::NamedEnum<Foam::UPstream::commsTypes, 3>::names[] =
     {
         "blocking",
         "scheduled",
@@ -334,7 +331,7 @@ void Foam::UPstream::freeCommunicator
         freePstreamCommunicator(communicator);
     }
     myProcNo_[communicator] = -1;
-    //procIDs_[communicator].clear();
+    // procIDs_[communicator].clear();
     parentCommunicator_[communicator] = -1;
     linearCommunication_[communicator].clear();
     treeCommunication_[communicator].clear();
@@ -460,40 +457,12 @@ Foam::UPstream::commsTypes Foam::UPstream::defaultCommsType
 (
     commsTypeNames.read(Foam::debug::optimisationSwitches().lookup("commsType"))
 );
-
-namespace Foam
-{
-    // Register re-reader
-    class addcommsTypeToOpt
-    :
-        public ::Foam::simpleRegIOobject
-    {
-    public:
-
-        addcommsTypeToOpt(const char* name)
-        :
-            ::Foam::simpleRegIOobject(Foam::debug::addOptimisationObject, name)
-        {}
-
-        virtual ~addcommsTypeToOpt()
-        {}
-
-        virtual void readData(Foam::Istream& is)
-        {
-            UPstream::defaultCommsType = UPstream::commsTypeNames.read
-            (
-                is
-            );
-        }
-
-        virtual void writeData(Foam::Ostream& os) const
-        {
-            os << UPstream::commsTypeNames[UPstream::defaultCommsType];
-        }
-    };
-
-    addcommsTypeToOpt addcommsTypeToOpt_("commsType");
-}
+registerOptNamedEnum
+(
+    "commsType",
+    Foam::UPstream::commsTypeNames,
+    Foam::UPstream::defaultCommsType
+);
 
 Foam::label Foam::UPstream::worldComm(0);
 

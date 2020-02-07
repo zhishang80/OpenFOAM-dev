@@ -1,6 +1,6 @@
-#include "createTimeControls.H"
+#include "createDyMControls.H"
 
 scalar maxAcousticCo
 (
-    readScalar(runTime.controlDict().lookup("maxAcousticCo"))
+    runTime.controlDict().lookup<scalar>("maxAcousticCo")
 );

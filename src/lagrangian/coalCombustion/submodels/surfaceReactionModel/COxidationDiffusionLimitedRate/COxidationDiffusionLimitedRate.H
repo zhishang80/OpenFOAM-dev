@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -58,14 +58,14 @@ class COxidationDiffusionLimitedRate
 :
     public SurfaceReactionModel<CloudType>
 {
-    // Private data
+    // Private Data
 
         // Model constants
 
             //- Stoichiometry of reaction
             const scalar Sb_;
 
-            //- Diffusion coefficient of oxidants [m2/s]
+            //- Diffusion coefficient of oxidants [m^2/s]
             const scalar D_;
 
 

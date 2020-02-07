@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -63,7 +63,7 @@ class polynomial
 :
     public saturationModel
 {
-    // Private data
+    // Private Data
 
         //- Polynomial coefficients
         Polynomial<8> C_;
@@ -77,7 +77,7 @@ public:
     // Constructors
 
         //- Construct from a dictionary
-        polynomial(const dictionary& dict, const objectRegistry& db);
+        polynomial(const dictionary& dict, const phasePair& pair);
 
 
     //- Destructor
@@ -89,7 +89,7 @@ public:
         //- Saturation pressure
         virtual tmp<volScalarField> pSat(const volScalarField& T) const;
 
-        //- Saturation pressure derivetive w.r.t. temperature
+        //- Saturation pressure derivative w.r.t. temperature
         virtual tmp<volScalarField> pSatPrime(const volScalarField& T) const;
 
         //- Natural log of the saturation pressure

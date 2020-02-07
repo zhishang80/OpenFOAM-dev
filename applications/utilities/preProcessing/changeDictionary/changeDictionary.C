@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -67,6 +67,10 @@ Usage
 
       - \par -disablePatchGroups
         Disable the default checking for keys being patchGroups
+
+Note
+    changeDictionary has been superseded by foamDictionary
+    and is now deprecated.
 
 \*---------------------------------------------------------------------------*/
 
@@ -419,6 +423,13 @@ int main(int argc, char *argv[])
     #include "addRegionOption.H"
 
     #include "setRootCase.H"
+
+    Warning
+        << nl
+        << "changeDictionary has been superseded by foamDictionary"
+           " and is now deprecated."
+        << nl << endl;
+
     #include "createTime.H"
 
     // Optionally override controlDict time with -time options

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -39,11 +39,6 @@ Description
     - Mass-based Rosin-Rammler
     - uniform
 
-    The distributionModel is tabulated in equidistant nPoints, in an interval.
-    These values are integrated to obtain the cumulated distribution model,
-    which is then used to change the distribution from unifrom to
-    the actual distributionModel.
-
 SourceFiles
     distributionModel.C
     distributionModelNew.C
@@ -55,7 +50,7 @@ SourceFiles
 
 #include "IOdictionary.H"
 #include "autoPtr.H"
-#include "cachedRandom.H"
+#include "Random.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -77,13 +72,16 @@ protected:
         const dictionary distributionModelDict_;
 
         //- Reference to the random number generator
-        cachedRandom& rndGen_;
+        Random& rndGen_;
 
 
     // Protected Member Functions
 
         //- Check that the distribution model is valid
         virtual void check() const;
+
+        //- Print information about the distribution
+        void info() const;
 
 
 public:
@@ -100,7 +98,7 @@ public:
         dictionary,
         (
             const dictionary& dict,
-            cachedRandom& rndGen
+            Random& rndGen
         ),
         (dict, rndGen)
     );
@@ -113,7 +111,7 @@ public:
         (
             const word& name,
             const dictionary& dict,
-            cachedRandom& rndGen
+            Random& rndGen
         );
 
         //- Construct copy
@@ -127,7 +125,7 @@ public:
     static autoPtr<distributionModel> New
     (
         const dictionary& dict,
-        cachedRandom& rndGen
+        Random& rndGen
     );
 
 
@@ -146,7 +144,7 @@ public:
         //- Return the maximum value
         virtual scalar maxValue() const = 0;
 
-        //- Return the maximum value
+        //- Return the mean value
         virtual scalar meanValue() const = 0;
 };
 

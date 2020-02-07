@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -51,9 +51,6 @@ SourceFiles
 
 namespace Foam
 {
-
-class phasePair;
-
 namespace dragModels
 {
 
@@ -67,7 +64,7 @@ class Tenneti
 :
     public dragModel
 {
-    // Private data
+    // Private Data
 
         //- Residual Reynolds Number
         const dimensionedScalar residualRe_;

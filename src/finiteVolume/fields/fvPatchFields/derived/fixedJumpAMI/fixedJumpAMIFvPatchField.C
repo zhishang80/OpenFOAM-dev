@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -49,7 +49,7 @@ Foam::fixedJumpAMIFvPatchField<Type>::fixedJumpAMIFvPatchField
 )
 :
     jumpCyclicAMIFvPatchField<Type>(ptf, p, iF, mapper),
-    jump_(ptf.jump_, mapper)
+    jump_(mapper(ptf.jump_))
 {}
 
 
@@ -120,7 +120,7 @@ Foam::tmp<Foam::Field<Type>> Foam::fixedJumpAMIFvPatchField<Type>::jump() const
         const fixedJumpAMIFvPatchField& nbrPatch =
             refCast<const fixedJumpAMIFvPatchField<Type>>
             (
-                this->neighbourPatchField()
+                this->nbrPatchField()
             );
 
         if (this->cyclicAMIPatch().applyLowWeightCorrection())
@@ -146,7 +146,7 @@ void Foam::fixedJumpAMIFvPatchField<Type>::autoMap
 )
 {
     jumpCyclicAMIFvPatchField<Type>::autoMap(m);
-    jump_.autoMap(m);
+    m(jump_, jump_);
 }
 
 
@@ -169,15 +169,14 @@ template<class Type>
 void Foam::fixedJumpAMIFvPatchField<Type>::write(Ostream& os) const
 {
     fvPatchField<Type>::write(os);
-    os.writeKeyword("patchType") << this->interfaceFieldType()
-        << token::END_STATEMENT << nl;
+    writeEntry(os, "patchType", this->interfaceFieldType());
 
     if (this->cyclicAMIPatch().owner())
     {
-        jump_.writeEntry("jump", os);
+        writeEntry(os, "jump", jump_);
     }
 
-    this->writeEntry("value", os);
+    writeEntry(os, "value", *this);
 }
 
 

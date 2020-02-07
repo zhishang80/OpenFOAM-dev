@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -29,10 +29,9 @@ Description
 
     Reference:
     \verbatim
-        "Transverse migration of single bubbles in simple shear flows"
-        Tomiyama, A., Tamai, H., Zun, I., Hosokawa, S.,
-        Chemical Engineering Science
-        Volume 57, Issue 11, June 2002, pp. 1849-1858
+        Tomiyama, A., Tamai, H., Zun, I., & Hosokawa, S. (2002).
+        Transverse migration of single bubbles in simple shear flows.
+        Chemical Engineering Science, 57(11), 1849-1858.
     \endverbatim
 
     The coefficient for pow3(EoH) proposed by Tomiyama (2002) has been modified

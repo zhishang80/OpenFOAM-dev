@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2018-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -67,29 +67,28 @@ bool Foam::pimpleLoop::loop(correctorConvergenceControl& convergence)
 {
     read();
 
-    ++ corrPimple_;
-
     // Handle quit conditions first
     {
+        // If converged on the last iteration then end the correction loop
+        if (converged_)
+        {
+            Info<< control_.algorithmName() << ": Converged in " << corrPimple_
+                << " iterations" << endl;
+
+            corrPimple_ = 0;
+            converged_ = false;
+
+            return false;
+        }
+
         // If all corrections have been completed then end the correction loop
-        if (corrPimple_ > nCorrPimple_)
+        if (corrPimple_ >= nCorrPimple_)
         {
             if (convergence.hasCorrResidualControls() && nCorrPimple_ > 1)
             {
                 Info<< control_.algorithmName() << ": Not converged within "
                     << nCorrPimple_ << " iterations" << endl;
             }
-
-            corrPimple_ = 0;
-
-            return false;
-        }
-
-        // If converged on the last iteration then end the correction loop
-        if (converged_)
-        {
-            Info<< control_.algorithmName() << ": Converged in "
-                << corrPimple_ - 1 << " iterations" << endl;
 
             corrPimple_ = 0;
             converged_ = false;
@@ -99,6 +98,9 @@ bool Foam::pimpleLoop::loop(correctorConvergenceControl& convergence)
     }
 
     // If we reached here, we are doing another loop
+    ++ corrPimple_;
+
+    // Set up the next loop
     {
         // If convergence has been reached then set the flag so that the loop
         // exits next time around

@@ -1,9 +1,9 @@
 /*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  dev                                   |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
-|    \\/     M anipulation  |                                                 |
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  dev
+     \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
@@ -42,12 +42,12 @@ boundaryField
     }
     membraneSleeve
     {
-        type            semiPermeableBaffleVelocity;
+        type            specieTransferVelocity;
         value           $internalField;
     }
     membranePipe
     {
-        type            semiPermeableBaffleVelocity;
+        type            specieTransferVelocity;
         value           $internalField;
     }
 }

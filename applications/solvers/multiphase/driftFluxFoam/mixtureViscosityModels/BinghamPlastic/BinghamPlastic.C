@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
+   \\    /   O peration     | Website:  https://openfoam.org
     \\  /    A nd           | Copyright (C) 2014-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
@@ -93,8 +93,12 @@ Foam::mixtureViscosityModels::BinghamPlastic::mu
             pow
             (
                 scalar(10),
-                yieldStressExponent_
-               *(max(alpha_, scalar(0)) + yieldStressOffset_)
+                min
+                (
+                    log10(vGreat),
+                    yieldStressExponent_
+                   *(max(alpha_, scalar(0)) + yieldStressOffset_)
+                )
             )
           - pow
             (

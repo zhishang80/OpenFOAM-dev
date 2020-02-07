@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2018-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -140,8 +140,8 @@ template<class Type>
 void Foam::fixedMeanOutletInletFvPatchField<Type>::write(Ostream& os) const
 {
     fvPatchField<Type>::write(os);
-    meanValue_->writeData(os);
-    this->writeEntry("value", os);
+    writeEntry(os, meanValue_());
+    writeEntry(os, "value", *this);
 }
 
 

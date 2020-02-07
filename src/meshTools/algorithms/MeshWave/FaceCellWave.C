@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -88,7 +88,7 @@ namespace Foam
                     }
                     else
                     {
-                        meshFacei = patch_.neighbPatch().start() + facei;
+                        meshFacei = patch_.nbrPatch().start() + facei;
                     }
                     x.updateFace
                     (
@@ -260,7 +260,7 @@ void Foam::FaceCellWave<Type, TrackingData>::checkCyclic
     // For debugging: check status on both sides of cyclic
 
     const cyclicPolyPatch& nbrPatch =
-        refCast<const cyclicPolyPatch>(patch).neighbPatch();
+        refCast<const cyclicPolyPatch>(patch).nbrPatch();
 
     forAll(patch, patchFacei)
     {
@@ -457,27 +457,33 @@ void Foam::FaceCellWave<Type, TrackingData>::enterDomain
 template<class Type, class TrackingData>
 void Foam::FaceCellWave<Type, TrackingData>::transform
 (
-    const tensorField& rotTensor,
+    const tensor& rotTensor,
+    const label nFaces,
+    List<Type>& faceInfo
+)
+{
+    for (label facei = 0; facei < nFaces; facei++)
+    {
+        faceInfo[facei].transform(mesh_, rotTensor, td_);
+    }
+}
+
+
+template<class Type, class TrackingData>
+void Foam::FaceCellWave<Type, TrackingData>::transform
+(
+    const transformer& trans,
     const label nFaces,
     List<Type>& faceInfo
 )
 {
     // Transform. Implementation referred to Type
 
-    if (rotTensor.size() == 1)
-    {
-        const tensor& T = rotTensor[0];
-
-        for (label facei = 0; facei < nFaces; facei++)
-        {
-            faceInfo[facei].transform(mesh_, T, td_);
-        }
-    }
-    else
+    if (trans.transforms())
     {
         for (label facei = 0; facei < nFaces; facei++)
         {
-            faceInfo[facei].transform(mesh_, rotTensor[facei], td_);
+            faceInfo[facei].transform(mesh_, trans.T(), td_);
         }
     }
 }
@@ -556,7 +562,7 @@ void Foam::FaceCellWave<Type, TrackingData>::handleProcPatches()
         }
 
         UOPstream toNeighbour(procPatch.neighbProcNo(), pBufs);
-        //writeFaces(nSendFaces, sendFaces, sendFacesInfo, toNeighbour);
+        // writeFaces(nSendFaces, sendFaces, sendFacesInfo, toNeighbour);
         toNeighbour
             << SubList<label>(sendFaces, nSendFaces)
             << SubList<Type>(sendFacesInfo, nSendFaces);
@@ -591,11 +597,11 @@ void Foam::FaceCellWave<Type, TrackingData>::handleProcPatches()
         }
 
         // Apply transform to received data for non-parallel planes
-        if (!procPatch.parallel())
+        if (procPatch.transform().transforms())
         {
             transform
             (
-                procPatch.forwardT(),
+                procPatch.transform().T(),
                 receiveFaces.size(),
                 receiveFacesInfo
             );
@@ -634,7 +640,7 @@ void Foam::FaceCellWave<Type, TrackingData>::handleCyclicPatches()
         if (isA<cyclicPolyPatch>(patch))
         {
             const cyclicPolyPatch& nbrPatch =
-                refCast<const cyclicPolyPatch>(patch).neighbPatch();
+                refCast<const cyclicPolyPatch>(patch).nbrPatch();
 
             // Allocate buffers
             label nReceiveFaces;
@@ -663,12 +669,12 @@ void Foam::FaceCellWave<Type, TrackingData>::handleCyclicPatches()
             const cyclicPolyPatch& cycPatch =
                 refCast<const cyclicPolyPatch>(patch);
 
-            if (!cycPatch.parallel())
+            if (cycPatch.transform().transforms())
             {
                 // received data from other half
                 transform
                 (
-                    cycPatch.forwardT(),
+                    cycPatch.transform().T(),
                     nReceiveFaces,
                     receiveFacesInfo
                 );
@@ -726,7 +732,7 @@ void Foam::FaceCellWave<Type, TrackingData>::handleAMICyclicPatches()
 
             {
                 const cyclicAMIPolyPatch& nbrPatch =
-                    refCast<const cyclicAMIPolyPatch>(patch).neighbPatch();
+                    refCast<const cyclicAMIPolyPatch>(patch).nbrPatch();
 
                 // Get nbrPatch data (so not just changed faces)
                 typename List<Type>::subList sendInfo
@@ -737,7 +743,7 @@ void Foam::FaceCellWave<Type, TrackingData>::handleAMICyclicPatches()
                     )
                 );
 
-                if (!nbrPatch.parallel() || nbrPatch.separated())
+                if (nbrPatch.transform().transformsPosition())
                 {
                     // Adapt sendInfo for leaving domain
                     const vectorField::subField fc = nbrPatch.faceCentres();
@@ -750,33 +756,66 @@ void Foam::FaceCellWave<Type, TrackingData>::handleAMICyclicPatches()
                 // Transfer sendInfo to cycPatch
                 combine<Type, TrackingData> cmb(*this, cycPatch);
 
+                List<Type> defVals;
                 if (cycPatch.applyLowWeightCorrection())
                 {
-                    List<Type> defVals
-                    (
-                        cycPatch.patchInternalList(allCellInfo_)
-                    );
+                    defVals = cycPatch.patchInternalList(allCellInfo_);
+                }
 
-                    cycPatch.interpolate(sendInfo, cmb, receiveInfo, defVals);
+                if (cycPatch.owner())
+                {
+                    forAll(cycPatch.AMIs(), i)
+                    {
+                        List<Type> sendInfoT(sendInfo);
+                        transform
+                        (
+                            cycPatch.AMITransforms()[i],
+                            sendInfoT.size(),
+                            sendInfoT
+                        );
+                        cycPatch.AMIs()[i].interpolateToSource
+                        (
+                            sendInfoT,
+                            cmb,
+                            receiveInfo,
+                            defVals
+                        );
+                    }
                 }
                 else
                 {
-                    cycPatch.interpolate(sendInfo, cmb, receiveInfo);
+                    forAll(cycPatch.nbrPatch().AMIs(), i)
+                    {
+                        List<Type> sendInfoT(sendInfo);
+                        transform
+                        (
+                            cycPatch.nbrPatch().AMITransforms()[i],
+                            sendInfoT.size(),
+                            sendInfoT
+                        );
+                        cycPatch.nbrPatch().AMIs()[i].interpolateToTarget
+                        (
+                            sendInfoT,
+                            cmb,
+                            receiveInfo,
+                            defVals
+                        );
+                    }
                 }
             }
 
             // Apply transform to received data for non-parallel planes
-            if (!cycPatch.parallel())
+            if (cycPatch.transform().transforms())
             {
                 transform
                 (
-                    cycPatch.forwardT(),
+                    cycPatch.transform().T(),
                     receiveInfo.size(),
                     receiveInfo
                 );
             }
 
-            if (!cycPatch.parallel() || cycPatch.separated())
+            if (cycPatch.transform().transformsPosition())
             {
                 // Adapt receiveInfo for entering domain
                 const vectorField::subField fc = cycPatch.faceCentres();

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::LESModels::SpalartAllmarasDDES
-
-Group
-    grpDESTurbulence
 
 Description
     SpalartAllmaras DDES turbulence model for incompressible and compressible
@@ -68,25 +65,29 @@ class SpalartAllmarasDDES
 {
     // Private Member Functions
 
-        tmp<volScalarField> fd(const volScalarField& magGradU) const;
+        tmp<volScalarField::Internal> fd
+        (
+            const volScalarField::Internal& magGradU
+        ) const;
 
-        tmp<volScalarField> rd(const volScalarField& magGradU) const;
-
-        // Disallow default bitwise copy construct and assignment
-        SpalartAllmarasDDES(const SpalartAllmarasDDES&);
-        void operator=(const SpalartAllmarasDDES&);
+        tmp<volScalarField::Internal> rd
+        (
+            const volScalarField::Internal& magGradU
+        ) const;
 
 
 protected:
 
     // Protected Member Functions
 
+        using IOobject::modelName;
+
         //- Length scale
-        virtual tmp<volScalarField> dTilda
+        virtual tmp<volScalarField::Internal> dTilda
         (
-            const volScalarField& chi,
-            const volScalarField& fv1,
-            const volTensorField& gradU
+            const volScalarField::Internal& chi,
+            const volScalarField::Internal& fv1,
+            const volTensorField::Internal& gradU
         ) const;
 
 
@@ -116,10 +117,19 @@ public:
             const word& type = typeName
         );
 
+        //- Disallow default bitwise copy construction
+        SpalartAllmarasDDES(const SpalartAllmarasDDES&) = delete;
+
 
     //- Destructor
     virtual ~SpalartAllmarasDDES()
     {}
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const SpalartAllmarasDDES&) = delete;
 };
 
 

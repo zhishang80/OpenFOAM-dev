@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,9 +24,6 @@ License
 Class
     Foam::filmHeightInletVelocityFvPatchVectorField
 
-Group
-    grpSurfaceFilmBoundaryConditions
-
 Description
     This boundary condition is designed to be used in conjunction with
     surface film modelling.  It provides a velocity inlet boundary condition
@@ -42,8 +39,8 @@ Description
         U_p    | patch velocity [m/s]
         n      | patch normal vector
         \phi   | mass flux [kg/s]
-        \rho   | density [kg/m3]
-        Sf     | patch face area vectors [m2]
+        \rho   | density [kg/m^3]
+        Sf     | patch face area vectors [m^2]
         \delta | film height [m]
     \endvartable
 
@@ -94,7 +91,7 @@ class filmHeightInletVelocityFvPatchVectorField
 :
     public fixedValueFvPatchVectorField
 {
-    // Private data
+    // Private Data
 
         //- Name of flux field
         word phiName_;
@@ -139,7 +136,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         filmHeightInletVelocityFvPatchVectorField
         (
             const filmHeightInletVelocityFvPatchVectorField&
@@ -154,7 +151,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         filmHeightInletVelocityFvPatchVectorField
         (
             const filmHeightInletVelocityFvPatchVectorField&,
@@ -174,7 +171,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Attributes
 
@@ -231,7 +228,7 @@ public:
         virtual void write(Ostream&) const;
 
 
-    // Member operators
+    // Member Operators
 
         virtual void operator=(const fvPatchField<vector>& pvf);
 };

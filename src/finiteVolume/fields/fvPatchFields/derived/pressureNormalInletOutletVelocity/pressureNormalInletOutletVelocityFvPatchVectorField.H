@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::pressureNormalInletOutletVelocityFvPatchVectorField
-
-Group
-    grpInletBoundaryConditions grpOutletBoundaryConditions
 
 Description
     This velocity inlet/outlet boundary condition is applied to patches where
@@ -84,7 +81,7 @@ class pressureNormalInletOutletVelocityFvPatchVectorField
 :
     public mixedFvPatchVectorField
 {
-    // Private data
+    // Private Data
 
         //- Flux field name
         word phiName_;
@@ -127,7 +124,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         pressureNormalInletOutletVelocityFvPatchVectorField
         (
             const pressureNormalInletOutletVelocityFvPatchVectorField&
@@ -145,7 +142,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         pressureNormalInletOutletVelocityFvPatchVectorField
         (
             const pressureNormalInletOutletVelocityFvPatchVectorField&,
@@ -169,7 +166,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Attributes
 
@@ -215,7 +212,7 @@ public:
         virtual void write(Ostream&) const;
 
 
-    // Member operators
+    // Member Operators
 
         virtual void operator=(const fvPatchField<vector>& pvf);
 };

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::fixedShearStressFvPatchVectorField
-
-Group
-    grpTurbulenceBoundaryConditions
 
 Description
     Set a constant shear stress as tau0 = -nuEff dU/dn.
@@ -54,7 +51,7 @@ class fixedShearStressFvPatchVectorField
 :
     public fixedValueFvPatchVectorField
 {
-    // Private data
+    // Private Data
 
         //- Constant shear stress
         const vector tau0_;
@@ -92,7 +89,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         fixedShearStressFvPatchVectorField
         (
             const fixedShearStressFvPatchVectorField&
@@ -107,7 +104,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         fixedShearStressFvPatchVectorField
         (
             const fixedShearStressFvPatchVectorField&,
@@ -127,7 +124,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         //- Update the coefficients associated with the patch field
         virtual void updateCoeffs();

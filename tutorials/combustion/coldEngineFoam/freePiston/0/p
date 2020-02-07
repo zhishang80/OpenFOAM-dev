@@ -1,9 +1,9 @@
 /*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM:.phe Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  dev                                   |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
-|    \\/     M anipulation  |                                                 |
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  dev
+     \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
@@ -14,12 +14,11 @@ FoamFile
     object      p;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
-#include "include/caseSettings"
+#inputSyntax slash;
 
 dimensions      [1 -1 -2 0 0 0 0];
 
-internalField   uniform $:internalField.p;
+internalField   uniform $include/caseSettings!internalField/p;
 
 boundaryField
 {
@@ -35,7 +34,7 @@ boundaryField
 
     liner
     {
-        $:wall.p;
+        $include/caseSettings!wall/p;
     }
 
     cylinderHead

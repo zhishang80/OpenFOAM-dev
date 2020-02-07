@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::wedgeFvPatchField
-
-Group
-    grpConstraintBoundaryConditions
 
 Description
     This boundary condition is similar to the cyclic condition, except that
@@ -101,7 +98,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         wedgeFvPatchField
         (
             const wedgeFvPatchField<Type>&
@@ -116,7 +113,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         wedgeFvPatchField
         (
             const wedgeFvPatchField<Type>&,
@@ -136,7 +133,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         //- Return gradient at boundary
         virtual tmp<Field<Type>> snGrad() const;

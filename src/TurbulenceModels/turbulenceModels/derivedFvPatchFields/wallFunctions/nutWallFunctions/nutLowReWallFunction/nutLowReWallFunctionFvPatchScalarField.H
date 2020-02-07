@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,9 +24,6 @@ License
 Class
     Foam::nutLowReWallFunctionFvPatchScalarField
 
-Group
-    grpWallFunctions
-
 Description
     This boundary condition provides a turbulent kinematic viscosity condition
     for use with low Reynolds number models.  It sets \c nut to zero, and
@@ -38,6 +35,7 @@ Usage
     <patchName>
     {
         type            nutLowReWallFunction;
+        value           uniform 0;
     }
     \endverbatim
 
@@ -72,7 +70,7 @@ protected:
     // Protected Member Functions
 
         //- Calculate the turbulence viscosity
-        virtual tmp<scalarField> calcNut() const;
+        virtual tmp<scalarField> nut() const;
 
 
 public:
@@ -109,7 +107,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         nutLowReWallFunctionFvPatchScalarField
         (
             const nutLowReWallFunctionFvPatchScalarField&
@@ -124,7 +122,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         nutLowReWallFunctionFvPatchScalarField
         (
             const nutLowReWallFunctionFvPatchScalarField&,
@@ -144,7 +142,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         //- Calculate and return the yPlus at the boundary
         virtual tmp<scalarField> yPlus() const;

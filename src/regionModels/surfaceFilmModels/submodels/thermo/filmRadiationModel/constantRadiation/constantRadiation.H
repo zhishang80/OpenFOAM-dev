@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::constantRadiation
+    Foam::regionModels::surfaceFilmModels::constantRadiation
 
 Description
     Film constant radiation model.  The constant radiative flux is specified
@@ -58,11 +58,9 @@ class constantRadiation
 :
     public filmRadiationModel
 {
-private:
+    // Private Data
 
-    // Private data
-
-        //- Constant radiative flux [kg/s3]
+        //- Constant radiative flux [kg/s^3]
         volScalarField qrConst_;
 
         //- Radiation mask
@@ -76,15 +74,6 @@ private:
 
         //- Duration [s]
         const scalar duration_;
-
-
-    // Private member functions
-
-        //- Disallow default bitwise copy construct
-        constantRadiation(const constantRadiation&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const constantRadiation&);
 
 
 public:
@@ -102,6 +91,9 @@ public:
             const dictionary& dict
         );
 
+        //- Disallow default bitwise copy construction
+        constantRadiation(const constantRadiation&) = delete;
+
 
     //- Destructor
     virtual ~constantRadiation();
@@ -116,7 +108,13 @@ public:
 
             //- Return the radiation sensible enthalpy source
             //  Also updates qrNet
-            virtual tmp<volScalarField> Shs();
+            virtual tmp<volScalarField::Internal> Shs();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const constantRadiation&) = delete;
 };
 
 

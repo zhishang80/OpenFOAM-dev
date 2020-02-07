@@ -1,8 +1,8 @@
-/*---------------------------------------------------------------------------*\3
+/*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::cuboid
+    Foam::RBD::cuboid
 
 Description
     Specialization of rigidBody to construct a cuboid given the mass and
@@ -60,7 +60,7 @@ class cuboid
         vector L_;
 
 
-    // Private member functions
+    // Private Member Functions
 
         // Calculate and return the inertia tensor
         inline symmTensor I(const scalar m, const vector& L) const;

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -58,11 +58,11 @@ uniformGrid::uniformGrid
         cellShapeControls,
         decomposition
     ),
-    initialCellSize_(readScalar(detailsDict().lookup("initialCellSize"))),
+    initialCellSize_(detailsDict().lookup<scalar>("initialCellSize")),
     randomiseInitialGrid_(detailsDict().lookup("randomiseInitialGrid")),
     randomPerturbationCoeff_
     (
-        readScalar(detailsDict().lookup("randomPerturbationCoeff"))
+        detailsDict().lookup<scalar>("randomPerturbationCoeff")
     )
 {}
 

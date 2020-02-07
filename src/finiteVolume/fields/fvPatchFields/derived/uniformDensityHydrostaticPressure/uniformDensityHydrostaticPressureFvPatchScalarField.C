@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -56,8 +56,8 @@ uniformDensityHydrostaticPressureFvPatchScalarField
 )
 :
     fixedValueFvPatchScalarField(p, iF, dict, false),
-    rho_(readScalar(dict.lookup("rhoRef"))),
-    pRef_(readScalar(dict.lookup("pRef"))),
+    rho_(dict.lookup<scalar>("rhoRef")),
+    pRef_(dict.lookup<scalar>("pRef")),
     pRefPointSpecified_(dict.found("pRefPoint")),
     pRefPoint_(dict.lookupOrDefault<vector>("pRefPoint", Zero))
 {
@@ -140,12 +140,7 @@ void Foam::uniformDensityHydrostaticPressureFvPatchScalarField::updateCoeffs()
         const uniformDimensionedScalarField& hRef =
             db().lookupObject<uniformDimensionedScalarField>("hRef");
 
-        ghRef =
-        (
-            mag(g.value()) > small
-          ? (g & (cmptMag(g.value())/mag(g.value()))*hRef).value()
-          : 0
-        );
+        ghRef = - mag(g.value())*hRef.value();
     }
 
     operator==
@@ -164,14 +159,13 @@ void Foam::uniformDensityHydrostaticPressureFvPatchScalarField::write
 ) const
 {
     fvPatchScalarField::write(os);
-    os.writeKeyword("rhoRef") << rho_ << token::END_STATEMENT << nl;
-    os.writeKeyword("pRef") << pRef_ << token::END_STATEMENT << nl;
+    writeEntry(os, "rhoRef", rho_);
+    writeEntry(os, "pRef", pRef_);
     if (pRefPointSpecified_)
     {
-        os.writeKeyword("pRefPoint")
-            << pRefPoint_ << token::END_STATEMENT << nl;
+        writeEntry(os, "pRefPoint", pRefPoint_);
     }
-    writeEntry("value", os);
+    writeEntry(os, "value", *this);
 }
 
 

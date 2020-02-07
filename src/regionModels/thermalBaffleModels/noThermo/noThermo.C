@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -93,19 +93,11 @@ const tmp<volScalarField> noThermo::Cp() const
 
     return tmp<volScalarField>
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                "noThermo::Cp",
-                time().timeName(),
-                primaryMesh(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
+            "noThermo::Cp",
             primaryMesh(),
-            dimensionedScalar("zero", dimEnergy/dimVolume/dimTime, 0.0)
+            dimensionedScalar(dimEnergy/dimVolume/dimTime, 0)
         )
     );
 }

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -58,8 +58,8 @@ exponentialRepulsion::exponentialRepulsion
     (
         exponentialRepulsion.subDict(typeName + "Coeffs")
     ),
-    rm_(readScalar(exponentialRepulsionCoeffs_.lookup("rm"))),
-    epsilon_(readScalar(exponentialRepulsionCoeffs_.lookup("epsilon")))
+    rm_(exponentialRepulsionCoeffs_.template lookup<scalar>("rm")),
+    epsilon_(exponentialRepulsionCoeffs_.template lookup<scalar>("epsilon"))
 {
     setLookupTables();
 }

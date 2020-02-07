@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -273,8 +273,6 @@ void Foam::mappedPatchBase::findSamples
 
         case NEARESTPATCHFACE:
         {
-            Random rndGen(123456);
-
             const polyPatch& pp = samplePolyPatch();
 
             if (pp.empty())
@@ -292,14 +290,8 @@ void Foam::mappedPatchBase::findSamples
 
                 treeBoundBox patchBb
                 (
-                    treeBoundBox(pp.points(), pp.meshPoints()).extend
-                    (
-                        rndGen,
-                        1e-4
-                    )
+                    treeBoundBox(pp.points(), pp.meshPoints()).extend(1e-4)
                 );
-                patchBb.min() -= point(rootVSmall, rootVSmall, rootVSmall);
-                patchBb.max() += point(rootVSmall, rootVSmall, rootVSmall);
 
                 indexedOctree<treeDataFace> boundaryTree
                 (
@@ -347,8 +339,6 @@ void Foam::mappedPatchBase::findSamples
 
         case NEARESTPATCHPOINT:
         {
-            Random rndGen(123456);
-
             const polyPatch& pp = samplePolyPatch();
 
             if (pp.empty())
@@ -364,14 +354,8 @@ void Foam::mappedPatchBase::findSamples
                 // patch (local) points
                 treeBoundBox patchBb
                 (
-                    treeBoundBox(pp.points(), pp.meshPoints()).extend
-                    (
-                        rndGen,
-                        1e-4
-                    )
+                    treeBoundBox(pp.points(), pp.meshPoints()).extend(1e-4)
                 );
-                patchBb.min() -= point(rootVSmall, rootVSmall, rootVSmall);
-                patchBb.max() += point(rootVSmall, rootVSmall, rootVSmall);
 
                 indexedOctree<treeDataPoint> boundaryTree
                 (
@@ -648,26 +632,47 @@ void Foam::mappedPatchBase::calcMapping() const
     }
 
     // Now we have all the data we need:
-    // - where sample originates from (so destination when mapping):
-    //   patchFaces, patchFaceProcs.
-    // - cell/face sample is in (so source when mapping)
-    //   sampleIndices, sampleProcs.
+    //   - where sample originates from (so destination when mapping):
+    //     patchFaces, patchFaceProcs.
+    //   - cell/face sample is in (so source when mapping)
+    //     sampleIndices, sampleProcs.
 
-    //forAll(samples, i)
-    //{
-    //    Info<< i << " need data in region "
-    //        << patch_.boundaryMesh().mesh().name()
-    //        << " for proc:" << patchFaceProcs[i]
-    //        << " face:" << patchFaces[i]
-    //        << " at:" << patchFc[i] << endl
-    //        << "Found data in region " << sampleRegion()
-    //        << " at proc:" << sampleProcs[i]
-    //        << " face:" << sampleIndices[i]
-    //        << " at:" << sampleLocations[i]
-    //        << nl << endl;
-    //}
+    // forAll(samples, i)
+    // {
+    //     Info<< i << " need data in region "
+    //         << patch_.boundaryMesh().mesh().name()
+    //         << " for proc:" << patchFaceProcs[i]
+    //         << " face:" << patchFaces[i]
+    //         << " at:" << patchFc[i] << endl
+    //         << "Found data in region " << sampleRegion()
+    //         << " at proc:" << sampleProcs[i]
+    //         << " face:" << sampleIndices[i]
+    //         << " at:" << sampleLocations[i]
+    //         << nl << endl;
+    // }
 
+    bool mapSucceeded = true;
 
+    forAll(samples, i)
+    {
+        if (sampleProcs[i] == -1)
+        {
+            mapSucceeded = false;
+            break;
+        }
+    }
+
+    if (!mapSucceeded)
+    {
+        FatalErrorInFunction
+            << "Mapping failed for " << nl
+            << "    patch: " << patch_.name() << nl
+            << "    sampleRegion: " << sampleRegion() << nl
+            << "    mode: " << sampleModeNames_[mode_] << nl
+            << "    samplePatch: " << samplePatch() << nl
+            << "    offsetMode: " << offsetModeNames_[offsetMode_]
+            << exit(FatalError);
+    }
 
     if (debug && Pstream::master())
     {
@@ -715,7 +720,7 @@ void Foam::mappedPatchBase::calcMapping() const
             constructMap[proci]
         );
 
-        //if (debug)
+        // if (debug)
         //{
         //    Pout<< "To proc:" << proci << " sending values of cells/faces:"
         //        << subMap[proci] << endl;
@@ -841,14 +846,14 @@ void Foam::mappedPatchBase::calcAMI() const
     // Construct/apply AMI interpolation to determine addressing and weights
     AMIPtr_.reset
     (
-        new AMIPatchToPatchInterpolation
+        new AMIInterpolation
         (
             patch_,
             samplePolyPatch(), // nbrPatch0,
             surfPtr(),
             faceAreaIntersect::tmMesh,
             true,
-            AMIPatchToPatchInterpolation::imFaceAreaWeight,
+            AMIInterpolation::imFaceAreaWeight,
             -1,
             AMIReverse_
         )
@@ -1078,14 +1083,14 @@ Foam::mappedPatchBase::mappedPatchBase
 
             case NONUNIFORM:
             {
-                //offsets_ = pointField(dict.lookup("offsets"));
+                // offsets_ = pointField(dict.lookup("offsets"));
                 offsets_ = readListOrField("offsets", dict, patch_.size());
             }
             break;
 
             case NORMAL:
             {
-                distance_ = readScalar(dict.lookup("distance"));
+                distance_ = dict.lookup<scalar>("distance");
             }
             break;
         }
@@ -1098,7 +1103,7 @@ Foam::mappedPatchBase::mappedPatchBase
     else if (dict.found("offsets"))
     {
         offsetMode_ = NONUNIFORM;
-        //offsets_ = pointField(dict.lookup("offsets"));
+        // offsets_ = pointField(dict.lookup("offsets"));
         offsets_ = readListOrField("offsets", dict, patch_.size());
     }
     else if (mode_ != NEARESTPATCHFACE && mode_ != NEARESTPATCHFACEAMI)
@@ -1124,7 +1129,7 @@ Foam::mappedPatchBase::mappedPatchBase
     sampleRegion_(dict.lookupOrDefault<word>("sampleRegion", "")),
     mode_(mode),
     samplePatch_(dict.lookupOrDefault<word>("samplePatch", "")),
-    coupleGroup_(dict), //dict.lookupOrDefault<word>("coupleGroup", "")),
+    coupleGroup_(dict), // dict.lookupOrDefault<word>("coupleGroup", "")),
     offsetMode_(UNIFORM),
     offset_(Zero),
     offsets_(0),
@@ -1357,7 +1362,7 @@ Foam::pointIndexHit Foam::mappedPatchBase::facePoint
                 (
                     cc,
                     d,
-                    intersection::HALF_RAY
+                    intersection::algorithm::halfRay
                 );
 
                 if (hitInfo.hit() && hitInfo.distance() > 0)
@@ -1385,17 +1390,14 @@ Foam::pointIndexHit Foam::mappedPatchBase::facePoint
 
 void Foam::mappedPatchBase::write(Ostream& os) const
 {
-    os.writeKeyword("sampleMode") << sampleModeNames_[mode_]
-        << token::END_STATEMENT << nl;
+    writeEntry(os, "sampleMode", sampleModeNames_[mode_]);
     if (!sampleRegion_.empty())
     {
-        os.writeKeyword("sampleRegion") << sampleRegion_
-            << token::END_STATEMENT << nl;
+        writeEntry(os, "sampleRegion", sampleRegion_);
     }
     if (!samplePatch_.empty())
     {
-        os.writeKeyword("samplePatch") << samplePatch_
-            << token::END_STATEMENT << nl;
+        writeEntry(os, "samplePatch", samplePatch_);
     }
     coupleGroup_.write(os);
 
@@ -1410,26 +1412,23 @@ void Foam::mappedPatchBase::write(Ostream& os) const
     }
     else
     {
-        os.writeKeyword("offsetMode") << offsetModeNames_[offsetMode_]
-            << token::END_STATEMENT << nl;
+        writeEntry(os, "offsetMode", offsetModeNames_[offsetMode_]);
 
         switch (offsetMode_)
         {
             case UNIFORM:
             {
-                os.writeKeyword("offset") << offset_ << token::END_STATEMENT
-                    << nl;
+                writeEntry(os, "offset", offset_);
                 break;
             }
             case NONUNIFORM:
             {
-                offsets_.writeEntry("offsets", os);
+                writeEntry(os, "offsets", offsets_);
                 break;
             }
             case NORMAL:
             {
-                os.writeKeyword("distance") << distance_ << token::END_STATEMENT
-                    << nl;
+                writeEntry(os, "distance", distance_);
                 break;
             }
         }
@@ -1438,13 +1437,12 @@ void Foam::mappedPatchBase::write(Ostream& os) const
         {
             if (AMIReverse_)
             {
-                os.writeKeyword("flipNormals") << AMIReverse_
-                    << token::END_STATEMENT << nl;
+                writeEntry(os, "flipNormals", AMIReverse_);
             }
 
             if (!surfDict_.empty())
             {
-                os.writeKeyword(surfDict_.dictName());
+                writeKeyword(os, surfDict_.dictName());
                 os  << surfDict_;
             }
         }

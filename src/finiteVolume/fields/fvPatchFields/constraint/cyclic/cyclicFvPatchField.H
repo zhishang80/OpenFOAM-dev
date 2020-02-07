@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::cyclicFvPatchField
-
-Group
-    grpCoupledBoundaryConditions
 
 Description
     This boundary condition enforces a cyclic condition between a pair of
@@ -72,20 +69,10 @@ class cyclicFvPatchField
     public coupledFvPatchField<Type>,
     public cyclicLduInterfaceField
 {
-    // Private data
+    // Private Data
 
         //- Local reference cast into the cyclic patch
         const cyclicFvPatch& cyclicPatch_;
-
-
-    // Private Member Functions
-
-        //- Return neighbour side field given internal fields
-        template<class Type2>
-        tmp<Field<Type2>> neighbourSideField
-        (
-            const Field<Type2>&
-        ) const;
 
 
 public:
@@ -120,7 +107,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         cyclicFvPatchField
         (
             const cyclicFvPatchField<Type>&
@@ -135,7 +122,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         cyclicFvPatchField
         (
             const cyclicFvPatchField<Type>&,
@@ -155,7 +142,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Access
 
@@ -172,7 +159,7 @@ public:
             tmp<Field<Type>> patchNeighbourField() const;
 
             //- Return reference to neighbour patchField
-            const cyclicFvPatchField<Type>& neighbourPatchField() const;
+            const cyclicFvPatchField<Type>& nbrPatchField() const;
 
             //- Update result field based on interface functionality
             virtual void updateInterfaceMatrix
@@ -196,22 +183,10 @@ public:
 
         // Cyclic coupled interface functions
 
-            //- Does the patch field perform the transformation
-            virtual bool doTransform() const
+            //- Return transformation between the coupled patches
+            virtual const transformer& transform() const
             {
-                return !(cyclicPatch_.parallel() || pTraits<Type>::rank == 0);
-            }
-
-            //- Return face transformation tensor
-            virtual const tensorField& forwardT() const
-            {
-                return cyclicPatch_.forwardT();
-            }
-
-            //- Return neighbour-cell transformation tensor
-            virtual const tensorField& reverseT() const
-            {
-                return cyclicPatch_.reverseT();
+                return cyclicPatch_.transform();
             }
 
             //- Return rank of component for transform

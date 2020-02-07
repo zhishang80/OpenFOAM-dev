@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::LESModels::continuousGasKEqn
-
-Group
-    grpLESTurbulence
 
 Description
     One-equation SGS model for the gas-phase in a two-phase system
@@ -75,16 +72,9 @@ class continuousGasKEqn
 :
     public kEqn<BasicTurbulenceModel>
 {
-    // Private data
+    // Private Data
 
         mutable const turbulenceModel *liquidTurbulencePtr_;
-
-
-    // Private Member Functions
-
-        // Disallow default bitwise copy construct and assignment
-        continuousGasKEqn(const continuousGasKEqn&);
-        void operator=(const continuousGasKEqn&);
 
 
 protected:
@@ -131,6 +121,9 @@ public:
             const word& type = typeName
         );
 
+        //- Disallow default bitwise copy construction
+        continuousGasKEqn(const continuousGasKEqn&) = delete;
+
 
     //- Destructor
     virtual ~continuousGasKEqn()
@@ -141,6 +134,12 @@ public:
 
         //- Read model coefficients if they have changed
         virtual bool read();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const continuousGasKEqn&) = delete;
 };
 
 

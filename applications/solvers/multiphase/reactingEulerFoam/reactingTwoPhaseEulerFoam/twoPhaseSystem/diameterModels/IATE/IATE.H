@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -33,10 +33,11 @@ Description
     per unit volume.  In every other respect this model is as presented in the
     paper:
 
+    Reference:
     \verbatim
-        "Development of Interfacial Area Transport Equation"
-        Ishii, M., Kim, S. and Kelly, J.,
-        Nuclear Engineering and Technology, Vol.37 No.6 December 2005
+        Ishii, M., Kim, S., & Kelly, J. (2005).
+        Development of interfacial area transport equation.
+        Nuclear Engineering and Technology, 37(6), 525-536.
     \endverbatim
 
 SourceFiles
@@ -67,7 +68,7 @@ class IATE
 :
     public diameterModel
 {
-    // Private data
+    // Private Data
 
         //- Interfacial curvature (alpha*interfacial area)
         volScalarField kappai_;
@@ -82,15 +83,26 @@ class IATE
         dimensionedScalar residualAlpha_;
 
         //- The Sauter-mean diameter of the phase
-        volScalarField d_;
+        volScalarField& d_;
 
         //- IATE sources
         PtrList<IATEsource> sources_;
 
 
-    // Private member functions
+    // Private Member Functions
 
         tmp<volScalarField> dsm() const;
+
+
+protected:
+
+    // Protected Member Functions
+
+        //- Get the diameter field
+        virtual tmp<volScalarField> calcD() const;
+
+        //- Get the surface area per unit volume field
+        virtual tmp<volScalarField> calcA() const;
 
 
 public:
@@ -118,21 +130,9 @@ public:
     // Member Functions
 
         //- Return the interfacial curvature
-        const volScalarField& kappai() const
+        inline const volScalarField& kappai() const
         {
             return kappai_;
-        }
-
-        //- Return the interfacial area
-        tmp<volScalarField> a() const
-        {
-            return phase_*kappai_;
-        }
-
-        //- Return the Sauter-mean diameter
-        virtual tmp<volScalarField> d() const
-        {
-            return d_;
         }
 
         //- Correct the diameter field

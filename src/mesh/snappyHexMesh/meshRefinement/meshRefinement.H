@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -148,7 +148,7 @@ public:
 
 private:
 
-    // Static data members
+    // Static Data Members
 
         //- Control of writing level
         static writeType writeLevel_;
@@ -157,7 +157,7 @@ private:
         static outputType outputLevel_;
 
 
-    // Private data
+    // Private Data
 
         //- Reference to mesh
         fvMesh& mesh_;
@@ -195,14 +195,6 @@ private:
 
 
     // Private Member Functions
-
-        //- Add patchfield of given type to all fields on mesh
-        template<class GeoField>
-        static void addPatchFields(fvMesh&, const word& patchFieldType);
-
-        //- Reorder patchfields of all fields on mesh
-        template<class GeoField>
-        static void reorderPatchFields(fvMesh&, const labelList& oldToNew);
 
         //- Find out which faces have changed given cells (old mesh labels)
         //  that were marked for refinement.
@@ -379,7 +371,7 @@ private:
                 const labelList& neiLevel,
                 const pointField& neiCc,
                 labelList& ownPatch,
-                labelList& neiPatch
+                labelList& nbrPatch
             ) const;
 
             //- Repatches external face or creates baffle for internal face
@@ -389,7 +381,7 @@ private:
             (
                 const label facei,
                 const label ownPatch,
-                const label neiPatch,
+                const label nbrPatch,
                 polyTopoChange& meshMod
             ) const;
 
@@ -580,12 +572,6 @@ private:
             ) const;
 
 
-        //- Disallow default bitwise copy construct
-        meshRefinement(const meshRefinement&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const meshRefinement&);
-
 public:
 
     //- Runtime type information
@@ -604,6 +590,9 @@ public:
             const refinementFeatures&,
             const shellSurfaces&
         );
+
+        //- Disallow default bitwise copy construction
+        meshRefinement(const meshRefinement&) = delete;
 
 
     // Member Functions
@@ -865,12 +854,12 @@ public:
             autoPtr<mapPolyMesh> dupNonManifoldPoints();
 
             //- Create baffle for every internal face where ownPatch != -1.
-            //  External faces get repatched according to ownPatch (neiPatch
+            //  External faces get repatched according to ownPatch (nbrPatch
             //  should be -1 for these)
             autoPtr<mapPolyMesh> createBaffles
             (
                 const labelList& ownPatch,
-                const labelList& neiPatch
+                const labelList& nbrPatch
             );
 
             //- Debug helper: check faceZones are not on processor patches
@@ -899,19 +888,6 @@ public:
 
 
         // Other topo changes
-
-            //- Helper:append patch to end of mesh.
-            static label appendPatch
-            (
-                fvMesh&,
-                const label insertPatchi,
-                const word&,
-                const dictionary&
-            );
-
-            //- Helper:add patch to mesh. Update all registered fields.
-            //  Used by addMeshedPatch to add patches originating from surfaces.
-            static label addPatch(fvMesh&, const word& name, const dictionary&);
 
             //- Add patch originating from meshing. Update meshedPatches_.
             label addMeshedPatch(const word& name, const dictionary&);
@@ -997,7 +973,7 @@ public:
                 (
                     const scalar minCos,
                     const scalar concaveCos,
-                    const labelList& patchIDs,
+                    const labelHashSet& patchIDs,
                     const dictionary& motionDict,
                     const labelList& preserveFaces
                 );
@@ -1137,6 +1113,11 @@ public:
             template<class Enum>
             static int readFlags(const Enum& namedEnum, const wordList&);
 
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const meshRefinement&) = delete;
 };
 
 

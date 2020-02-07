@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::SRFVelocityFvPatchVectorField
+    Foam::SRFFreestreamVelocityFvPatchVectorField
 
 Description
     Freestream velocity condition to be used in conjunction with the single
@@ -92,7 +92,7 @@ class SRFFreestreamVelocityFvPatchVectorField
 :
     public inletOutletFvPatchVectorField
 {
-    // Private data
+    // Private Data
 
         //- Is the supplied inlet value relative to the SRF
         Switch relative_;
@@ -134,7 +134,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         SRFFreestreamVelocityFvPatchVectorField
         (
             const SRFFreestreamVelocityFvPatchVectorField&
@@ -149,7 +149,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         SRFFreestreamVelocityFvPatchVectorField
         (
             const SRFFreestreamVelocityFvPatchVectorField&,
@@ -169,7 +169,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Access
 

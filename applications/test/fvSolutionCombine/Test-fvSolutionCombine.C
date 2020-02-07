@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2013 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -31,8 +31,7 @@ Description
 
 #include "argList.H"
 #include "Time.H"
-#include "wordRe.H"
-#include "OSspecific.H"
+#include "IOdictionary.H"
 
 using namespace Foam;
 
@@ -187,7 +186,7 @@ int main(int argc, char *argv[])
                 if (names[nameI] != oldNames[nameI])
                 {
                     // make "(abc|def)" pattern
-                    keyType renamed( "(" + names[nameI] + ")", true);
+                    keyType renamed(string("(" + names[nameI] + ")"));
 
                     solverDict.changeKeyword(oldNames[nameI], renamed);
 

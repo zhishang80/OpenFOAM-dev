@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -42,15 +42,12 @@ namespace Foam
 }
 
 
-// * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
-
-
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::displacementMeshMoverMotionSolver::displacementMeshMoverMotionSolver
 (
     const polyMesh& mesh,
-    const IOdictionary& dict
+    const dictionary& dict
 )
 :
     displacementMotionSolver(mesh, dict, typeName) // read pointDisplacement
@@ -65,7 +62,6 @@ Foam::displacementMeshMoverMotionSolver::
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
-
 
 Foam::externalDisplacementMeshMover&
 Foam::displacementMeshMoverMotionSolver::meshMover() const

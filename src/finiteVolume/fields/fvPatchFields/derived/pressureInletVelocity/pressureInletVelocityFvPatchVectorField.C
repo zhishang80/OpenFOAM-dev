@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -145,7 +145,7 @@ void Foam::pressureInletVelocityFvPatchVectorField::write(Ostream& os) const
     fvPatchVectorField::write(os);
     writeEntryIfDifferent<word>(os, "phi", "phi", phiName_);
     writeEntryIfDifferent<word>(os, "rho", "rho", rhoName_);
-    writeEntry("value", os);
+    writeEntry(os, "value", *this);
 }
 
 

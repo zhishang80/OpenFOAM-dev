@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -73,16 +73,11 @@ Foam::tmp<Foam::pointScalarField> Foam::functionObjects::streamFunction::calc
 
     tmp<pointScalarField> tstreamFunction
     (
-        new pointScalarField
+        pointScalarField::New
         (
-            IOobject
-            (
-                "streamFunction",
-                time_.timeName(),
-                mesh_
-            ),
+            "streamFunction",
             pMesh,
-            dimensionedScalar("zero", phi.dimensions(), 0.0)
+            dimensionedScalar(phi.dimensions(), 0)
         )
     );
     pointScalarField& streamFunction = tstreamFunction.ref();
@@ -439,10 +434,8 @@ Foam::functionObjects::streamFunction::streamFunction
     const dictionary& dict
 )
 :
-    fieldExpression(name, runTime, dict, "phi")
+    fieldExpression(name, runTime, dict, typeName, "phi")
 {
-    setResultName("streamFunction", "phi");
-
     label nD = mesh_.nGeometricD();
 
     if (nD != 2)

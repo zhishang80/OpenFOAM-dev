@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -58,18 +58,17 @@ class includeIfPresentEntry
 :
     public includeEntry
 {
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        includeIfPresentEntry(const includeIfPresentEntry&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const includeIfPresentEntry&);
 
 public:
 
     //- Runtime type information
     ClassName("includeIfPresent");
+
+
+    // Constructors
+
+        //- Disallow default bitwise copy construction
+        includeIfPresentEntry(const includeIfPresentEntry&) = delete;
 
 
     // Member Functions
@@ -85,6 +84,11 @@ public:
             Istream&
         );
 
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const includeIfPresentEntry&) = delete;
 };
 
 

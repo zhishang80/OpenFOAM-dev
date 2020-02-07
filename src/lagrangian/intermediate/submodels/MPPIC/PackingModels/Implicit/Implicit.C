@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -53,15 +53,15 @@ Foam::PackingModels::Implicit<CloudType>::Implicit
             IOobject::NO_WRITE
         ),
         this->owner().mesh(),
-        dimensionedScalar("zero", dimless, 0.0),
+        dimensionedScalar(dimless, 0),
         zeroGradientFvPatchScalarField::typeName
     ),
     phiCorrect_(nullptr),
     uCorrect_(nullptr),
     applyLimiting_(this->coeffDict().lookup("applyLimiting")),
     applyGravity_(this->coeffDict().lookup("applyGravity")),
-    alphaMin_(readScalar(this->coeffDict().lookup("alphaMin"))),
-    rhoMin_(readScalar(this->coeffDict().lookup("rhoMin")))
+    alphaMin_(this->coeffDict().template lookup<scalar>("alphaMin")),
+    rhoMin_(this->coeffDict().template lookup<scalar>("rhoMin"))
 {
     alpha_ = this->owner().theta();
     alpha_.oldTime();
@@ -147,7 +147,7 @@ void Foam::PackingModels::Implicit<CloudType>::cacheFields(const bool store)
                 IOobject::NO_WRITE
             ),
             mesh,
-            dimensionedScalar("zero", dimDensity, 0),
+            dimensionedScalar(dimDensity, 0),
             zeroGradientFvPatchField<scalar>::typeName
         );
         rho.primitiveFieldRef() = max(rhoAverage.primitiveField(), rhoMin_);
@@ -168,7 +168,7 @@ void Foam::PackingModels::Implicit<CloudType>::cacheFields(const bool store)
                 IOobject::NO_WRITE
             ),
             mesh,
-            dimensionedScalar("zero", dimPressure, 0),
+            dimensionedScalar(dimPressure, 0),
             zeroGradientFvPatchField<scalar>::typeName
         );
 
@@ -190,13 +190,10 @@ void Foam::PackingModels::Implicit<CloudType>::cacheFields(const bool store)
 
         if (applyGravity_)
         (
-            phiGByA = tmp<surfaceScalarField>
+            phiGByA = surfaceScalarField::New
             (
-                new surfaceScalarField
-                (
-                    "phiGByA",
-                    deltaT*(g & mesh.Sf())*fvc::interpolate(1.0 - rhoc/rho)
-                )
+                "phiGByA",
+                deltaT*(g & mesh.Sf())*fvc::interpolate(1.0 - rhoc/rho)
             )
         );
 
@@ -230,13 +227,10 @@ void Foam::PackingModels::Implicit<CloudType>::cacheFields(const bool store)
         // ~~~~~~~~~~~~~~~~~
 
         // correction volumetric flux
-        phiCorrect_ = tmp<surfaceScalarField>
+        phiCorrect_ = surfaceScalarField::New
         (
-            new surfaceScalarField
-            (
-                cloudName + ":phiCorrect",
-                alphaEqn.flux()/fvc::interpolate(alpha_)
-            )
+            cloudName + ":phiCorrect",
+            alphaEqn.flux()/fvc::interpolate(alpha_)
         );
 
         // limit the correction flux
@@ -253,7 +247,7 @@ void Foam::PackingModels::Implicit<CloudType>::cacheFields(const bool store)
                     IOobject::NO_WRITE
                 ),
                 mesh,
-                dimensionedVector("zero", dimVelocity, Zero),
+                dimensionedVector(dimVelocity, Zero),
                 fixedValueFvPatchField<vector>::typeName
             );
             U.primitiveFieldRef() = uAverage.primitiveField();
@@ -301,22 +295,18 @@ void Foam::PackingModels::Implicit<CloudType>::cacheFields(const bool store)
         }
 
         // correction velocity
-        uCorrect_ = tmp<volVectorField>
+        uCorrect_ = volVectorField::New
         (
-            new volVectorField
-            (
-                cloudName + ":uCorrect",
-                fvc::reconstruct(phiCorrect_())
-            )
-
+            cloudName + ":uCorrect",
+            fvc::reconstruct(phiCorrect_())
         );
         uCorrect_->correctBoundaryConditions();
 
-        //Info << endl;
-        //Info << "     alpha: " << alpha_.primitiveField() << endl;
-        //Info << "phiCorrect: " << phiCorrect_->primitiveField() << endl;
-        //Info << "  uCorrect: " << uCorrect_->primitiveField() << endl;
-        //Info << endl;
+        // Info << endl;
+        // Info << "     alpha: " << alpha_.primitiveField() << endl;
+        // Info << "phiCorrect: " << phiCorrect_->primitiveField() << endl;
+        // Info << "  uCorrect: " << uCorrect_->primitiveField() << endl;
+        // Info << endl;
     }
     else
     {

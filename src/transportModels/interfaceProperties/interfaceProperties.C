@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -25,17 +25,11 @@ License
 
 #include "interfaceProperties.H"
 #include "alphaContactAngleFvPatchScalarField.H"
-#include "mathematicalConstants.H"
+#include "unitConversion.H"
 #include "surfaceInterpolate.H"
 #include "fvcDiv.H"
 #include "fvcGrad.H"
 #include "fvcSnGrad.H"
-
-// * * * * * * * * * * * * * * * Static Member Data  * * * * * * * * * * * * //
-
-const Foam::scalar Foam::interfaceProperties::convertToRad =
-    Foam::constant::mathematical::pi/180.0;
-
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
@@ -72,7 +66,7 @@ void Foam::interfaceProperties::correctContactAngle
             fvsPatchVectorField& nHatp = nHatb[patchi];
             const scalarField theta
             (
-                convertToRad*acap.theta(U_.boundaryField()[patchi], nHatp)
+                degToRad(acap.theta(U_.boundaryField()[patchi], nHatp))
             );
 
             const vectorField nf
@@ -117,7 +111,7 @@ void Foam::interfaceProperties::calculateK()
     // Interpolated face-gradient of alpha
     surfaceVectorField gradAlphaf(fvc::interpolate(gradAlpha));
 
-    //gradAlphaf -=
+    // gradAlphaf -=
     //    (mesh.Sf()/mesh.magSf())
     //   *(fvc::snGrad(alpha1_) - (mesh.Sf() & gradAlphaf)/mesh.magSf());
 
@@ -162,10 +156,7 @@ Foam::interfaceProperties::interfaceProperties
     transportPropertiesDict_(dict),
     cAlpha_
     (
-        readScalar
-        (
-            alpha1.mesh().solverDict(alpha1.name()).lookup("cAlpha")
-        )
+        alpha1.mesh().solverDict(alpha1.name()).lookup<scalar>("cAlpha")
     ),
 
     sigmaPtr_(surfaceTensionModel::New(dict, alpha1.mesh())),
@@ -188,7 +179,7 @@ Foam::interfaceProperties::interfaceProperties
             alpha1_.mesh()
         ),
         alpha1_.mesh(),
-        dimensionedScalar("nHatf", dimArea, 0.0)
+        dimensionedScalar(dimArea, 0)
     ),
 
     K_
@@ -200,7 +191,7 @@ Foam::interfaceProperties::interfaceProperties
             alpha1_.mesh()
         ),
         alpha1_.mesh(),
-        dimensionedScalar("K", dimless/dimLength, 0.0)
+        dimensionedScalar(dimless/dimLength, 0)
     )
 {
     calculateK();

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::LESModels::Smagorinsky
-
-Group
-    grpLESTurbulence
 
 Description
     The Smagorinsky SGS model.
@@ -91,13 +88,6 @@ class Smagorinsky
 :
     public LESeddyViscosity<BasicTurbulenceModel>
 {
-    // Private Member Functions
-
-        // Disallow default bitwise copy construct and assignment
-        Smagorinsky(const Smagorinsky&);
-        void operator=(const Smagorinsky&);
-
-
 protected:
 
     // Protected data
@@ -141,6 +131,9 @@ public:
             const word& type = typeName
         );
 
+        //- Disallow default bitwise copy construction
+        Smagorinsky(const Smagorinsky&) = delete;
+
 
     //- Destructor
     virtual ~Smagorinsky()
@@ -163,6 +156,12 @@ public:
 
         //- Correct Eddy-Viscosity and related properties
         virtual void correct();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const Smagorinsky&) = delete;
 };
 
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -63,9 +63,16 @@ Foam::cyclicAMIFvPatchField<Type>::cyclicAMIFvPatchField
             << exit(FatalIOError);
     }
 
-    if (!dict.found("value") && this->coupled())
+    if (!dict.found("value"))
     {
-        this->evaluate(Pstream::commsTypes::blocking);
+        if (this->coupled())
+        {
+            this->evaluate(Pstream::commsTypes::blocking);
+        }
+        else
+        {
+            fvPatchField<Type>::operator=(this->patchInternalField());
+        }
     }
 }
 
@@ -135,7 +142,7 @@ Foam::cyclicAMIFvPatchField<Type>::patchNeighbourField() const
 {
     const Field<Type>& iField = this->primitiveField();
     const labelUList& nbrFaceCells =
-        cyclicAMIPatch_.cyclicAMIPatch().neighbPatch().faceCells();
+        cyclicAMIPatch_.cyclicAMIPatch().nbrPatch().faceCells();
 
     Field<Type> pnf(iField, nbrFaceCells);
 
@@ -149,10 +156,7 @@ Foam::cyclicAMIFvPatchField<Type>::patchNeighbourField() const
         tpnf = cyclicAMIPatch_.interpolate(pnf);
     }
 
-    if (doTransform())
-    {
-        tpnf.ref() = transform(forwardT(), tpnf());
-    }
+    transform().transform(tpnf.ref(), tpnf());
 
     return tpnf;
 }
@@ -160,7 +164,7 @@ Foam::cyclicAMIFvPatchField<Type>::patchNeighbourField() const
 
 template<class Type>
 const Foam::cyclicAMIFvPatchField<Type>&
-Foam::cyclicAMIFvPatchField<Type>::neighbourPatchField() const
+Foam::cyclicAMIFvPatchField<Type>::nbrPatchField() const
 {
     const GeometricField<Type, fvPatchField, volMesh>& fld =
         static_cast<const GeometricField<Type, fvPatchField, volMesh>&>
@@ -170,7 +174,7 @@ Foam::cyclicAMIFvPatchField<Type>::neighbourPatchField() const
 
     return refCast<const cyclicAMIFvPatchField<Type>>
     (
-        fld.boundaryField()[cyclicAMIPatch_.neighbPatchID()]
+        fld.boundaryField()[cyclicAMIPatch_.nbrPatchID()]
     );
 }
 
@@ -186,7 +190,7 @@ void Foam::cyclicAMIFvPatchField<Type>::updateInterfaceMatrix
 ) const
 {
     const labelUList& nbrFaceCells =
-        cyclicAMIPatch_.cyclicAMIPatch().neighbPatch().faceCells();
+        cyclicAMIPatch_.cyclicAMIPatch().nbrPatch().faceCells();
 
     scalarField pnf(psiInternal, nbrFaceCells);
 
@@ -223,7 +227,7 @@ void Foam::cyclicAMIFvPatchField<Type>::updateInterfaceMatrix
 ) const
 {
     const labelUList& nbrFaceCells =
-        cyclicAMIPatch_.cyclicAMIPatch().neighbPatch().faceCells();
+        cyclicAMIPatch_.cyclicAMIPatch().nbrPatch().faceCells();
 
     Field<Type> pnf(psiInternal, nbrFaceCells);
 
@@ -254,7 +258,7 @@ template<class Type>
 void Foam::cyclicAMIFvPatchField<Type>::write(Ostream& os) const
 {
     fvPatchField<Type>::write(os);
-    this->writeEntry("value", os);
+    writeEntry(os, "value", *this);
 }
 
 

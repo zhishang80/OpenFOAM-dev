@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,9 +24,6 @@ License
 Class
     Foam::rotatingWallVelocityFvPatchVectorField
 
-Group
-    grpWallBoundaryConditions grpGenericBoundaryConditions
-
 Description
     This boundary condition provides a rotational velocity condition.
 
@@ -35,7 +32,7 @@ Usage
         Property     | Description             | Required    | Default value
         origin       | origin of rotation in Cartesian co-ordinates | yes|
         axis         | axis of rotation        | yes         |
-        omega        | angular velocty of the frame [rad/s] | yes    |
+        omega        | angular velocity of the frame [rad/s] | yes    |
     \endtable
 
     Example of the boundary condition specification:
@@ -49,11 +46,11 @@ Usage
     }
     \endverbatim
 
-    The \c omega entry is a Function1 of time, see Foam::Function1Types.
+    The \c omega entry is a Function1 of time, see Foam::Function1s.
 
 See also
     Foam::fixedValueFvPatchField
-    Foam::Function1Types
+    Foam::Function1s
 
 SourceFiles
     rotatingWallVelocityFvPatchVectorField.C
@@ -79,7 +76,7 @@ class rotatingWallVelocityFvPatchVectorField
 :
     public fixedValueFvPatchVectorField
 {
-    // Private data
+    // Private Data
 
         //- Origin of the rotation
         vector origin_;
@@ -124,7 +121,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         rotatingWallVelocityFvPatchVectorField
         (
             const rotatingWallVelocityFvPatchVectorField&
@@ -139,7 +136,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         rotatingWallVelocityFvPatchVectorField
         (
             const rotatingWallVelocityFvPatchVectorField&,
@@ -160,7 +157,7 @@ public:
 
 
 
-    // Member functions
+    // Member Functions
 
         // Access functions
 

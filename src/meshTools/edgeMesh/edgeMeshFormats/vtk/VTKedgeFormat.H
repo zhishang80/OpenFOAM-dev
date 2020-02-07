@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -52,15 +52,6 @@ class VTKedgeFormat
 :
     public edgeMesh
 {
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        VTKedgeFormat(const VTKedgeFormat&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const VTKedgeFormat&);
-
-
 protected:
 
     // Protected Member Functions
@@ -83,6 +74,9 @@ public:
 
         //- Construct from file name
         VTKedgeFormat(const fileName&);
+
+        //- Disallow default bitwise copy construction
+        VTKedgeFormat(const VTKedgeFormat&) = delete;
 
 
     // Selectors
@@ -115,6 +109,12 @@ public:
         {
             write(name, *this);
         }
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const VTKedgeFormat&) = delete;
 };
 
 

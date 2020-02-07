@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -150,12 +150,12 @@ Foam::processorFvPatchField<Type>::processorFvPatchField
     processorLduInterfaceField(),
     coupledFvPatchField<Type>(ptf),
     procPatch_(refCast<const processorFvPatch>(ptf.patch())),
-    sendBuf_(ptf.sendBuf_.xfer()),
-    receiveBuf_(ptf.receiveBuf_.xfer()),
+    sendBuf_(move(ptf.sendBuf_)),
+    receiveBuf_(move(ptf.receiveBuf_)),
     outstandingSendRequest_(-1),
     outstandingRecvRequest_(-1),
-    scalarSendBuf_(ptf.scalarSendBuf_.xfer()),
-    scalarReceiveBuf_(ptf.scalarReceiveBuf_.xfer())
+    scalarSendBuf_(move(ptf.scalarSendBuf_)),
+    scalarReceiveBuf_(move(ptf.scalarReceiveBuf_))
 {
     if (debug && !ptf.ready())
     {
@@ -295,10 +295,7 @@ void Foam::processorFvPatchField<Type>::evaluate
             procPatch_.compressedReceive<Type>(commsType, *this);
         }
 
-        if (doTransform())
-        {
-            transform(*this, procPatch_.forwardT(), *this);
-        }
+        procPatch_.transform().transform(*this, *this);
     }
 }
 

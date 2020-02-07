@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -80,7 +80,7 @@ public:
     //- Class to hold DSMC particle constant properties
     class constantProperties
     {
-        // Private data
+        // Private Data
 
             //- Particle mass [kg] (constant)
             scalar mass_;
@@ -107,7 +107,7 @@ public:
             inline constantProperties(const dictionary& dict);
 
 
-        // Member functions
+        // Member Functions
 
             //- Return const access to the particle mass [kg]
             inline scalar mass() const;
@@ -275,11 +275,7 @@ public:
 
             //- Transform the physical properties of the particle
             //  according to the given transformation tensor
-            virtual void transformProperties(const tensor& T);
-
-            //- Transform the physical properties of the particle
-            //  according to the given separation vector
-            virtual void transformProperties(const vector& separation);
+            virtual void transformProperties(const transformer&);
 
 
         // I-O

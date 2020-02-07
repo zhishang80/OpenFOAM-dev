@@ -1,9 +1,9 @@
 /*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  dev                                   |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
-|    \\/     M anipulation  |                                                 |
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  dev
+     \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
@@ -790,7 +790,7 @@ boundary
     {
         type            cyclicAMI;
         neighbourPatch  AMI2;
-        transform       noOrdering;
+        ordering        noOrdering;
 /* optional
         surface
         {
@@ -817,7 +817,7 @@ boundary
     {
         type            cyclicAMI;
         neighbourPatch  AMI1;
-        transform       noOrdering;
+        ordering        noOrdering;
 /* optional
         surface
         {

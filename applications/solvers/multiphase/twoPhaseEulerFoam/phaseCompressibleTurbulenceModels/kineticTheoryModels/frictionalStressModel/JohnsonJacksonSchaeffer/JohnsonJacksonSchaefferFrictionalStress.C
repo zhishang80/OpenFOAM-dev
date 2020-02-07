@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
+   \\    /   O peration     | Website:  https://openfoam.org
     \\  /    A nd           | Copyright (C) 2016-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
@@ -129,19 +129,11 @@ JohnsonJacksonSchaeffer::nu
 
     tmp<volScalarField> tnu
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                "JohnsonJacksonSchaeffer:nu",
-                phase.mesh().time().timeName(),
-                phase.mesh(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
+            "JohnsonJacksonSchaeffer:nu",
             phase.mesh(),
-            dimensionedScalar("nu", dimensionSet(0, 2, -1, 0, 0), 0.0)
+            dimensionedScalar(dimensionSet(0, 2, -1, 0, 0), 0)
         )
     );
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -47,10 +47,7 @@ void Foam::Cloud<ParticleType>::checkPatches() const
             const cyclicAMIPolyPatch& cami =
                 refCast<const cyclicAMIPolyPatch>(pbm[patchi]);
 
-            if (cami.owner())
-            {
-                ok = ok && (cami.AMI().singlePatchProc() != -1);
-            }
+            ok = ok && cami.singlePatchProc() != -1;
         }
     }
 
@@ -81,10 +78,11 @@ Foam::Cloud<ParticleType>::Cloud
 {
     checkPatches();
 
-    // Ask for the tetBasePtIs to trigger all processors to build
-    // them, otherwise, if some processors have no particles then
-    // there is a comms mismatch.
+    // Ask for the tetBasePtIs and oldCellCentres to trigger all processors to
+    // build them, otherwise, if some processors have no particles then there
+    // is a comms mismatch.
     polyMesh_.tetBasePtIs();
+    polyMesh_.oldCellCentres();
 
     if (particles.size())
     {
@@ -171,7 +169,7 @@ void Foam::Cloud<ParticleType>::move
     // Initialise the stepFraction moved for the particles
     forAllIter(typename Cloud<ParticleType>, *this, pIter)
     {
-        pIter().stepFraction() = 0;
+        pIter().reset();
     }
 
     // List of lists of particles to be transferred for all of the
@@ -359,6 +357,7 @@ void Foam::Cloud<ParticleType>::autoMap(const mapPolyMesh& mapper)
     // them, otherwise, if some processors have no particles then
     // there is a comms mismatch.
     polyMesh_.tetBasePtIs();
+    polyMesh_.oldCellCentres();
 
     const vectorField& positions = globalPositionsPtr_();
 

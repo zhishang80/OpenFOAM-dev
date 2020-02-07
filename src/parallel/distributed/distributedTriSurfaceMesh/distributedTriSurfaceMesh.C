@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -85,7 +85,7 @@ bool Foam::distributedTriSurfaceMesh::read()
     distType_ = distributionTypeNames_.read(dict_.lookup("distributionType"));
 
     // Merge distance
-    mergeDist_ = readScalar(dict_.lookup("mergeDistance"));
+    mergeDist_ = dict_.lookup<scalar>("mergeDistance");
 
     return true;
 }
@@ -236,7 +236,7 @@ void Foam::distributedTriSurfaceMesh::distributeSegment
             // Alternative: any processor only gets clipped bit of
             // segment. This gives small problems with additional
             // truncation errors.
-            //splitSegment
+            // splitSegment
             //(
             //    segmentI,
             //    start,
@@ -347,8 +347,8 @@ Foam::distributedTriSurfaceMesh::distributeSegments
         new mapDistribute
         (
             segmentI,       // size after construction
-            sendMap.xfer(),
-            constructMap.xfer()
+            move(sendMap),
+            move(constructMap)
         )
     );
 }
@@ -640,8 +640,8 @@ Foam::distributedTriSurfaceMesh::calcLocalQueries
         new mapDistribute
         (
             segmentI,       // size after construction
-            sendMap.xfer(),
-            constructMap.xfer()
+            move(sendMap),
+            move(constructMap)
         )
     );
     const mapDistribute& map = mapPtr();
@@ -793,8 +793,8 @@ Foam::distributedTriSurfaceMesh::calcLocalQueries
         new mapDistribute
         (
             segmentI,       // size after construction
-            sendMap.xfer(),
-            constructMap.xfer()
+            move(sendMap),
+            move(constructMap)
         )
     );
     return mapPtr;
@@ -870,7 +870,7 @@ Foam::distributedTriSurfaceMesh::independentlyDistributedBbs
     forAll(bbs, proci)
     {
         bbs[proci].setSize(1);
-        //bbs[proci][0] = boundBox::invertedBox;
+        // bbs[proci][0] = boundBox::invertedBox;
         bbs[proci][0].min() = point( vGreat,  vGreat,  vGreat);
         bbs[proci][0].max() = point(-vGreat, -vGreat, -vGreat);
     }
@@ -1416,7 +1416,7 @@ Foam::distributedTriSurfaceMesh::distributedTriSurfaceMesh
     const dictionary& dict
 )
 :
-    //triSurfaceMesh(io, dict),
+    // triSurfaceMesh(io, dict),
     triSurfaceMesh
     (
         IOobject
@@ -2133,7 +2133,7 @@ void Foam::distributedTriSurfaceMesh::distribute
 
         if (debug)
         {
-            //Pout<< "Overlapping with proc " << proci
+            // Pout<< "Overlapping with proc " << proci
             //    << " faces:" << faceSendMap[proci].size()
             //    << " points:" << pointSendMap[proci].size() << endl << endl;
         }
@@ -2254,7 +2254,7 @@ void Foam::distributedTriSurfaceMesh::distribute
                     )
                 );
 
-                //if (debug)
+                // if (debug)
                 //{
                 //    Pout<< "Sending to " << proci
                 //        << " faces:" << faceSendMap[proci].size()
@@ -2282,7 +2282,7 @@ void Foam::distributedTriSurfaceMesh::distribute
                 // Receive
                 triSurface subSurface(str);
 
-                //if (debug)
+                // if (debug)
                 //{
                 //    Pout<< "Received from " << proci
                 //        << " faces:" << subSurface.size()
@@ -2303,7 +2303,7 @@ void Foam::distributedTriSurfaceMesh::distribute
                     pointConstructMap[proci]
                 );
 
-                //if (debug)
+                // if (debug)
                 //{
                 //    Pout<< "Current merged surface : faces:" << allTris.size()
                 //        << " points:" << allPoints.size() << endl << endl;
@@ -2318,8 +2318,8 @@ void Foam::distributedTriSurfaceMesh::distribute
         new mapDistribute
         (
             allTris.size(),
-            faceSendMap.xfer(),
-            faceConstructMap.xfer()
+            move(faceSendMap),
+            move(faceConstructMap)
         )
     );
     pointMap.reset
@@ -2327,8 +2327,8 @@ void Foam::distributedTriSurfaceMesh::distribute
         new mapDistribute
         (
             allPoints.size(),
-            pointSendMap.xfer(),
-            pointConstructMap.xfer()
+            move(pointSendMap),
+            move(pointConstructMap)
         )
     );
 
@@ -2377,7 +2377,7 @@ bool Foam::distributedTriSurfaceMesh::writeObject
     IOstream::streamFormat fmt,
     IOstream::versionNumber ver,
     IOstream::compressionType cmp,
-    const bool valid
+    const bool write
 ) const
 {
     // Make sure dictionary goes to same directory as surface

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -136,7 +136,7 @@ Foam::fv::VoFSolidificationMeltingSource::VoFSolidificationMeltingSource
             IOobject::AUTO_WRITE
         ),
         mesh,
-        dimensionedScalar("alpha1", dimless, 0.0),
+        dimensionedScalar(dimless, 0),
         zeroGradientFvPatchScalarField::typeName
     ),
     curTimeIndex_(-1)

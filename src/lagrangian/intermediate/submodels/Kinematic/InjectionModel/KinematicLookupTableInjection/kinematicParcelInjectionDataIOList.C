@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -29,7 +29,11 @@ License
 
 namespace Foam
 {
-    defineTemplateTypeNameAndDebug(IOList<kinematicParcelInjectionData>, 0);
+    defineTemplateTypeNameAndDebug
+    (
+        GlobalIOList<kinematicParcelInjectionData>,
+        0
+    );
 }
 
 

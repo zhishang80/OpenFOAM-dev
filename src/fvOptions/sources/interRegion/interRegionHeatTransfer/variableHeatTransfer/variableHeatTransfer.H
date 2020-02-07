@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -61,9 +61,7 @@ class variableHeatTransfer
 :
     public interRegionHeatTransferModel
 {
-private:
-
-    // Private data
+    // Private Data
 
         //- Name of neighbour velocity field; default = U
         word UNbrName_;
@@ -76,7 +74,7 @@ private:
         //- Strut diameter
         scalar ds_;
 
-        //- Fluid Prandt number
+        //- Fluid Prandtl number
         scalar Pr_;
 
         //- Area per unit volume of heat exchanger

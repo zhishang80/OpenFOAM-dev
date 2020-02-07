@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -45,7 +45,7 @@ void Foam::regionCoupledBase::resetAMI() const
     {
         AMIPtr_.clear();
 
-        const polyPatch& nbr = refCast<const polyPatch>(neighbPatch());
+        const polyPatch& nbr = refCast<const polyPatch>(nbrPatch());
         pointField nbrPoints = nbr.localPoints();
 
         if (debug)
@@ -56,7 +56,7 @@ void Foam::regionCoupledBase::resetAMI() const
         }
 
         // transform neighbour patch to local system
-        //transformPosition(nbrPoints);
+        // transformPosition(nbrPoints);
         primitivePatch nbrPatch0
         (
             SubList<face>
@@ -85,14 +85,14 @@ void Foam::regionCoupledBase::resetAMI() const
         // Construct/apply AMI interpolation to determine addressing and weights
         AMIPtr_.reset
         (
-            new AMIPatchToPatchInterpolation
+            new AMIInterpolation
             (
                 patch_,
                 nbrPatch0,
                 surfPtr(),
                 faceAreaIntersect::tmMesh,
                 true,
-                AMIPatchToPatchInterpolation::imFaceAreaWeight,
+                AMIInterpolation::imFaceAreaWeight,
                 -1,
                 AMIReverse_
             )
@@ -183,7 +183,7 @@ Foam::regionCoupledBase::~regionCoupledBase()
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-Foam::label Foam::regionCoupledBase::neighbPatchID() const
+Foam::label Foam::regionCoupledBase::nbrPatchID() const
 {
     if (nbrPatchID_ == -1)
     {
@@ -238,7 +238,7 @@ bool Foam::regionCoupledBase::owner() const
 {
     if (nbrRegionName_ == patch_.boundaryMesh().mesh().name())
     {
-        return patch_.index() < neighbPatchID();
+        return patch_.index() < nbrPatchID();
     }
     else
     {
@@ -279,7 +279,7 @@ surfPtr() const
 }
 
 
-const Foam::AMIPatchToPatchInterpolation& Foam::regionCoupledBase::AMI() const
+const Foam::AMIInterpolation& Foam::regionCoupledBase::AMI() const
 {
     if (!owner())
     {
@@ -298,7 +298,7 @@ const Foam::AMIPatchToPatchInterpolation& Foam::regionCoupledBase::AMI() const
 
 
 const Foam::regionCoupledBase&
-Foam::regionCoupledBase::neighbPatch() const
+Foam::regionCoupledBase::nbrPatch() const
 {
     const polyMesh& mesh =
         patch_.boundaryMesh().mesh().time().lookupObject<polyMesh>
@@ -306,7 +306,7 @@ Foam::regionCoupledBase::neighbPatch() const
             nbrRegionName_
         );
 
-    const polyPatch& pp = mesh.boundaryMesh()[neighbPatchID()];
+    const polyPatch& pp = mesh.boundaryMesh()[nbrPatchID()];
     return refCast<const regionCoupledBase>(pp);
 }
 
@@ -331,20 +331,17 @@ bool Foam::regionCoupledBase::order
 
 void Foam::regionCoupledBase::write(Ostream& os) const
 {
-    os.writeKeyword("neighbourPatch") << nbrPatchName_
-    << token::END_STATEMENT << nl;
-    os.writeKeyword("neighbourRegion") << nbrRegionName_
-    << token::END_STATEMENT << nl;
+    writeEntry(os, "neighbourPatch", nbrPatchName_);
+    writeEntry(os, "neighbourRegion", nbrRegionName_);
 
     if (AMIReverse_)
     {
-        os.writeKeyword("flipNormals") << AMIReverse_
-            << token::END_STATEMENT << nl;
+        writeEntry(os, "flipNormals", AMIReverse_);
     }
 
     if (!surfDict_.empty())
     {
-        os.writeKeyword(surfDict_.dictName());
+        writeKeyword(os, surfDict_.dictName());
         os  << surfDict_;
     }
 }

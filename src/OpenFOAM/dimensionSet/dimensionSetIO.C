@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -705,6 +705,12 @@ Foam::Ostream& Foam::dimensionSet::write
 ) const
 {
     return write(os, multiplier, writeUnitSet());
+}
+
+
+void Foam::writeEntry(Ostream& os, const dimensionSet& value)
+{
+    os << value;
 }
 
 

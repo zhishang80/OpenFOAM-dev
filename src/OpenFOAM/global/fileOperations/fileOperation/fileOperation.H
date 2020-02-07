@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -50,13 +50,6 @@ class regIOobject;
 class objectRegistry;
 class Time;
 
-// Description of processor directory naming:
-//  - processor directory naming
-//  - whether directory contains a range (so differs on different processors)
-//  - index in range
-//typedef Tuple2<fileName, Tuple2<bool, label>> dirIndex;
-//typedef List<dirIndex> dirIndexList;
-
 /*---------------------------------------------------------------------------*\
                          Class fileOperation Declaration
 \*---------------------------------------------------------------------------*/
@@ -83,9 +76,16 @@ public:
             PROCBASEINSTANCE,       // as PROCBASEOBJECT but with instance
             PROCINSTANCE            // as PROCOBJECT but with instance
         };
+
         static const NamedEnum<pathType, 12> pathTypeNames_;
 
+        //- Description of processor directory naming:
+        //  - processor directory naming
+        //  - whether directory contains a range
+        //    (so differs on different processors)
+        //  - index in range
         typedef Tuple2<fileName, Tuple2<pathType, label>> dirIndex;
+
         typedef List<dirIndex> dirIndexList;
 
 
@@ -198,38 +198,40 @@ public:
             virtual mode_t mode
             (
                 const fileName&,
+                const bool checkVariants = true,
                 const bool followLink = true
             ) const = 0;
 
-            //- Return the file type: DIRECTORY, FILE or LINK
-            virtual fileName::Type type
+            //- Return the file type: directory, file or link
+            virtual fileType type
             (
                 const fileName&,
+                const bool checkVariants = true,
                 const bool followLink = true
             ) const = 0;
 
-            //- Does the name exist (as DIRECTORY or FILE) in the file system?
+            //- Does the name exist (as directory or file) in the file system?
             //  Optionally enable/disable check for gzip file.
             virtual bool exists
             (
                 const fileName&,
-                const bool checkGzip=true,
+                const bool checkVariants = true,
                 const bool followLink = true
             ) const = 0;
 
-            //- Does the name exist as a DIRECTORY in the file system?
+            //- Does the name exist as a directory in the file system?
             virtual bool isDir
             (
                 const fileName&,
                 const bool followLink = true
             ) const = 0;
 
-            //- Does the name exist as a FILE in the file system?
+            //- Does the name exist as a file in the file system?
             //  Optionally enable/disable check for gzip file.
             virtual bool isFile
             (
                 const fileName&,
-                const bool checkGzip=true,
+                const bool checkVariants = true,
                 const bool followLink = true
             ) const = 0;
 
@@ -237,6 +239,7 @@ public:
             virtual off_t fileSize
             (
                 const fileName&,
+                const bool checkVariants = true,
                 const bool followLink = true
             ) const = 0;
 
@@ -244,6 +247,7 @@ public:
             virtual time_t lastModified
             (
                 const fileName&,
+                const bool checkVariants = true,
                 const bool followLink = true
             ) const = 0;
 
@@ -251,6 +255,7 @@ public:
             virtual double highResLastModified
             (
                 const fileName&,
+                const bool checkVariants = true,
                 const bool followLink = true
             ) const = 0;
 
@@ -258,8 +263,8 @@ public:
             virtual fileNameList readDir
             (
                 const fileName&,
-                const fileName::Type=fileName::FILE,
-                const bool filtergz=true,
+                const fileType = fileType::file,
+                const bool filterVariants = true,
                 const bool followLink = true
             ) const = 0;
 
@@ -298,16 +303,16 @@ public:
             //- Remove a directory and its contents
             virtual bool rmDir(const fileName&) const = 0;
 
-//            //- Open a shared library. Return handle to library. Print error
-//            //  message if library cannot be loaded (check = true)
-//            virtual void* dlOpen
-//            (
-//                const fileName& lib,
-//                const bool check = true
-//            ) const = 0;
+            // //- Open a shared library. Return handle to library. Print error
+            // //  message if library cannot be loaded (check = true)
+            // virtual void* dlOpen
+            // (
+            //     const fileName& lib,
+            //     const bool check = true
+            // ) const = 0;
 
 
-        // (reg)IOobject functinality
+        // (reg)IOobject functionality
 
             //- Generate disk file name for object. Opposite of filePath.
             //  Optional wanted typeName.
@@ -358,7 +363,7 @@ public:
                 regIOobject&,
                 const fileName&,
                 const word& typeName,
-                const bool valid = true
+                const bool read = true
             ) const = 0;
 
             //- Top-level read
@@ -372,7 +377,7 @@ public:
 
             //- Writes a regIOobject (so header, contents and divider).
             //  Returns success state. Default action is to write to
-            //  the objectPath using writeData. If !valid the
+            //  the objectPath using writeData. If !write the
             //  file does not need to be written (this is used e.g. to
             //  suppress empty local lagrangian data)
             virtual bool writeObject
@@ -381,7 +386,7 @@ public:
                 IOstream::streamFormat format=IOstream::ASCII,
                 IOstream::versionNumber version=IOstream::currentVersion,
                 IOstream::compressionType compression=IOstream::UNCOMPRESSED,
-                const bool valid = true
+                const bool write = true
             ) const;
 
 
@@ -401,7 +406,7 @@ public:
                 IOstream::streamFormat format=IOstream::ASCII,
                 IOstream::versionNumber version=IOstream::currentVersion,
                 IOstream::compressionType compression=IOstream::UNCOMPRESSED,
-                const bool valid = true
+                const bool write = true
             ) const = 0;
 
 
@@ -485,8 +490,11 @@ public:
             virtual void setTime(const Time&) const
             {}
 
+            //- Forcibly wait until all output done. Flush any cached data
+            virtual void flush() const;
+
             //- Generate path (like io.path) from root+casename with any
-            //  'processorXXX' replaced by procDir (usually 'processsors')
+            //  'processorXXX' replaced by procDir (usually 'processors')
             fileName processorsCasePath
             (
                 const IOobject&,
@@ -494,7 +502,7 @@ public:
             ) const;
 
             //- Generate path (like io.path) with provided instance and any
-            //  'processorXXX' replaced by procDir (usually 'processsors')
+            //  'processorXXX' replaced by procDir (usually 'processors')
             fileName processorsPath
             (
                 const IOobject&,
@@ -535,6 +543,14 @@ const fileOperation& fileHandler();
 
 //- Reset file handler
 void fileHandler(autoPtr<fileOperation>&);
+
+//- Recursively search the given directory for the file
+//  returning the path relative to the directory or
+//  fileName::null if not found
+fileName search(const word& file, const fileName& directory);
+
+//- Copy all the files from the source to the target directory
+void cpFiles(const fileName& srcDir, const fileName& targetDir);
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

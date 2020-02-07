@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -31,6 +31,20 @@ License
 Foam::string::string(Istream& is)
 {
     is >> *this;
+}
+
+
+// * * * * * * * * * * * * * * * IOstream Functions  * * * * * * * * * * * * //
+
+void Foam::writeEntry(Ostream& os, const char* value)
+{
+    os << value;
+}
+
+
+void Foam::writeEntry(Ostream& os, const string& value)
+{
+    os << value;
 }
 
 

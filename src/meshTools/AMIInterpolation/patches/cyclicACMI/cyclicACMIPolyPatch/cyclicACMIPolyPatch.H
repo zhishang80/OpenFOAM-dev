@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -36,7 +36,7 @@ SourceFiles
 #define cyclicACMIPolyPatch_H
 
 #include "cyclicAMIPolyPatch.H"
-#include "AMIPatchToPatchInterpolation.H"
+#include "AMIInterpolation.H"
 #include "polyBoundaryMesh.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -52,10 +52,7 @@ class cyclicACMIPolyPatch
 :
     public cyclicAMIPolyPatch
 {
-
-private:
-
-    // Private data
+    // Private Data
 
         //- Fraction of face area below which face is considered disconnected
         static const scalar tolerance_;
@@ -86,23 +83,8 @@ protected:
         //- Initialise the calculation of the patch geometry
         virtual void initGeometry(PstreamBuffers&);
 
-        //- Calculate the patch geometry
-        virtual void calcGeometry(PstreamBuffers&);
-
         //- Initialise the patches for moving points
         virtual void initMovePoints(PstreamBuffers& pBufs, const pointField&);
-
-        //- Correct patches after moving points
-        virtual void movePoints(PstreamBuffers& pBufs, const pointField&);
-
-        //- Initialise the update of the patch topology
-        virtual void initUpdateMesh(PstreamBuffers&);
-
-        //- Update of the patch topology
-        virtual void updateMesh(PstreamBuffers&);
-
-        //- Clear geometry
-        virtual void clearGeom();
 
         //- Return the mask/weighting for the source patch
         virtual const scalarField& srcMask() const;
@@ -127,8 +109,7 @@ public:
             const label start,
             const label index,
             const polyBoundaryMesh& bm,
-            const word& patchType,
-            const transformType transform = UNKNOWN
+            const word& patchType
         );
 
         //- Construct from dictionary
@@ -197,7 +178,7 @@ public:
                     index,
                     newSize,
                     newStart,
-                    neighbPatchName(),
+                    nbrPatchName(),
                     nonOverlapPatchName_
                 )
             );
@@ -242,7 +223,7 @@ public:
             inline bool updated() const;
 
             //- Return a reference to the neighbour patch
-            virtual const cyclicACMIPolyPatch& neighbPatch() const;
+            virtual const cyclicACMIPolyPatch& nbrPatch() const;
 
             //- Non-overlapping patch name
             inline const word& nonOverlapPatchName() const;

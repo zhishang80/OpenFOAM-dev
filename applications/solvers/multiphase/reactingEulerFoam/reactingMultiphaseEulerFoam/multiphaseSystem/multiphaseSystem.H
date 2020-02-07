@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -55,13 +55,13 @@ class multiphaseSystem
 {
 private:
 
-    // Private typedefs
+    // Private Typedefs
 
         typedef HashTable<scalar, phasePairKey, phasePairKey::hash>
             cAlphaTable;
 
 
-    // Private data
+    // Private Data
 
         //- The indexed phase-fraction field; e.g., 1 for water, 2 for air, 3
         //  for oil, etc...
@@ -73,15 +73,10 @@ private:
         //- Stabilisation for normalisation of the interface normal
         const dimensionedScalar deltaN_;
 
-        //- Conversion factor for degrees into radians
-        static const scalar convertToRad;
 
-
-    // Private member functions
+    // Private Member Functions
 
         void calcAlphas();
-
-        void solveAlphas();
 
         tmp<surfaceVectorField> nHatfv
         (
@@ -175,7 +170,11 @@ public:
         tmp<volScalarField> nearInterface() const;
 
         //- Solve for the phase fractions
-        virtual void solve();
+        virtual void solve
+        (
+            const PtrList<volScalarField>& rAUs,
+            const PtrList<surfaceScalarField>& rAUfs
+        );
 };
 
 

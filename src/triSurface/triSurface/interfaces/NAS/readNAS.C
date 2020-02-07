@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -353,7 +353,7 @@ bool triSurface::readNAS(const fileName& fName)
     Info<< "patches:" << patches << endl;
 
     // Transfer DynamicLists to straight ones.
-    pointField allPoints(points.xfer());
+    pointField allPoints(move(points));
 
     // Create triSurface
     *this = triSurface(faces, patches, allPoints, true);

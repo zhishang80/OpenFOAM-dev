@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2013 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -35,8 +35,8 @@ Foam::BlobsSheetAtomization<CloudType>::BlobsSheetAtomization
 )
 :
     AtomizationModel<CloudType>(dict, owner, typeName),
-    B_(readScalar(this->coeffDict().lookup("B"))),
-    angle_(readScalar(this->coeffDict().lookup("angle")))
+    B_(this->coeffDict().template lookup<scalar>("B")),
+    angle_(this->coeffDict().template lookup<scalar>("angle"))
 {}
 
 
@@ -92,7 +92,7 @@ void Foam::BlobsSheetAtomization<CloudType>::update
     const vector& injectionPos,
     const scalar pAmbient,
     const scalar chi,
-    cachedRandom& rndGen
+    Random& rndGen
 ) const
 {
     scalar lBU =

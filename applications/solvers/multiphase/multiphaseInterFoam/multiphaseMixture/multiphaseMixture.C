@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -25,6 +25,7 @@ License
 
 #include "multiphaseMixture.H"
 #include "alphaContactAngleFvPatchScalarField.H"
+#include "unitConversion.H"
 #include "Time.H"
 #include "subCycle.H"
 #include "MULES.H"
@@ -33,11 +34,6 @@ License
 #include "fvcSnGrad.H"
 #include "fvcDiv.H"
 #include "fvcFlux.H"
-
-// * * * * * * * * * * * * * * * Static Member Data  * * * * * * * * * * * * //
-
-const Foam::scalar Foam::multiphaseMixture::convertToRad =
-    Foam::constant::mathematical::pi/180.0;
 
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
@@ -92,7 +88,7 @@ Foam::multiphaseMixture::multiphaseMixture
             IOobject::NO_WRITE
         ),
         mesh_,
-        dimensionedScalar("rhoPhi", dimMass/dimTime, 0.0)
+        dimensionedScalar(dimMass/dimTime, 0)
     ),
 
     alphas_
@@ -106,7 +102,7 @@ Foam::multiphaseMixture::multiphaseMixture
             IOobject::AUTO_WRITE
         ),
         mesh_,
-        dimensionedScalar("alphas", dimless, 0.0)
+        dimensionedScalar(dimless, 0)
     ),
 
     nu_
@@ -254,21 +250,11 @@ Foam::multiphaseMixture::surfaceTensionForce() const
 {
     tmp<surfaceScalarField> tstf
     (
-        new surfaceScalarField
+        surfaceScalarField::New
         (
-            IOobject
-            (
-                "surfaceTensionForce",
-                mesh_.time().timeName(),
-                mesh_
-            ),
+            "surfaceTensionForce",
             mesh_,
-            dimensionedScalar
-            (
-                "surfaceTensionForce",
-                dimensionSet(1, -2, -2, 0, 0),
-                0.0
-            )
+            dimensionedScalar(dimensionSet(1, -2, -2, 0, 0), 0)
         )
     );
 
@@ -296,7 +282,7 @@ Foam::multiphaseMixture::surfaceTensionForce() const
                     << exit(FatalError);
             }
 
-            stf += dimensionedScalar("sigma", dimSigma_, sigma())
+            stf += dimensionedScalar(dimSigma_, sigma())
                *fvc::interpolate(K(alpha1, alpha2))*
                 (
                     fvc::interpolate(alpha2)*fvc::snGrad(alpha1)
@@ -318,8 +304,8 @@ void Foam::multiphaseMixture::solve()
     volScalarField& alpha = phases_.first();
 
     const dictionary& alphaControls = mesh_.solverDict("alpha");
-    label nAlphaSubCycles(readLabel(alphaControls.lookup("nAlphaSubCycles")));
-    scalar cAlpha(readScalar(alphaControls.lookup("cAlpha")));
+    label nAlphaSubCycles(alphaControls.lookup<label>("nAlphaSubCycles"));
+    scalar cAlpha(alphaControls.lookup<scalar>("cAlpha"));
 
     if (nAlphaSubCycles > 1)
     {
@@ -332,7 +318,7 @@ void Foam::multiphaseMixture::solve()
                 mesh_
             ),
             mesh_,
-            dimensionedScalar("0", rhoPhi_.dimensions(), 0)
+            dimensionedScalar(rhoPhi_.dimensions(), 0)
         );
 
         dimensionedScalar totalDeltaT = runTime.deltaT();
@@ -453,7 +439,7 @@ void Foam::multiphaseMixture::correctContactAngle
 
             bool matched = (tp.key().first() == alpha1.name());
 
-            scalar theta0 = convertToRad*tp().theta0(matched);
+            scalar theta0 = degToRad(tp().theta0(matched));
             scalarField theta(boundary[patchi].size(), theta0);
 
             scalar uTheta = tp().uTheta();
@@ -461,8 +447,8 @@ void Foam::multiphaseMixture::correctContactAngle
             // Calculate the dynamic contact angle if required
             if (uTheta > small)
             {
-                scalar thetaA = convertToRad*tp().thetaA(matched);
-                scalar thetaR = convertToRad*tp().thetaR(matched);
+                scalar thetaA = degToRad(tp().thetaA(matched));
+                scalar thetaR = degToRad(tp().thetaR(matched));
 
                 // Calculated the component of the velocity parallel to the wall
                 vectorField Uwall
@@ -535,16 +521,11 @@ Foam::multiphaseMixture::nearInterface() const
 {
     tmp<volScalarField> tnearInt
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                "nearInterface",
-                mesh_.time().timeName(),
-                mesh_
-            ),
+            "nearInterface",
             mesh_,
-            dimensionedScalar("nearInterface", dimless, 0.0)
+            dimensionedScalar(dimless, 0)
         )
     );
 
@@ -631,7 +612,7 @@ void Foam::multiphaseMixture::solveAlphas
 
     MULES::limitSum(alphaPhiCorrs);
 
-    rhoPhi_ = dimensionedScalar("0", dimensionSet(1, 0, -1, 0, 0), 0);
+    rhoPhi_ = dimensionedScalar(dimensionSet(1, 0, -1, 0, 0), 0);
 
     volScalarField sumAlpha
     (
@@ -642,7 +623,7 @@ void Foam::multiphaseMixture::solveAlphas
             mesh_
         ),
         mesh_,
-        dimensionedScalar("sumAlpha", dimless, 0)
+        dimensionedScalar(dimless, 0)
     );
 
     phasei = 0;

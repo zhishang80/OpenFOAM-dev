@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::RASModels::continuousGasKEpsilon
-
-Group
-    grpRASTurbulence
 
 Description
     k-epsilon model for the gas-phase in a two-phase system
@@ -80,18 +77,11 @@ class continuousGasKEpsilon
 :
     public kEpsilon<BasicTurbulenceModel>
 {
-    // Private data
+    // Private Data
 
         mutable const turbulenceModel *liquidTurbulencePtr_;
 
         volScalarField nutEff_;
-
-
-    // Private Member Functions
-
-        // Disallow default bitwise copy construct and assignment
-        continuousGasKEpsilon(const continuousGasKEpsilon&);
-        void operator=(const continuousGasKEpsilon&);
 
 
 protected:
@@ -137,6 +127,9 @@ public:
             const word& type = typeName
         );
 
+        //- Disallow default bitwise copy construction
+        continuousGasKEpsilon(const continuousGasKEpsilon&) = delete;
+
 
     //- Destructor
     virtual ~continuousGasKEpsilon()
@@ -159,6 +152,12 @@ public:
 
         //- Return the Reynolds stress tensor
         virtual tmp<volSymmTensorField> R() const;
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const continuousGasKEpsilon&) = delete;
 };
 
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -59,7 +59,7 @@ template<class T> Ostream& operator<<(Ostream&, const UIndirectList<T>&);
 template<class T>
 class UIndirectList
 {
-    // Private data
+    // Private Data
 
         UList<T>& completeList_;
         const labelUList& addressing_;
@@ -71,6 +71,9 @@ public:
 
         //- Construct given the complete list and the addressing array
         inline UIndirectList(const UList<T>&, const labelUList&);
+
+        //- Copy constructor
+        UIndirectList(const UIndirectList<T>&) = default;
 
 
     // Member Functions

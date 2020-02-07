@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -73,12 +73,12 @@ void Foam::mapDistribute::applyTransforms
     const TransformOp& top
 ) const
 {
-    const List<vectorTensorTransform>& totalTransform =
+    const List<transformer>& totalTransform =
         globalTransforms.transformPermutations();
 
     forAll(totalTransform, trafoI)
     {
-        const vectorTensorTransform& vt = totalTransform[trafoI];
+        const transformer& vt = totalTransform[trafoI];
         const labelList& elems = transformElements_[trafoI];
         label n = transformStart_[trafoI];
 
@@ -88,7 +88,7 @@ void Foam::mapDistribute::applyTransforms
 
         forAll(transformFld, i)
         {
-            //cop(field[n++], transformFld[i]);
+            // cop(field[n++], transformFld[i]);
             field[n++] = transformFld[i];
         }
     }
@@ -103,12 +103,12 @@ void Foam::mapDistribute::applyInverseTransforms
     const TransformOp& top
 ) const
 {
-    const List<vectorTensorTransform>& totalTransform =
+    const List<transformer>& totalTransform =
         globalTransforms.transformPermutations();
 
     forAll(totalTransform, trafoI)
     {
-        const vectorTensorTransform& vt = totalTransform[trafoI];
+        const transformer& vt = totalTransform[trafoI];
         const labelList& elems = transformElements_[trafoI];
         label n = transformStart_[trafoI];
 
@@ -118,7 +118,7 @@ void Foam::mapDistribute::applyInverseTransforms
 
         forAll(transformFld, i)
         {
-            //cop(field[elems[i]], transformFld[i]);
+            // cop(field[elems[i]], transformFld[i]);
             field[elems[i]] = transformFld[i];
         }
     }

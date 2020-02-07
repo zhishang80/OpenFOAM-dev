@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -67,7 +67,7 @@ class composite
     public PtrList<joint>,
     public joint
 {
-    // Private member functions
+    // Private Member Functions
 
         //- Set the properties of the last joint following construction
         //  of the body containing the joint
@@ -89,7 +89,7 @@ public:
         composite(const PtrList<joint>& joints);
 
         //- Construct for given model from dictionary
-        composite(const dictionary& dict);
+        composite(const rigidBodyModel& model, const dictionary& dict);
 
         //- Clone this joint
         virtual autoPtr<joint> clone() const;
@@ -105,8 +105,7 @@ public:
         virtual void jcalc
         (
             joint::XSvc& J,
-            const scalarField& q,
-            const scalarField& qDot
+            const rigidBodyModelState& state
         ) const;
 
         //- Write

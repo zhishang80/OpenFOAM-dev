@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::functionObjects::writeDictionary
-
-Group
-    grpUtilitiesFunctionObjects
 
 Description
     Writes dictionaries on start-up and on change.
@@ -61,7 +58,7 @@ class writeDictionary
 :
     public functionObject
 {
-    // Private data
+    // Private Data
 
         //- Reference to the database
         const objectRegistry& obr_;
@@ -84,17 +81,6 @@ class writeDictionary
         );
 
 
-private:
-
-    // Private member functions
-
-        //- Disallow default bitwise copy construct
-        writeDictionary(const writeDictionary&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const writeDictionary&);
-
-
 public:
 
     //- Runtime type information
@@ -111,6 +97,9 @@ public:
             const dictionary& dict
         );
 
+        //- Disallow default bitwise copy construction
+        writeDictionary(const writeDictionary&) = delete;
+
 
     //- Destructor
     virtual ~writeDictionary();
@@ -126,6 +115,12 @@ public:
 
         //- Write the selected dictionaries
         virtual bool write();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const writeDictionary&) = delete;
 };
 
 

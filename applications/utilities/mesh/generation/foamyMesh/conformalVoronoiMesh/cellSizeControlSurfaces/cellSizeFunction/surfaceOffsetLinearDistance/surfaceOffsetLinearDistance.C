@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -62,12 +62,12 @@ surfaceOffsetLinearDistance::surfaceOffsetLinearDistance
     ),
     distanceCellSize_
     (
-        readScalar(coeffsDict().lookup("distanceCellSizeCoeff"))
+        coeffsDict().lookup<scalar>("distanceCellSizeCoeff")
        *defaultCellSize
     ),
     surfaceOffset_
     (
-        readScalar(coeffsDict().lookup("surfaceOffsetCoeff"))*defaultCellSize
+        coeffsDict().lookup<scalar>("surfaceOffsetCoeff")*defaultCellSize
     ),
     totalDistance_(),
     totalDistanceSqr_()
@@ -93,13 +93,13 @@ surfaceOffsetLinearDistance::surfaceOffsetLinearDistance
         if (coeffsDict().found("totalDistanceCoeff"))
         {
             totalDistance_ =
-                readScalar(coeffsDict().lookup("totalDistanceCoeff"))
+                coeffsDict().lookup<scalar>("totalDistanceCoeff")
                *defaultCellSize;
         }
         else
         {
             totalDistance_ =
-                readScalar(coeffsDict().lookup("linearDistanceCoeff"))
+                coeffsDict().lookup<scalar>("linearDistanceCoeff")
                *defaultCellSize
               + surfaceOffset_;
         }
@@ -250,7 +250,7 @@ bool surfaceOffsetLinearDistance::cellSize
         if
         (
             sideMode_ == smInside
-         && vTL[0] == volumeType::INSIDE
+         && vTL[0] == volumeType::inside
         )
         {
             size = sizeFunction(hitPt, dist, hitIndex);
@@ -260,7 +260,7 @@ bool surfaceOffsetLinearDistance::cellSize
         else if
         (
             sideMode_ == smOutside
-         && vTL[0] == volumeType::OUTSIDE
+         && vTL[0] == volumeType::outside
         )
         {
             size = sizeFunction(hitPt, dist, hitIndex);

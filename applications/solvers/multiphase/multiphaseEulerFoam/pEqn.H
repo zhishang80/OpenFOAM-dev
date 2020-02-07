@@ -5,10 +5,10 @@
     // tmp<fvScalarMatrix> pEqnComp1;
     // tmp<fvScalarMatrix> pEqnComp2;
 
-    // //if (transonic)
+    // // if (transonic)
     // //{
     // //}
-    // //else
+    // // else
     // {
     //     surfaceScalarField phid1("phid1", fvc::interpolate(psi1)*phi1);
     //     surfaceScalarField phid2("phid2", fvc::interpolate(psi2)*phi2);
@@ -55,7 +55,7 @@
             IOobject::AUTO_WRITE
         ),
         mesh,
-        dimensionedScalar("phiHbyA", dimArea*dimVelocity, 0)
+        dimensionedScalar(dimArea*dimVelocity, 0)
     );
 
     volScalarField rho("rho", fluid.rho());
@@ -176,7 +176,7 @@
             mesh
         ),
         mesh,
-        dimensionedScalar("rAUf", dimensionSet(-1, 3, 1, 0, 0), 0)
+        dimensionedScalar(dimensionSet(-1, 3, 1, 0, 0), 0)
     );
 
     phasei = 0;
@@ -229,8 +229,7 @@
             //     (alpha1/rho1)*pEqnComp1()
             //   + (alpha2/rho2)*pEqnComp2()
             // ) +
-            pEqnIncomp,
-            mesh.solver(p_rgh.select(pimple.finalInnerIter()))
+            pEqnIncomp
         );
 
         if (pimple.finalNonOrthogonalIter())
@@ -238,7 +237,7 @@
             surfaceScalarField mSfGradp("mSfGradp", pEqnIncomp.flux()/rAUf);
 
             phasei = 0;
-            phi = dimensionedScalar("phi", phi.dimensions(), 0);
+            phi = dimensionedScalar(phi.dimensions(), 0);
             forAllIter(PtrDictionary<phaseModel>, fluid.phases(), iter)
             {
                 phaseModel& phase = iter();
@@ -267,7 +266,7 @@
 
             mSfGradp = pEqnIncomp.flux()/rAUf;
 
-            U = dimensionedVector("U", dimVelocity, Zero);
+            U = dimensionedVector(dimVelocity, Zero);
 
             phasei = 0;
             forAllIter(PtrDictionary<phaseModel>, fluid.phases(), iter)
@@ -288,7 +287,7 @@
                         )
                     )/phase.rho();
 
-                //phase.U() = fvc::reconstruct(phase.phi());
+                // phase.U() = fvc::reconstruct(phase.phi());
                 phase.U().correctBoundaryConditions();
 
                 U += alpha*phase.U();
@@ -298,7 +297,7 @@
         }
     }
 
-    //p = max(p, pMin);
+    // p = max(p, pMin);
 
     #include "continuityErrs.H"
 

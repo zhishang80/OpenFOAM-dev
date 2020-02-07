@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -128,13 +128,13 @@ void Foam::targetVolumeToCell::combine(topoSet& set, const bool add) const
 
     scalar maxComp = -great;
     label maxCells = 0;
-    //scalar maxVol = 0;
+    // scalar maxVol = 0;
     scalar minComp = great;
     {
         const boundBox& bb = mesh_.bounds();
         pointField points(bb.points());
 
-        //label minPointi = -1;
+        // label minPointi = -1;
         label maxPointi = -1;
         forAll(points, pointi)
         {
@@ -147,13 +147,13 @@ void Foam::targetVolumeToCell::combine(topoSet& set, const bool add) const
             else if (c < minComp)
             {
                 minComp = c;
-                //minPointi = pointi;
+                // minPointi = pointi;
             }
         }
 
         PackedBoolList maxSelected(mesh_.nCells());
         maxCells = selectCells(maxComp, maskSet, maxSelected);
-        //maxVol = volumeOfSet(maxSelected);
+        // maxVol = volumeOfSet(maxSelected);
 
         // Check that maxPoint indeed selects all cells
         if (maxCells != nTotCells)
@@ -174,7 +174,7 @@ void Foam::targetVolumeToCell::combine(topoSet& set, const bool add) const
     PackedBoolList selected(mesh_.nCells());
     label nSelected = -1;
     scalar selectedVol = 0.0;
-    //scalar selectedComp = 0.0;
+    // scalar selectedComp = 0.0;
 
 
     scalar low = minComp;
@@ -189,7 +189,7 @@ void Foam::targetVolumeToCell::combine(topoSet& set, const bool add) const
         nSelected = selectCells(mid, maskSet, selected);
         selectedVol = volumeOfSet(selected);
 
-        //Pout<< "High:" << high << " low:" << low << " mid:" << mid << nl
+        // Pout<< "High:" << high << " low:" << low << " mid:" << mid << nl
         //    << "    nSelected:" << nSelected << nl
         //    << "    vol      :" << selectedVol << nl
         //    << endl;
@@ -223,7 +223,7 @@ void Foam::targetVolumeToCell::combine(topoSet& set, const bool add) const
 
     if (selectedVol < vol_)
     {
-        //selectedComp = high;
+        // selectedComp = high;
     }
     else
     {
@@ -232,7 +232,7 @@ void Foam::targetVolumeToCell::combine(topoSet& set, const bool add) const
 
         if (selectedVol < vol_)
         {
-            //selectedComp = low;
+            // selectedComp = low;
         }
         else
         {
@@ -283,7 +283,7 @@ Foam::targetVolumeToCell::targetVolumeToCell
 )
 :
     topoSetSource(mesh),
-    vol_(readScalar(dict.lookup("volume"))),
+    vol_(dict.lookup<scalar>("volume")),
     n_(dict.lookup("normal")),
     maskSetName_(dict.lookupOrDefault<word>("set", ""))
 {}

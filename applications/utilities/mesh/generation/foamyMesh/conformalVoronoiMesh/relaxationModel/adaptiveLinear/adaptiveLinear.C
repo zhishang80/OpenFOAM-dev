@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -45,8 +45,8 @@ adaptiveLinear::adaptiveLinear
 )
 :
     relaxationModel(typeName, relaxationDict, runTime),
-    relaxationStart_(readScalar(coeffDict().lookup("relaxationStart"))),
-    relaxationEnd_(readScalar(coeffDict().lookup("relaxationEnd"))),
+    relaxationStart_(coeffDict().lookup<scalar>("relaxationStart")),
+    relaxationEnd_(coeffDict().lookup<scalar>("relaxationEnd")),
     lastTimeValue_(runTime_.time().timeOutputValue()),
     relaxation_(relaxationStart_)
 {}

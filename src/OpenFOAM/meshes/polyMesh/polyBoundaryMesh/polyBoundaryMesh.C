@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -37,7 +37,7 @@ License
 
 namespace Foam
 {
-defineTypeNameAndDebug(polyBoundaryMesh, 0);
+    defineTypeNameAndDebug(polyBoundaryMesh, 0);
 }
 
 
@@ -197,20 +197,26 @@ void Foam::polyBoundaryMesh::clearGeom()
 {
     forAll(*this, patchi)
     {
-        operator[](patchi).clearGeom();
+        if (this->set(patchi))
+        {
+            operator[](patchi).clearGeom();
+        }
     }
 }
 
 
 void Foam::polyBoundaryMesh::clearAddressing()
 {
-    neighbourEdgesPtr_.clear();
+    nbrEdgesPtr_.clear();
     patchIDPtr_.clear();
     groupPatchIDsPtr_.clear();
 
     forAll(*this, patchi)
     {
-        operator[](patchi).clearAddressing();
+        if (this->set(patchi))
+        {
+            operator[](patchi).clearAddressing();
+        }
     }
 }
 
@@ -264,7 +270,7 @@ void Foam::polyBoundaryMesh::calcGeometry()
 
 
 const Foam::List<Foam::labelPairList>&
-Foam::polyBoundaryMesh::neighbourEdges() const
+Foam::polyBoundaryMesh::nbrEdges() const
 {
     if (Pstream::parRun())
     {
@@ -273,10 +279,10 @@ Foam::polyBoundaryMesh::neighbourEdges() const
             << " boundaries." << endl;
     }
 
-    if (!neighbourEdgesPtr_.valid())
+    if (!nbrEdgesPtr_.valid())
     {
-        neighbourEdgesPtr_.reset(new List<labelPairList>(size()));
-        List<labelPairList>& neighbourEdges = neighbourEdgesPtr_();
+        nbrEdgesPtr_.reset(new List<labelPairList>(size()));
+        List<labelPairList>& nbrEdges = nbrEdgesPtr_();
 
         // Initialize.
         label nEdgePairs = 0;
@@ -284,11 +290,11 @@ Foam::polyBoundaryMesh::neighbourEdges() const
         {
             const polyPatch& pp = operator[](patchi);
 
-            neighbourEdges[patchi].setSize(pp.nEdges() - pp.nInternalEdges());
+            nbrEdges[patchi].setSize(pp.nEdges() - pp.nInternalEdges());
 
-            forAll(neighbourEdges[patchi], i)
+            forAll(nbrEdges[patchi], i)
             {
-                labelPair& edgeInfo = neighbourEdges[patchi][i];
+                labelPair& edgeInfo = nbrEdges[patchi][i];
 
                 edgeInfo[0] = -1;
                 edgeInfo[1] = -1;
@@ -342,10 +348,10 @@ Foam::polyBoundaryMesh::neighbourEdges() const
                     // Second occurrence. Store.
                     const labelPair& edgeInfo = fnd();
 
-                    neighbourEdges[patchi][edgei - pp.nInternalEdges()] =
+                    nbrEdges[patchi][edgei - pp.nInternalEdges()] =
                         edgeInfo;
 
-                    neighbourEdges[edgeInfo[0]][edgeInfo[1]]
+                    nbrEdges[edgeInfo[0]][edgeInfo[1]]
                          = labelPair(patchi, edgei - pp.nInternalEdges());
 
                     // Found all two occurrences of this edge so remove from
@@ -368,11 +374,11 @@ Foam::polyBoundaryMesh::neighbourEdges() const
         {
             const polyPatch& pp = operator[](patchi);
 
-            const labelPairList& nbrEdges = neighbourEdges[patchi];
+            const labelPairList& nbrEdgesp = nbrEdges[patchi];
 
-            forAll(nbrEdges, i)
+            forAll(nbrEdgesp, i)
             {
-                const labelPair& edgeInfo = nbrEdges[i];
+                const labelPair& edgeInfo = nbrEdgesp[i];
 
                 if (edgeInfo[0] == -1 || edgeInfo[1] == -1)
                 {
@@ -392,7 +398,7 @@ Foam::polyBoundaryMesh::neighbourEdges() const
         }
     }
 
-    return neighbourEdgesPtr_();
+    return nbrEdgesPtr_();
 }
 
 
@@ -644,7 +650,7 @@ Foam::labelList Foam::polyBoundaryMesh::findIndices
         }
     }
 
-    return indices;
+    return move(indices);
 }
 
 
@@ -1052,7 +1058,7 @@ void Foam::polyBoundaryMesh::movePoints(const pointField& p)
 
 void Foam::polyBoundaryMesh::updateMesh()
 {
-    neighbourEdgesPtr_.clear();
+    nbrEdgesPtr_.clear();
     patchIDPtr_.clear();
     groupPatchIDsPtr_.clear();
 
@@ -1100,21 +1106,24 @@ void Foam::polyBoundaryMesh::updateMesh()
 }
 
 
-void Foam::polyBoundaryMesh::reorder
+void Foam::polyBoundaryMesh::shuffle
 (
-    const labelUList& oldToNew,
+    const labelUList& newToOld,
     const bool validBoundary
 )
 {
     // Change order of patches
-    polyPatchList::reorder(oldToNew);
+    polyPatchList::shuffle(newToOld);
 
     // Adapt indices
     polyPatchList& patches = *this;
 
     forAll(patches, patchi)
     {
-        patches[patchi].index() = patchi;
+        if (patches.set(patchi))
+        {
+            patches[patchi].index() = patchi;
+        }
     }
 
     if (validBoundary)
@@ -1152,11 +1161,12 @@ bool Foam::polyBoundaryMesh::writeObject
     IOstream::streamFormat fmt,
     IOstream::versionNumber ver,
     IOstream::compressionType cmp,
-    const bool valid
+    const bool write
 ) const
 {
-    return regIOobject::writeObject(fmt, ver, IOstream::UNCOMPRESSED, valid);
+    return regIOobject::writeObject(fmt, ver, IOstream::UNCOMPRESSED, write);
 }
+
 
 // * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * * //
 

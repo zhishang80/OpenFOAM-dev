@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::processorCyclicFvPatchField
-
-Group
-    grpCoupledBoundaryConditions
 
 Description
     This boundary condition enables processor communication across cyclic
@@ -71,7 +68,7 @@ class processorCyclicFvPatchField
 :
     public processorFvPatchField<Type>
 {
-    // Private data
+    // Private Data
 
         //- Local reference cast into the processor patch
         const processorCyclicFvPatch& procPatch_;
@@ -117,7 +114,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         processorCyclicFvPatchField(const processorCyclicFvPatchField<Type>&);
 
         //- Construct and return a clone
@@ -129,7 +126,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         processorCyclicFvPatchField
         (
             const processorCyclicFvPatchField<Type>&,
@@ -153,20 +150,20 @@ public:
     virtual ~processorCyclicFvPatchField();
 
 
-    // Member functions
+    // Member Functions
 
         // Access
 
-            //- Does the patch field perform the transformation
-            virtual bool doTransform() const
+            //- Return transformation between the coupled patches
+            virtual const transformer& transform() const
             {
-                return !(procPatch_.parallel() || pTraits<Type>::rank == 0);
+                return procPatch_.transform();
             }
 
-            //- Return face transformation tensor
-            virtual const tensorField& forwardT() const
+            //- Return rank of component for transform
+            virtual int rank() const
             {
-                return procPatch_.forwardT();
+                return pTraits<Type>::rank;
             }
 };
 

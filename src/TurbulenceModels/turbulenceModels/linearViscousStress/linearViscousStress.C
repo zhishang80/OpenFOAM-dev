@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -69,21 +69,11 @@ template<class BasicTurbulenceModel>
 Foam::tmp<Foam::volSymmTensorField>
 Foam::linearViscousStress<BasicTurbulenceModel>::devRhoReff() const
 {
-    return tmp<volSymmTensorField>
+    return volSymmTensorField::New
     (
-        new volSymmTensorField
-        (
-            IOobject
-            (
-                IOobject::groupName("devRhoReff", this->alphaRhoPhi_.group()),
-                this->runTime_.timeName(),
-                this->mesh_,
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
-            (-(this->alpha_*this->rho_*this->nuEff()))
-           *dev(twoSymm(fvc::grad(this->U_)))
-        )
+        IOobject::groupName("devRhoReff", this->alphaRhoPhi_.group()),
+        (-(this->alpha_*this->rho_*this->nuEff()))
+       *dev(twoSymm(fvc::grad(this->U_)))
     );
 }
 

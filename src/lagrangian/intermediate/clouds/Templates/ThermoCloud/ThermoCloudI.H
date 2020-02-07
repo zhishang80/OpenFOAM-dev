@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -264,19 +264,11 @@ inline Foam::tmp<Foam::volScalarField> Foam::ThermoCloud<CloudType>::Ep() const
 {
     tmp<volScalarField> tEp
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                this->name() + ":radiation:Ep",
-                this->db().time().timeName(),
-                this->db(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
+            this->name() + ":radiation:Ep",
             this->mesh(),
-            dimensionedScalar("zero", dimMass/dimLength/pow3(dimTime), 0.0)
+            dimensionedScalar(dimMass/dimLength/pow3(dimTime), 0)
         )
     );
 
@@ -300,19 +292,11 @@ inline Foam::tmp<Foam::volScalarField> Foam::ThermoCloud<CloudType>::ap() const
 {
     tmp<volScalarField> tap
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                this->name() + ":radiation:ap",
-                this->db().time().timeName(),
-                this->db(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
+            this->name() + ":radiation:ap",
             this->mesh(),
-            dimensionedScalar("zero", dimless/dimLength, 0.0)
+            dimensionedScalar(dimless/dimLength, 0)
         )
     );
 
@@ -337,19 +321,11 @@ Foam::ThermoCloud<CloudType>::sigmap() const
 {
     tmp<volScalarField> tsigmap
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                this->name() + ":radiation:sigmap",
-                this->db().time().timeName(),
-                this->db(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
+            this->name() + ":radiation:sigmap",
             this->mesh(),
-            dimensionedScalar("zero", dimless/dimLength, 0.0)
+            dimensionedScalar(dimless/dimLength, 0)
         )
     );
 
@@ -362,7 +338,7 @@ Foam::ThermoCloud<CloudType>::sigmap() const
         const scalar f = constProps_.f0();
         const scalarField& sumAreaP = radAreaP_->field();
 
-        sigmap *= sumAreaP*(1.0 - f)*(1.0 - epsilon)/V/dt;
+        sigmap = sumAreaP*(1.0 - f)*(1.0 - epsilon)/V/dt;
     }
 
     return tsigmap;
@@ -373,7 +349,7 @@ template<class CloudType>
 inline Foam::scalar Foam::ThermoCloud<CloudType>::Tmax() const
 {
     scalar T = -great;
-    scalar n = 0;
+    label n = 0;
     forAllConstIter(typename ThermoCloud<CloudType>, *this, iter)
     {
         const parcelType& p = iter();
@@ -399,7 +375,7 @@ template<class CloudType>
 inline Foam::scalar Foam::ThermoCloud<CloudType>::Tmin() const
 {
     scalar T = great;
-    scalar n = 0;
+    label n = 0;
     forAllConstIter(typename ThermoCloud<CloudType>, *this, iter)
     {
         const parcelType& p = iter();

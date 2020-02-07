@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::functionObjects::wallShearStress
-
-Group
-    grpForcesFunctionObjects
 
 Description
     Calculates and write the shear-stress at wall patches as
@@ -120,22 +117,10 @@ protected:
         virtual void writeFileHeader(const label i);
 
         //- Calculate the shear-stress
-        void calcShearStress
+        tmp<volVectorField> calcShearStress
         (
-            const volSymmTensorField& Reff,
-            volVectorField& shearStress
+            const volSymmTensorField& Reff
         );
-
-
-private:
-
-    // Private member functions
-
-        //- Disallow default bitwise copy construct
-        wallShearStress(const wallShearStress&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const wallShearStress&);
 
 
 public:
@@ -154,6 +139,9 @@ public:
             const dictionary&
         );
 
+        //- Disallow default bitwise copy construction
+        wallShearStress(const wallShearStress&) = delete;
+
 
     //- Destructor
     virtual ~wallShearStress();
@@ -169,6 +157,12 @@ public:
 
         //- Write the wall shear-stress
         virtual bool write();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const wallShearStress&) = delete;
 };
 
 

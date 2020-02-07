@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -292,7 +292,7 @@ void Foam::hexRef8Data::sync(const IOobject& io)
                 new uniformDimensionedScalarField
                 (
                     rio,
-                    dimensionedScalar("zero", dimLength, masterLen)
+                    dimensionedScalar(dimLength, masterLen)
                 )
             );
         }

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -127,7 +127,7 @@ void Foam::GAMGSolver::agglomerateMatrix
         const boolList& faceFlipMap =
             agglomeration_.faceFlipMap(fineLevelIndex);
 
-        // Check if matrix is asymetric and if so agglomerate both upper
+        // Check if matrix is asymmetric and if so agglomerate both upper
         // and lower coefficients ...
         if (fineMatrix.hasLower())
         {
@@ -328,10 +328,8 @@ void Foam::GAMGSolver::gatherMatrices
             otherMats.set(otherI, new lduMatrix(dummyMesh, fromSlave));
 
             // Receive number of/valid interfaces
-            boolList& procTransforms = otherTransforms[otherI];
             List<label>& procRanks = otherRanks[otherI];
 
-            fromSlave >> procTransforms;
             fromSlave >> procRanks;
 
             // Size coefficients
@@ -368,7 +366,6 @@ void Foam::GAMGSolver::gatherMatrices
         // Send to master
 
         // Count valid interfaces
-        boolList procTransforms(interfaceBouCoeffs.size(), false);
         List<label> procRanks(interfaceBouCoeffs.size(), -1);
         forAll(interfaces, intI)
         {
@@ -380,7 +377,6 @@ void Foam::GAMGSolver::gatherMatrices
                         interfaces[intI]
                     );
 
-                procTransforms[intI] = interface.doTransform();
                 procRanks[intI] = interface.rank();
             }
         }
@@ -394,7 +390,7 @@ void Foam::GAMGSolver::gatherMatrices
             meshComm
         );
 
-        toMaster << mat << procTransforms << procRanks;
+        toMaster << mat << procRanks;
         forAll(procRanks, intI)
         {
             if (procRanks[intI] != -1)
@@ -467,15 +463,15 @@ void Foam::GAMGSolver::procAgglomerateMatrix
         // Agglomerate all matrix
         // ~~~~~~~~~~~~~~~~~~~~~~
 
-        //Pout<< "Own matrix:" << coarsestMatrix.info() << endl;
+        // Pout<< "Own matrix:" << coarsestMatrix.info() << endl;
         //
-        //forAll(otherMats, i)
+        // forAll(otherMats, i)
         //{
         //    Pout<< "** otherMats " << i << " "
         //        << otherMats[i].info()
         //        << endl;
         //}
-        //Pout<< endl;
+        // Pout<< endl;
 
 
         const lduMesh& allMesh = agglomeration_.meshLevel(levelI+1);
@@ -593,7 +589,6 @@ void Foam::GAMGSolver::procAgglomerateMatrix
                     {
                         // Construct lduInterfaceField
 
-                        bool doTransform = false;
                         int rank = -1;
                         if (proci == 0)
                         {
@@ -605,13 +600,10 @@ void Foam::GAMGSolver::procAgglomerateMatrix
                                 (
                                     coarsestInterfaces[procIntI]
                                 );
-                            doTransform = procInt.doTransform();
                             rank = procInt.rank();
                         }
                         else
                         {
-                            doTransform =
-                                otherTransforms[proci-1][procIntI];
                             rank = otherRanks[proci-1][procIntI];
                         }
 
@@ -624,7 +616,6 @@ void Foam::GAMGSolver::procAgglomerateMatrix
                                 (
                                     allMeshInterfaces[allIntI]
                                 ),
-                                doTransform,
                                 rank
                             ).ptr()
                         );
@@ -700,9 +691,9 @@ void Foam::GAMGSolver::procAgglomerateMatrix
             }
         }
 
-        //Pout<< "** Assembled allMatrix:" << allMatrix.info() << endl;
+        // Pout<< "** Assembled allMatrix:" << allMatrix.info() << endl;
         //
-        //forAll(allInterfaces, intI)
+        // forAll(allInterfaces, intI)
         //{
         //    if (allInterfaces.set(intI))
         //    {
@@ -713,9 +704,9 @@ void Foam::GAMGSolver::procAgglomerateMatrix
         //                faceCells().size()
         //            << endl;
         //
-        //        //const scalarField& bouCoeffs = allInterfaceBouCoeffs[intI];
-        //        //const scalarField& intCoeffs = allInterfaceIntCoeffs[intI];
-        //        //forAll(bouCoeffs, facei)
+        //        // const scalarField& bouCoeffs = allInterfaceBouCoeffs[intI];
+        //        // const scalarField& intCoeffs = allInterfaceIntCoeffs[intI];
+        //        // forAll(bouCoeffs, facei)
         //        //{
         //        //    Pout<< "        " << facei
         //        //        << "\tbou:" << bouCoeffs[facei]

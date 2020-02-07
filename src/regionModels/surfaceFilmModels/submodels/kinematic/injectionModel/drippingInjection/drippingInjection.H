@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::drippingInjection
+    Foam::regionModels::surfaceFilmModels::drippingInjection
 
 Description
     Film Dripping mass transfer model.
@@ -42,7 +42,7 @@ SourceFiles
 
 #include "injectionModel.H"
 #include "distributionModel.H"
-#include "cachedRandom.H"
+#include "Random.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -61,17 +61,6 @@ class drippingInjection
 :
     public injectionModel
 {
-private:
-
-    // Private member functions
-
-        //- Disallow default bitwise copy construct
-        drippingInjection(const drippingInjection&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const drippingInjection&);
-
-
 protected:
 
     // Protected data
@@ -84,7 +73,7 @@ protected:
         scalar particlesPerParcel_;
 
         //- Random number generator
-        cachedRandom rndGen_;
+        Random rndGen_;
 
         //- Parcel size PDF model
         const autoPtr<distributionModel>
@@ -109,6 +98,9 @@ public:
             const dictionary& dict
         );
 
+        //- Disallow default bitwise copy construction
+        drippingInjection(const drippingInjection&) = delete;
+
 
     //- Destructor
     virtual ~drippingInjection();
@@ -125,6 +117,12 @@ public:
                 scalarField& massToInject,
                 scalarField& diameterToInject
             );
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const drippingInjection&) = delete;
 };
 
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -52,6 +52,9 @@ namespace Foam
 // Forward declaration of friend functions and operators
 
 template<class Form, class Cmpt, direction Ncmpts> class VectorSpace;
+
+template<class Form, class Cmpt, direction Ncmpts>
+void writeEntry(Ostream& os, const VectorSpace<Form, Cmpt, Ncmpts>& value);
 
 template<class Form, class Cmpt, direction Ncmpts>
 Istream& operator>>
@@ -104,7 +107,7 @@ public:
         static const direction nCols = 1;
 
 
-    // Static data members
+    // Static Data Members
 
         static const char* const typeName;
         static const char* const componentNames[];
@@ -159,9 +162,6 @@ public:
         //- Construct from Istream
         VectorSpace(Istream&);
 
-        //- Construct as copy
-        inline VectorSpace(const VectorSpace<Form, Cmpt, Ncmpts>&);
-
         //- Construct as copy of a VectorSpace with the same size
         template<class Form2, class Cmpt2>
         inline explicit VectorSpace(const VectorSpace<Form2, Cmpt2, Ncmpts>&);
@@ -190,7 +190,6 @@ public:
         inline const Cmpt& operator[](const direction) const;
         inline Cmpt& operator[](const direction);
 
-        inline void operator=(const VectorSpace<Form, Cmpt, Ncmpts>&);
         inline void operator+=(const VectorSpace<Form, Cmpt, Ncmpts>&);
         inline void operator-=(const VectorSpace<Form, Cmpt, Ncmpts>&);
 

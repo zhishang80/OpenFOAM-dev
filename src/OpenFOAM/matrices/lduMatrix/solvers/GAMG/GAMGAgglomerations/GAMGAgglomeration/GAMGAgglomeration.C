@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -297,7 +297,7 @@ const Foam::GAMGAgglomeration& Foam::GAMGAgglomeration::New
             controlDict.lookupOrDefault<word>("agglomerator", "faceAreaPair")
         );
 
-        const_cast<Time&>(mesh.thisDb().time()).libs().open
+        libs.open
         (
             controlDict,
             "geometricGAMGAgglomerationLibs",
@@ -352,7 +352,7 @@ const Foam::GAMGAgglomeration& Foam::GAMGAgglomeration::New
             controlDict.lookupOrDefault<word>("agglomerator", "faceAreaPair")
         );
 
-        const_cast<Time&>(mesh.thisDb().time()).libs().open
+        libs.open
         (
             controlDict,
             "algebraicGAMGAgglomerationLibs",
@@ -398,7 +398,7 @@ Foam::autoPtr<Foam::GAMGAgglomeration> Foam::GAMGAgglomeration::New
         controlDict.lookupOrDefault<word>("agglomerator", "faceAreaPair")
     );
 
-    const_cast<Time&>(mesh.thisDb().time()).libs().open
+    libs.open
     (
         controlDict,
         "geometricGAMGAgglomerationLibs",
@@ -645,7 +645,7 @@ bool Foam::GAMGAgglomeration::checkRestriction
 
     if (nNewCoarse > nCoarse)
     {
-        //WarningInFunction
+        // WarningInFunction
         //    << "Have " << nCoarse
         //    << " agglomerated cells but " << nNewCoarse
         //    << " disconnected regions" << endl;

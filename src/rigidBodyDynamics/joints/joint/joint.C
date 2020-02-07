@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -48,6 +48,7 @@ Foam::autoPtr<Foam::RBD::joint> Foam::RBD::joint::New(joint* jointPtr)
 
 Foam::autoPtr<Foam::RBD::joint> Foam::RBD::joint::New
 (
+    const rigidBodyModel& model,
     const dictionary& dict
 )
 {
@@ -66,7 +67,7 @@ Foam::autoPtr<Foam::RBD::joint> Foam::RBD::joint::New
             << exit(FatalError);
     }
 
-    return autoPtr<joint>(cstrIter()(dict));
+    return autoPtr<joint>(cstrIter()(model, dict));
 }
 
 
@@ -80,7 +81,7 @@ Foam::RBD::joint::~joint()
 
 void Foam::RBD::joint::write(Ostream& os) const
 {
-    os.writeKeyword("type") << type() << token::END_STATEMENT << nl;
+    writeEntry(os, "type", type());
 }
 
 

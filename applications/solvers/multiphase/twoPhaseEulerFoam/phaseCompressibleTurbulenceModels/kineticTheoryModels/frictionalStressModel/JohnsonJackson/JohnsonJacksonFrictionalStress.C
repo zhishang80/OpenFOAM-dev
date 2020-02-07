@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -124,7 +124,7 @@ Foam::kineticTheoryModels::frictionalStressModels::JohnsonJackson::nu
     const volSymmTensorField& D
 ) const
 {
-    return dimensionedScalar("0.5", dimTime, 0.5)*pf*sin(phi_);
+    return dimensionedScalar(dimTime, 0.5)*pf*sin(phi_);
 }
 
 

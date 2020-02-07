@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -52,7 +52,7 @@ class cyclicPointPatch
 :
     public coupledFacePointPatch
 {
-    // Private data
+    // Private Data
 
         //- Local reference cast into the cyclic patch
         const cyclicPolyPatch& cyclicPolyPatch_;
@@ -60,10 +60,10 @@ class cyclicPointPatch
 
     // Private Member Functions
 
-        //- Disallow default construct as copy
+        //- Disallow default bitwise copy construction
         cyclicPointPatch(const cyclicPointPatch&);
 
-        //- Disallow default assignment
+        //- Disallow default bitwise assignment
         void operator=(const cyclicPointPatch&);
 
 
@@ -125,29 +125,17 @@ public:
             }
 
             //- Return neighbour point patch
-            const cyclicPointPatch& neighbPatch() const
+            const cyclicPointPatch& nbrPatch() const
             {
-                label patchi = cyclicPolyPatch_.neighbPatchID();
+                label patchi = cyclicPolyPatch_.nbrPatchID();
                 const pointPatch& pp = this->boundaryMesh()[patchi];
                 return refCast<const cyclicPointPatch>(pp);
             }
 
-            //- Are the cyclic planes parallel
-            bool parallel() const
+            //- Return transformation between the coupled patches
+            virtual const transformer& transform() const
             {
-                return cyclicPolyPatch_.parallel();
-            }
-
-            //- Return face transformation tensor
-            const tensorField& forwardT() const
-            {
-                return cyclicPolyPatch_.forwardT();
-            }
-
-            //- Return neighbour-cell transformation tensor
-            const tensorField& reverseT() const
-            {
-                return cyclicPolyPatch_.reverseT();
+                return cyclicPolyPatch_.transform();
             }
 
 

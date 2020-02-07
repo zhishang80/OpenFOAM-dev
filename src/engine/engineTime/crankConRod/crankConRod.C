@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -45,8 +45,8 @@ void Foam::crankConRod::timeAdjustment()
 
     if
     (
-        writeControl_ == wcRunTime
-     || writeControl_ == wcAdjustableRunTime
+        writeControl_ == writeControl::runTime
+        || writeControl_ == writeControl::adjustableRunTime
     )
     {
         writeInterval_ = degToTime(writeInterval_);
@@ -198,6 +198,12 @@ Foam::scalar Foam::crankConRod::userTimeToTime(const scalar theta) const
 Foam::scalar Foam::crankConRod::timeToUserTime(const scalar t) const
 {
     return timeToDeg(t);
+}
+
+
+Foam::scalar Foam::crankConRod::timeToUserTimeRatio() const
+{
+    return timeToDeg(1);
 }
 
 

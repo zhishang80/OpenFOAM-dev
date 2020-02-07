@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2013 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,13 +24,11 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "ensightSurfaceWriter.H"
-
 #include "OFstream.H"
 #include "OSspecific.H"
 #include "IOmanip.H"
 #include "ensightPartFaces.H"
 #include "ensightPTraits.H"
-
 #include "makeSurfaceWriterMethods.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -45,7 +43,7 @@ namespace Foam
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
 template<class Type>
-void Foam::ensightSurfaceWriter::writeTemplate
+void Foam::ensightSurfaceWriter::Write
 (
     const fileName& outputDir,
     const fileName& surfaceName,
@@ -53,8 +51,7 @@ void Foam::ensightSurfaceWriter::writeTemplate
     const faceList& faces,
     const word& fieldName,
     const Field<Type>& values,
-    const bool isNodeValues,
-    const bool verbose
+    const bool isNodeValues
 ) const
 {
     if (!isDir(outputDir/fieldName))
@@ -77,7 +74,7 @@ void Foam::ensightSurfaceWriter::writeTemplate
         writeFormat_
     );
 
-    if (verbose)
+    if (debug)
     {
         Info<< "Writing case file to " << osCase.name() << endl;
     }
@@ -115,24 +112,19 @@ void Foam::ensightSurfaceWriter::writeTemplate
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::ensightSurfaceWriter::ensightSurfaceWriter()
+Foam::ensightSurfaceWriter::ensightSurfaceWriter
+(
+    const IOstream::streamFormat writeFormat
+)
 :
-    surfaceWriter(),
-    writeFormat_(IOstream::ASCII)
+    surfaceWriter(writeFormat)
 {}
 
 
-Foam::ensightSurfaceWriter::ensightSurfaceWriter(const dictionary& options)
+Foam::ensightSurfaceWriter::ensightSurfaceWriter(const dictionary& optDict)
 :
-    surfaceWriter(),
-    writeFormat_(IOstream::ASCII)
-{
-    // choose ascii or binary format
-    if (options.found("format"))
-    {
-        writeFormat_ = IOstream::formatEnum(options.lookup("format"));
-    }
-}
+    surfaceWriter(optDict)
+{}
 
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -148,8 +140,7 @@ void Foam::ensightSurfaceWriter::write
     const fileName& outputDir,
     const fileName& surfaceName,
     const pointField& points,
-    const faceList& faces,
-    const bool verbose
+    const faceList& faces
 ) const
 {
     if (!isDir(outputDir))
@@ -167,7 +158,7 @@ void Foam::ensightSurfaceWriter::write
         writeFormat_
     );
 
-    if (verbose)
+    if (debug)
     {
         Info<< "Writing case file to " << osCase.name() << endl;
     }

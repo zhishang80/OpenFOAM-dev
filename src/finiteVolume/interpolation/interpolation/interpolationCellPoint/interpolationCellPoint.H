@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -70,6 +70,13 @@ public:
         interpolationCellPoint
         (
             const GeometricField<Type, fvPatchField, volMesh>& psi
+        );
+
+        //- Construct from components
+        interpolationCellPoint
+        (
+            const GeometricField<Type, fvPatchField, volMesh>& psi,
+            tmp<GeometricField<Type, pointPatchField, pointMesh>> psip
         );
 
 

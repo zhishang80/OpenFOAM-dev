@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -45,12 +45,12 @@ Description
             );
         #};
 
-        //codeInclude
+        // codeInclude
         //#{
         //    #include "fvCFD.H"
         //#};
 
-        //codeOptions
+        // codeOptions
         //#{
         //    -I$(LIB_SRC)/finiteVolume/lnInclude
         //#};
@@ -83,17 +83,24 @@ SourceFiles
 #define codedFixedValuePointPatchField_H
 
 #include "fixedValuePointPatchFields.H"
-#include "codedBase.H"
+#include "CodedBase.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
 {
 
-// Forward declaration of classes
-class dynamicCode;
-class dynamicCodeContext;
-class IOdictionary;
+/*---------------------------------------------------------------------------*\
+              Class codedFixedValueFvPatchFieldBase Declaration
+\*---------------------------------------------------------------------------*/
+
+class codedFixedValuePointPatchFieldBase
+{
+public:
+
+    ClassNameNoDebug("fixedValuePointPatchField");
+};
+
 
 /*---------------------------------------------------------------------------*\
                Class codedFixedValuePointPatchField Declaration
@@ -103,51 +110,23 @@ template<class Type>
 class codedFixedValuePointPatchField
 :
     public fixedValuePointPatchField<Type>,
-    public codedBase
+    public CodedBase<codedFixedValuePointPatchFieldBase>
 {
-    // Private data
-
-        //- Dictionary contents for the boundary condition
-        mutable dictionary dict_;
-
-        const word name_;
+    // Private Data
 
         mutable autoPtr<pointPatchField<Type>> redirectPatchFieldPtr_;
 
 
     // Private Member Functions
 
-        const IOdictionary& dict() const;
-
-        //- Set the rewrite vars controlling the Type
-        static void setFieldTemplates(dynamicCode& dynCode);
-
-        //- Get the loaded dynamic libraries
-        virtual dlLibraryTable& libs() const;
-
         //- Adapt the context for the current object
         virtual void prepare(dynamicCode&, const dynamicCodeContext&) const;
 
-        // Return a description (type + name) for the output
-        virtual string description() const;
-
-        // Clear the ptr to the redirected object
+        //- Clear the ptr to the redirected object
         virtual void clearRedirect() const;
-
-        // Get the dictionary to initialize the codeContext
-        virtual const dictionary& codeDict() const;
 
 
 public:
-
-    // Static data members
-
-        //- Name of the C code template to be used
-        static const word codeTemplateC;
-
-        //- Name of the H code template to be used
-        static const word codeTemplateH;
-
 
     //- Runtime type information
     TypeName("codedFixedValue");
@@ -167,8 +146,7 @@ public:
         (
             const pointPatch&,
             const DimensionedField<Type, pointMesh>&,
-            const dictionary&,
-            const bool valueRequired=true
+            const dictionary&
         );
 
         //- Construct by mapping given codedFixedValuePointPatchField
@@ -181,7 +159,7 @@ public:
             const pointPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         codedFixedValuePointPatchField
         (
             const codedFixedValuePointPatchField<Type>&
@@ -196,7 +174,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         codedFixedValuePointPatchField
         (
             const codedFixedValuePointPatchField<Type>&,
@@ -220,7 +198,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         //- Get reference to the underlying patch
         const pointPatchField<Type>& redirectPatchField() const;

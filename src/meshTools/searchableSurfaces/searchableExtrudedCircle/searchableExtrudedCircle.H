@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -71,15 +71,6 @@ class searchableExtrudedCircle
         mutable wordList regions_;
 
 
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        searchableExtrudedCircle(const searchableExtrudedCircle&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const searchableExtrudedCircle&);
-
-
 public:
 
     //- Runtime type information
@@ -94,6 +85,9 @@ public:
             const IOobject& io,
             const dictionary& dict
         );
+
+        //- Disallow default bitwise copy construction
+        searchableExtrudedCircle(const searchableExtrudedCircle&) = delete;
 
 
     //- Destructor
@@ -222,6 +216,12 @@ public:
                 NotImplemented;
                 return false;
             }
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const searchableExtrudedCircle&) = delete;
 };
 
 

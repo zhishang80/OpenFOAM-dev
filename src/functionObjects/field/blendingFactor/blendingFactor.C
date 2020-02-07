@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -60,7 +60,7 @@ Foam::functionObjects::blendingFactor::blendingFactor
     const dictionary& dict
 )
 :
-    fieldExpression(name, runTime, dict)
+    fieldExpression(name, runTime, dict, typeName)
 {
     read(dict);
 }
@@ -76,11 +76,7 @@ Foam::functionObjects::blendingFactor::~blendingFactor()
 
 bool Foam::functionObjects::blendingFactor::read(const dictionary& dict)
 {
-    fieldExpression::read(dict);
-
     phiName_ = dict.lookupOrDefault<word>("phi", "phi");
-
-    resultName_ = "blendingFactor:" + fieldName_;
 
     return true;
 }

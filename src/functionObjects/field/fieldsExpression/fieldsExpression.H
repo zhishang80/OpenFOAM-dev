@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::functionObjects::fieldsExpression
-
-Group
-    grpFieldFunctionObjects
 
 Description
 
@@ -73,8 +70,8 @@ protected:
 
         void setResultName
         (
-            const word& typeName,
-            const wordList& defaultArg = wordList::null()
+            const word& functionName,
+            const wordList& defaultFieldNames = wordList::null()
         );
 
         //- Call 'calcFieldType' for the given functionObject
@@ -92,17 +89,6 @@ protected:
         bool calcAllTypes(FOType& fo);
 
         virtual bool calc() = 0;
-
-
-private:
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        fieldsExpression(const fieldsExpression&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const fieldsExpression&);
 
 
 public:
@@ -123,6 +109,9 @@ public:
             const word& resultName = word::null
         );
 
+        //- Disallow default bitwise copy construction
+        fieldsExpression(const fieldsExpression&) = delete;
+
 
     //- Destructor
     virtual ~fieldsExpression();
@@ -141,6 +130,12 @@ public:
 
         //- Clear the result fields from the objectRegistry
         virtual bool clear();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const fieldsExpression&) = delete;
 };
 
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -37,7 +37,6 @@ Description
 #include "dynamicFvMesh.H"
 #include "fluidThermo.H"
 #include "turbulentFluidThermoModel.H"
-#include "bound.H"
 #include "pimpleControl.H"
 #include "pressureControl.H"
 #include "CorrectPhi.H"
@@ -51,7 +50,7 @@ int main(int argc, char *argv[])
 {
     #include "postProcess.H"
 
-    #include "setRootCase.H"
+    #include "setRootCaseLists.H"
     #include "createTime.H"
     #include "createDynamicFvMesh.H"
     #include "createDyMControls.H"
@@ -72,7 +71,7 @@ int main(int argc, char *argv[])
 
     Info<< "\nStarting time loop\n" << endl;
 
-    while (runTime.run())
+    while (pimple.run(runTime))
     {
         #include "readDyMControls.H"
 
@@ -106,7 +105,7 @@ int main(int argc, char *argv[])
         // --- Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
         {
-            if (pimple.firstIter() || moveMeshOuterCorrectors)
+            if (pimple.firstPimpleIter() || moveMeshOuterCorrectors)
             {
                 // Store momentum to set rhoUf for introduced faces.
                 autoPtr<volVectorField> rhoU;
@@ -141,7 +140,7 @@ int main(int argc, char *argv[])
                 }
             }
 
-            if (pimple.nCorrPimple() <= 1)
+            if (pimple.firstPimpleIter() && !pimple.simpleRho())
             {
                 #include "rhoEqn.H"
             }

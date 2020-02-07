@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::functionObjects::abort
-
-Group
-    grpUtilitiesFunctionObjects
 
 Description
     Watches for presence of the named file in the $FOAM_CASE directory
@@ -67,7 +64,7 @@ public:
     // Public data
 
         //- Enumeration defining the type of action
-        enum actionType
+        enum class actionType
         {
             noWriteNow,    //!< stop immediately without writing data
             writeNow,      //!< write data and stop immediately
@@ -76,7 +73,7 @@ public:
 
 private:
 
-    // Private data
+    // Private Data
 
         //- Reference to the Time
         const Time& time_;
@@ -96,12 +93,6 @@ private:
         //- Remove abort file.
         void removeFile() const;
 
-        //- Disallow default bitwise copy construct
-        abort(const abort&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const abort&);
-
 
 public:
 
@@ -118,6 +109,9 @@ public:
             const Time& runTime,
             const dictionary&
         );
+
+        //- Disallow default bitwise copy construction
+        abort(const abort&) = delete;
 
 
     //- Destructor
@@ -137,6 +131,12 @@ public:
 
         //- Execute at the final time-loop, used for cleanup
         virtual bool end();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const abort&) = delete;
 };
 
 

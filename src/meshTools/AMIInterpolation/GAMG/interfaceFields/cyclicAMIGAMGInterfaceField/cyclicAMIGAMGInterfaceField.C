@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2013 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -57,13 +57,11 @@ Foam::cyclicAMIGAMGInterfaceField::cyclicAMIGAMGInterfaceField
 :
     GAMGInterfaceField(GAMGCp, fineInterface),
     cyclicAMIInterface_(refCast<const cyclicAMIGAMGInterface>(GAMGCp)),
-    doTransform_(false),
     rank_(0)
 {
     const cyclicAMILduInterfaceField& p =
         refCast<const cyclicAMILduInterfaceField>(fineInterface);
 
-    doTransform_ = p.doTransform();
     rank_ = p.rank();
 }
 
@@ -71,18 +69,16 @@ Foam::cyclicAMIGAMGInterfaceField::cyclicAMIGAMGInterfaceField
 Foam::cyclicAMIGAMGInterfaceField::cyclicAMIGAMGInterfaceField
 (
     const GAMGInterface& GAMGCp,
-    const bool doTransform,
     const int rank
 )
 :
-    GAMGInterfaceField(GAMGCp, doTransform, rank),
+    GAMGInterfaceField(GAMGCp, rank),
     cyclicAMIInterface_(refCast<const cyclicAMIGAMGInterface>(GAMGCp)),
-    doTransform_(doTransform),
     rank_(rank)
 {}
 
 
-// * * * * * * * * * * * * * * * * Desstructor * * * * * * * * * * * * * * * //
+// * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
 Foam::cyclicAMIGAMGInterfaceField::~cyclicAMIGAMGInterfaceField()
 {}
@@ -99,29 +95,51 @@ void Foam::cyclicAMIGAMGInterfaceField::updateInterfaceMatrix
     const Pstream::commsTypes
 ) const
 {
+    const cyclicAMIGAMGInterface& thisInterface = cyclicAMIInterface_;
+    const cyclicAMIGAMGInterface& neiInterface = thisInterface.nbrPatch();
+
     // Get neighbouring field
-    scalarField pnf
-    (
-        cyclicAMIInterface_.neighbPatch().interfaceInternalField(psiInternal)
-    );
+    scalarField pnf(neiInterface.interfaceInternalField(psiInternal));
 
     // Transform according to the transformation tensors
     transformCoupleField(pnf, cmpt);
 
-    if (cyclicAMIInterface_.owner())
+    // Transform and interpolate
+    scalarField pf(size(), Zero);
+    if (thisInterface.owner())
     {
-        pnf = cyclicAMIInterface_.AMI().interpolateToSource(pnf);
+        forAll(thisInterface.AMIs(), i)
+        {
+            const scalar r =
+                pow
+                (
+                    inv(thisInterface.AMITransforms()[i]).T()(cmpt, cmpt),
+                    rank()
+                );
+
+            pf += thisInterface.AMIs()[i].interpolateToSource(r*pnf);
+        }
     }
     else
     {
-        pnf = cyclicAMIInterface_.neighbPatch().AMI().interpolateToTarget(pnf);
+        forAll(neiInterface.AMIs(), i)
+        {
+            const scalar r =
+                pow
+                (
+                    neiInterface.AMITransforms()[i].T()(cmpt, cmpt),
+                    rank()
+                );
+
+            pf += neiInterface.AMIs()[i].interpolateToTarget(r*pnf);
+        }
     }
 
+    // Multiply the field by coefficients and add into the result
     const labelUList& faceCells = cyclicAMIInterface_.faceCells();
-
     forAll(faceCells, elemI)
     {
-        result[faceCells[elemI]] -= coeffs[elemI]*pnf[elemI];
+        result[faceCells[elemI]] -= coeffs[elemI]*pf[elemI];
     }
 }
 

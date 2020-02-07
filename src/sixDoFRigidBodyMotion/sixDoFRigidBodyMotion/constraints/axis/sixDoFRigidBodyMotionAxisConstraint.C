@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -116,8 +116,7 @@ void Foam::sixDoFRigidBodyMotionConstraints::axis::write
     Ostream& os
 ) const
 {
-    os.writeKeyword("axis")
-        << axis_ << token::END_STATEMENT << nl;
+    writeEntry(os, "axis", axis_);
 }
 
 // ************************************************************************* //

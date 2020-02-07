@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -211,9 +211,9 @@ int main(int argc, char *argv[])
             runTime.timeName(),
             runTime
         ),
-        xferCopy(mesh.points()),   // could we safely re-use the data?
-        xferCopy(mesh.faces()),
-        xferCopy(mesh.cells())
+        clone(mesh.points()),   // could we safely re-use the data?
+        clone(mesh.faces()),
+        clone(mesh.cells())
     );
 
     // Add the boundary patches
@@ -279,7 +279,7 @@ int main(int argc, char *argv[])
             IOobject::NO_WRITE
         ),
         fMesh,
-        dimensionedScalar("zero", dimless/dimTime, 0)
+        dimensionedScalar(dimless/dimTime, 0)
     );
 
     // Set cell values

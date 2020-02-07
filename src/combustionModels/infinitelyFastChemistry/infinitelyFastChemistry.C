@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -36,7 +36,7 @@ template<class ReactionThermo, class ThermoType>
 infinitelyFastChemistry<ReactionThermo, ThermoType>::infinitelyFastChemistry
 (
     const word& modelType,
-    ReactionThermo& thermo,
+    const ReactionThermo& thermo,
     const compressibleTurbulenceModel& turb,
     const word& combustionProperties
 )
@@ -48,7 +48,7 @@ infinitelyFastChemistry<ReactionThermo, ThermoType>::infinitelyFastChemistry
         turb,
         combustionProperties
     ),
-    C_(readScalar(this->coeffs().lookup("C")))
+    C_(this->coeffs().template lookup<scalar>("C"))
 {}
 
 
@@ -65,27 +65,23 @@ template<class ReactionThermo, class ThermoType>
 void infinitelyFastChemistry<ReactionThermo, ThermoType>::correct()
 {
     this->wFuel_ ==
-        dimensionedScalar("zero", dimMass/pow3(dimLength)/dimTime, 0.0);
+        dimensionedScalar(dimMass/pow3(dimLength)/dimTime, 0);
 
-    if (this->active())
+    this->fresCorrect();
+
+    const label fuelI = this->fuelIndex();
+
+    const volScalarField& YFuel = this->thermo().composition().Y()[fuelI];
+
+    const dimensionedScalar s = this->s();
+
+    if (this->thermo().composition().contains("O2"))
     {
-        this->singleMixturePtr_->fresCorrect();
+        const volScalarField& YO2 = this->thermo().composition().Y("O2");
 
-        const label fuelI = this->singleMixturePtr_->fuelIndex();
-
-        const volScalarField& YFuel =
-            this->thermo().composition().Y()[fuelI];
-
-        const dimensionedScalar s = this->singleMixturePtr_->s();
-
-        if (this->thermo().composition().contains("O2"))
-        {
-            const volScalarField& YO2 = this->thermo().composition().Y("O2");
-
-            this->wFuel_ ==
-                this->rho()/(this->mesh().time().deltaT()*C_)
-               *min(YFuel, YO2/s.value());
-        }
+        this->wFuel_ ==
+            this->rho()/(this->mesh().time().deltaT()*C_)
+           *min(YFuel, YO2/s.value());
     }
 }
 

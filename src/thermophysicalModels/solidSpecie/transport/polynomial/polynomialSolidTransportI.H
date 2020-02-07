@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -123,18 +123,6 @@ inline Foam::scalar Foam::polynomialSolidTransport<Thermo, PolySize>::alphah
 
 
 // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //
-
-template<class Thermo, int PolySize>
-inline void Foam::polynomialSolidTransport<Thermo, PolySize>::operator=
-(
-    const polynomialSolidTransport<Thermo, PolySize>& pt
-)
-{
-    Thermo::operator=(pt);
-
-    kappaCoeffs_ = pt.kappaCoeffs_;
-}
-
 
 template<class Thermo, int PolySize>
 inline void Foam::polynomialSolidTransport<Thermo, PolySize>::operator+=

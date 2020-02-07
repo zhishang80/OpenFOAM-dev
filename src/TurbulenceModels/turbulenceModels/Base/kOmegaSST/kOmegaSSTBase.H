@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::kOmegaSST
-
-Group
-    grpTurbulence
 
 Description
     Implementation of the k-omega-SST turbulence model for
@@ -117,13 +114,6 @@ class kOmegaSST
 :
     public TurbulenceModel
 {
-    // Private Member Functions
-
-        // Disallow default bitwise copy construct and assignment
-        kOmegaSST(const kOmegaSST&);
-        void operator=(const kOmegaSST&);
-
-
 protected:
 
     // Protected data
@@ -270,6 +260,9 @@ public:
             const word& propertiesName = turbulenceModel::propertiesName
         );
 
+        //- Disallow default bitwise copy construction
+        kOmegaSST(const kOmegaSST&) = delete;
+
 
     //- Destructor
     virtual ~kOmegaSST()
@@ -284,22 +277,20 @@ public:
         //- Return the effective diffusivity for k
         tmp<volScalarField> DkEff(const volScalarField& F1) const
         {
-            return tmp<volScalarField>
+            return volScalarField::New
             (
-                new volScalarField("DkEff", alphaK(F1)*this->nut_ + this->nu())
+                "DkEff",
+                alphaK(F1)*this->nut_ + this->nu()
             );
         }
 
         //- Return the effective diffusivity for omega
         tmp<volScalarField> DomegaEff(const volScalarField& F1) const
         {
-            return tmp<volScalarField>
+            return volScalarField::New
             (
-                new volScalarField
-                (
-                    "DomegaEff",
-                    alphaOmega(F1)*this->nut_ + this->nu()
-                )
+                "DomegaEff",
+                alphaOmega(F1)*this->nut_ + this->nu()
             );
         }
 
@@ -312,19 +303,11 @@ public:
         //- Return the turbulence kinetic energy dissipation rate
         virtual tmp<volScalarField> epsilon() const
         {
-              return tmp<volScalarField>
+            return volScalarField::New
             (
-                new volScalarField
-                (
-                    IOobject
-                    (
-                        "epsilon",
-                        this->mesh_.time().timeName(),
-                        this->mesh_
-                    ),
-                    betaStar_*k_*omega_,
-                    omega_.boundaryField().types()
-                )
+                "epsilon",
+                betaStar_*k_*omega_,
+                omega_.boundaryField().types()
             );
         }
 
@@ -336,6 +319,12 @@ public:
 
         //- Solve the turbulence equations and correct the turbulence viscosity
         virtual void correct();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const kOmegaSST&) = delete;
 };
 
 

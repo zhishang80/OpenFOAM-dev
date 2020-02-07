@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -193,14 +193,8 @@ void Foam::linearValveLayersFvMesh::addZonesAndModifiers()
             1,
             topoChanger_,
             "valveLayerZone",
-            readScalar
-            (
-                motionDict_.subDict("layer").lookup("minThickness")
-            ),
-            readScalar
-            (
-                motionDict_.subDict("layer").lookup("maxThickness")
-            )
+            motionDict_.subDict("layer").lookup<scalar>("minThickness"),
+            motionDict_.subDict("layer").lookup<scalar>("maxThickness")
         );
 
 
@@ -339,25 +333,10 @@ Foam::tmp<Foam::pointField> Foam::linearValveLayersFvMesh::newPoints() const
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-// Construct from components
 Foam::linearValveLayersFvMesh::linearValveLayersFvMesh(const IOobject& io)
 :
     topoChangerFvMesh(io),
-    motionDict_
-    (
-        IOdictionary
-        (
-            IOobject
-            (
-                "dynamicMeshDict",
-                time().constant(),
-                *this,
-                IOobject::MUST_READ_IF_MODIFIED,
-                IOobject::NO_WRITE,
-                false
-            )
-        ).optionalSubDict(typeName + "Coeffs")
-    )
+    motionDict_(dynamicMeshDict().optionalSubDict(typeName + "Coeffs"))
 {
     addZonesAndModifiers();
 }
@@ -417,9 +396,9 @@ void Foam::linearValveLayersFvMesh::update()
     setMorphTimeIndex(3*time().timeIndex() + 2);
     updateMesh();
 
-    //Info<< "Moving points post slider attach" << endl;
-    //const pointField p = allPoints();
-    //movePoints(p);
+    // Info<< "Moving points post slider attach" << endl;
+    // const pointField p = allPoints();
+    // movePoints(p);
 
     Info<< "Sliding interfaces coupled: " << attached() << endl;
 }

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -29,7 +29,7 @@ Description
 #include "sammMesh.H"
 #include "Time.H"
 #include "wallPolyPatch.H"
-#include "oldCyclicPolyPatch.H"
+#include "mergedCyclicPolyPatch.H"
 #include "symmetryPolyPatch.H"
 #include "preservePatchTypes.H"
 #include "IFstream.H"
@@ -171,7 +171,7 @@ void Foam::sammMesh::readBoundary()
                 pointLabels[2] == pointLabels[3]
             )
             {
-                //Info<< "Converting collapsed quad into triangle"
+                // Info<< "Converting collapsed quad into triangle"
                 //    << " for face " << facei
                 //    << " in Samm boundary " << lineIndex << endl;
 
@@ -206,9 +206,7 @@ void Foam::sammMesh::readBoundary()
             }
             else if (patchType == "CYCL")
             {
-                // incorrect. should be cyclicPatch but this
-                // requires info on connected faces.
-                patchTypes_[patchLabel] = oldCyclicPolyPatch::typeName;
+                patchTypes_[patchLabel] = mergedCyclicPolyPatch::typeName;
             }
             else
             {

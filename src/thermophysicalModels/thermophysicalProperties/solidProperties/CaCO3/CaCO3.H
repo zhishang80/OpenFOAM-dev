@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -75,14 +75,8 @@ public:
     // I-O
 
         //- Write the function coefficients
-        void writeData(Ostream& os) const;
-
-        //- Ostream Operator
-        friend Ostream& operator<<(Ostream& os, const CaCO3& s);
+        virtual void write(Ostream& os) const;
 };
-
-
-Ostream& operator<<(Ostream& os, const CaCO3& s);
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

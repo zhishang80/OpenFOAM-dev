@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -54,7 +54,7 @@ class cyclicAMIFvPatch
     public coupledFvPatch,
     public cyclicAMILduInterface
 {
-    // Private data
+    // Private Data
 
         const cyclicAMIPolyPatch& cyclicAMIPolyPatch_;
 
@@ -63,8 +63,14 @@ protected:
 
     // Protected Member functions
 
+        //- Return the patch-normal component of the deltas
+        tmp<scalarField> deltan() const;
+
+        //- Return the neighbour patch-normal component of the deltas
+        tmp<scalarField> nbrDeltan() const;
+
         //- Make patch weighting factors
-        void makeWeights(scalarField&) const;
+        virtual void makeWeights(scalarField&) const;
 
 
 public:
@@ -84,7 +90,7 @@ public:
         {}
 
 
-    // Member functions
+    // Member Functions
 
         // Access
 
@@ -94,30 +100,37 @@ public:
                 return cyclicAMIPolyPatch_;
             }
 
-            //- Return neighbour
-            virtual label neighbPatchID() const
+            //- Return the neighbour patch ID
+            virtual label nbrPatchID() const
             {
-                return cyclicAMIPolyPatch_.neighbPatchID();
+                return cyclicAMIPolyPatch_.nbrPatchID();
             }
 
+            //- Is this side the owner?
             virtual bool owner() const
             {
                 return cyclicAMIPolyPatch_.owner();
             }
 
-            //- Return processor number
-            virtual const cyclicAMIFvPatch& neighbPatch() const
+            //- Return the neighbour patch
+            virtual const cyclicAMIFvPatch& nbrPatch() const
             {
                 return refCast<const cyclicAMIFvPatch>
                 (
-                    this->boundaryMesh()[cyclicAMIPolyPatch_.neighbPatchID()]
+                    this->boundaryMesh()[cyclicAMIPolyPatch_.nbrPatchID()]
                 );
             }
 
-            //- Return a reference to the AMI interpolator
-            virtual const AMIPatchToPatchInterpolation& AMI() const
+            //- Return a reference to the AMI interpolators
+            virtual const PtrList<AMIInterpolation>& AMIs() const
             {
-                return cyclicAMIPolyPatch_.AMI();
+                return cyclicAMIPolyPatch_.AMIs();
+            }
+
+            //- Return a reference to the AMI transforms
+            virtual const List<transformer>& AMITransforms() const
+            {
+                return cyclicAMIPolyPatch_.AMITransforms();
             }
 
             //- Return true if applying the low weight correction
@@ -126,30 +139,17 @@ public:
                 return cyclicAMIPolyPatch_.applyLowWeightCorrection();
             }
 
-
-            //- Are the cyclic planes parallel
-            virtual bool parallel() const
+            //- Return transformation between the coupled patches
+            virtual const transformer& transform() const
             {
-                return cyclicAMIPolyPatch_.parallel();
-            }
-
-            //- Return face transformation tensor
-            virtual const tensorField& forwardT() const
-            {
-                return cyclicAMIPolyPatch_.forwardT();
-            }
-
-            //- Return neighbour-cell transformation tensor
-            virtual const tensorField& reverseT() const
-            {
-                return cyclicAMIPolyPatch_.reverseT();
+                return cyclicAMIPolyPatch_.transform();
             }
 
             const cyclicAMIFvPatch& neighbFvPatch() const
             {
                 return refCast<const cyclicAMIFvPatch>
                 (
-                    this->boundaryMesh()[cyclicAMIPolyPatch_.neighbPatchID()]
+                    this->boundaryMesh()[cyclicAMIPolyPatch_.nbrPatchID()]
                 );
             }
 

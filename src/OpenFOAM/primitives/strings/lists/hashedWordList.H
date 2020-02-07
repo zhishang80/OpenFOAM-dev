@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -59,7 +59,7 @@ class hashedWordList
 :
     public List<word>
 {
-    // Private data
+    // Private Data
 
         HashTable<label, word> indices_;
 
@@ -76,14 +76,17 @@ public:
         //- Construct null
         hashedWordList();
 
-        //- Copy constructor.
+        //- Copy constructor
         hashedWordList(const hashedWordList&);
+
+        //- Move constructor
+        hashedWordList(hashedWordList&&);
 
         //- Construct from list of names
         hashedWordList(const UList<word>& names);
 
-        //- Construct by transferring the parameter contents
-        hashedWordList(const Xfer<List<word>>& names);
+        //- Move constructor transferring the parameter contents
+        hashedWordList(List<word>&& names);
 
         //- Construct from number and list of names
         hashedWordList(const label nNames, const char** names);
@@ -106,9 +109,6 @@ public:
         //- Does the list contain the specified name
         inline bool found(const word&) const;
 
-        //- Does the list contain the specified name
-        inline bool contains(const word&) const;
-
         //- Transfer the contents of the argument List into this list
         //  and annul the argument list.
         void transfer(List<word>&);
@@ -116,11 +116,14 @@ public:
 
     // Member Operators
 
+        //- Assignment operator
+        inline void operator=(const hashedWordList&);
+
+        //- Move assignment operator
+        inline void operator=(hashedWordList&&);
+
         //- Assignment operator from list of names
         inline void operator=(const UList<word>& names);
-
-        //- Assignment operator.
-        inline void operator=(const hashedWordList&);
 
         //- Return name corresponding to specified index
         inline const word& operator[](const label index) const;

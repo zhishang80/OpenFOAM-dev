@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::compressible::thermalBaffleFvPatchScalarField
-
-Group
-    grpThermoBoundaryConditions
 
 Description
     This boundary condition provides a coupled temperature condition between
@@ -180,7 +177,7 @@ class thermalBaffleFvPatchScalarField
 :
     public turbulentTemperatureRadCoupledMixedFvPatchScalarField
 {
-    // Private data
+    // Private Data
 
         //- Enumeration of patch IDs
         enum patchID
@@ -203,7 +200,7 @@ class thermalBaffleFvPatchScalarField
         autoPtr<extrudePatchMesh> extrudeMeshPtr_;
 
 
-    // Private member functions
+    // Private Member Functions
 
         //- Extrude mesh
         void createPatchMesh();
@@ -271,23 +268,18 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
 
         // Mapping functions
 
             //- Map (and resize as needed) from self given a mapping object
-            virtual void autoMap
-            (
-                const fvPatchFieldMapper&
-            );
+            //  Used to update fields following mesh topology change
+            virtual void autoMap(const fvPatchFieldMapper&);
 
             //- Reverse map the given fvPatchField onto this fvPatchField
-            virtual void rmap
-            (
-                const fvPatchScalarField&,
-                const labelList&
-            );
+            //  Used to reconstruct fields
+            virtual void rmap(const fvPatchScalarField&, const labelList&);
 
 
         //- Update the coefficients associated with the patch field

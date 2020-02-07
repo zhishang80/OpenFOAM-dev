@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::constantAspectRatio
+    Foam::aspectRatioModels::constantAspectRatio
 
 Description
     Constant value aspect ratio model.
@@ -52,7 +52,7 @@ class constantAspectRatio
 :
     public aspectRatioModel
 {
-    // Private data
+    // Private Data
 
         //- Constant aspect ratio value
         const dimensionedScalar E0_;

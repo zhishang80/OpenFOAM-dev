@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -636,7 +636,7 @@ bool Foam::autoDensity::fillBox
         }
 
         // Using the sampledPoints as the first test locations as they are
-        // randomly shuffled, but unfiormly sampling space and have wellInside
+        // randomly shuffled, but uniformly sampling space and have wellInside
         // and size data already
 
         maxDensity = 1/pow3(max(minCellSize, small));
@@ -729,7 +729,7 @@ bool Foam::autoDensity::fillBox
         {
             trialPoints++;
 
-            point p = min + cmptMultiply(span, rndGen().vector01());
+            point p = min + cmptMultiply(span, rndGen().sample01<vector>());
 
             scalar localSize = cellShapeControls().cellSize(p);
 
@@ -884,9 +884,9 @@ autoDensity::autoDensity
     (
         detailsDict().lookupOrDefault<scalar>("minCellSizeLimit", 0.0)
     ),
-    minLevels_(readLabel(detailsDict().lookup("minLevels"))),
-    maxSizeRatio_(readScalar(detailsDict().lookup("maxSizeRatio"))),
-    volRes_(readLabel(detailsDict().lookup("sampleResolution"))),
+    minLevels_(detailsDict().lookup<label>("minLevels")),
+    maxSizeRatio_(detailsDict().lookup<scalar>("maxSizeRatio")),
+    volRes_(detailsDict().lookup<label>("sampleResolution")),
     surfRes_
     (
         detailsDict().lookupOrDefault<label>("surfaceSampleResolution", volRes_)
@@ -919,11 +919,7 @@ List<Vb::Point> autoDensity::initialPoints() const
     else
     {
         // Extend the global box to move it off large plane surfaces
-        hierBB = geometryToConformTo().globalBounds().extend
-        (
-            rndGen(),
-            1e-6
-        );
+        hierBB = geometryToConformTo().globalBounds().extend(1e-6);
     }
 
     DynamicList<Vb::Point> initialPoints;
@@ -965,7 +961,7 @@ List<Vb::Point> autoDensity::initialPoints() const
         << decrIndent << decrIndent
         << endl;
 
-    return initialPoints;
+    return move(initialPoints);
 }
 
 

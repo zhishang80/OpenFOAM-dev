@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -97,11 +97,10 @@ template<class Type>
 bool Foam::UniformDimensionedField<Type>::writeData(Ostream& os) const
 {
     scalar multiplier;
-    os.writeKeyword("dimensions");
-    this->dimensions().write(os, multiplier) << token::END_STATEMENT
-        << nl;
-    os.writeKeyword("value") << this->value()/multiplier << token::END_STATEMENT
-        << nl << nl;
+    writeKeyword(os, "dimensions");
+    this->dimensions().write(os, multiplier) << token::END_STATEMENT << nl;
+    writeEntry(os, "value", this->value()/multiplier);
+    os << nl;
 
     return (os.good());
 }

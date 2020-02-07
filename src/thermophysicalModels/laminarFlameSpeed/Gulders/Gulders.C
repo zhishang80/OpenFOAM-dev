@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -55,12 +55,12 @@ Foam::laminarFlameSpeedModels::Gulders::Gulders
     laminarFlameSpeed(dict, ct),
 
     coeffsDict_(dict.optionalSubDict(typeName + "Coeffs").subDict(fuel_)),
-    W_(readScalar(coeffsDict_.lookup("W"))),
-    eta_(readScalar(coeffsDict_.lookup("eta"))),
-    xi_(readScalar(coeffsDict_.lookup("xi"))),
-    f_(readScalar(coeffsDict_.lookup("f"))),
-    alpha_(readScalar(coeffsDict_.lookup("alpha"))),
-    beta_(readScalar(coeffsDict_.lookup("beta")))
+    W_(coeffsDict_.lookup<scalar>("W")),
+    eta_(coeffsDict_.lookup<scalar>("eta")),
+    xi_(coeffsDict_.lookup<scalar>("xi")),
+    f_(coeffsDict_.lookup<scalar>("f")),
+    alpha_(coeffsDict_.lookup<scalar>("alpha")),
+    beta_(coeffsDict_.lookup<scalar>("beta"))
 {}
 
 
@@ -112,19 +112,11 @@ Foam::tmp<Foam::volScalarField> Foam::laminarFlameSpeedModels::Gulders::Su0pTphi
 {
     tmp<volScalarField> tSu0
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                "Su0",
-                p.time().timeName(),
-                p.db(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
+            "Su0",
             p.mesh(),
-            dimensionedScalar("Su0", dimVelocity, 0.0)
+            dimensionedScalar(dimVelocity, 0)
         )
     );
 
@@ -165,19 +157,11 @@ Foam::tmp<Foam::volScalarField> Foam::laminarFlameSpeedModels::Gulders::Su0pTphi
 {
     tmp<volScalarField> tSu0
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                "Su0",
-                p.time().timeName(),
-                p.db(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
+            "Su0",
             p.mesh(),
-            dimensionedScalar("Su0", dimVelocity, 0.0)
+            dimensionedScalar(dimVelocity, 0)
         )
     );
 

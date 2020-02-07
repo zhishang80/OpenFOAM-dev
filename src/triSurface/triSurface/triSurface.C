@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -571,12 +571,12 @@ Foam::triSurface::triSurface
 
 Foam::triSurface::triSurface
 (
-    const Xfer<List<labelledTri>>& triangles,
+    List<labelledTri>&& triangles,
     const geometricSurfacePatchList& patches,
-    const Xfer<List<point>>& points
+    List<point>&& points
 )
 :
-    ParentType(triangles, points),
+    ParentType(move(triangles), move(points)),
     patches_(patches),
     sortedEdgeFacesPtr_(nullptr),
     edgeOwnerPtr_(nullptr)
@@ -664,6 +664,15 @@ Foam::triSurface::triSurface(const triSurface& ts)
 :
     ParentType(ts, ts.points()),
     patches_(ts.patches()),
+    sortedEdgeFacesPtr_(nullptr),
+    edgeOwnerPtr_(nullptr)
+{}
+
+
+Foam::triSurface::triSurface(triSurface&& ts)
+:
+    ParentType(move(ts), move(ts.points())),
+    patches_(move(ts.patches())),
     sortedEdgeFacesPtr_(nullptr),
     edgeOwnerPtr_(nullptr)
 {}
@@ -1289,14 +1298,14 @@ Foam::tmp<Foam::scalarField> Foam::triSurface::curvature() const
         const vector2D principalCurvatures =
             eigenValues(pointFundamentalTensors[pi]);
 
-        //scalar curvature =
+        // scalar curvature =
         //    (principalCurvatures[0] + principalCurvatures[1])/2;
         const scalar curvature = max
         (
             mag(principalCurvatures[0]),
             mag(principalCurvatures[1])
         );
-        //scalar curvature = principalCurvatures[0]*principalCurvatures[1];
+        // scalar curvature = principalCurvatures[0]*principalCurvatures[1];
 
         curvaturePointField[meshPoints[pi]] = curvature;
     }
@@ -1319,7 +1328,7 @@ void Foam::triSurface::write(Ostream& os) const
 {
     os  << patches() << endl;
 
-    //Note: Write with global point numbering
+    // Note: Write with global point numbering
     os  << points() << nl
         << static_cast<const List<labelledTri>&>(*this) << endl;
 
@@ -1379,6 +1388,15 @@ void Foam::triSurface::operator=(const triSurface& ts)
     clearOut();
     storedPoints() = ts.points();
     patches_ = ts.patches();
+}
+
+
+void Foam::triSurface::operator=(triSurface&& ts)
+{
+    List<labelledTri>::operator=(move(ts));
+    clearOut();
+    storedPoints() = move(ts.points());
+    patches_ = move(ts.patches());
 }
 
 

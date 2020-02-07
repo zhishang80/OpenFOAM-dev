@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -35,8 +35,6 @@ Description
     - if extruding boundary faces:
         - convert boundary faces to mappedWall patches
     - extrude edges of faceZone as a \<zone\>_sidePatch
-    - extrude edges in between different faceZones as a
-      (nonuniformTransform)cyclic \<zoneA\>_\<zoneB\>
     - extrudes into master direction (i.e. away from the owner cell
       if flipMap is false)
 
@@ -117,24 +115,14 @@ Notes:
 \*---------------------------------------------------------------------------*/
 
 #include "argList.H"
-#include "fvMesh.H"
 #include "polyTopoChange.H"
-#include "OFstream.H"
-#include "meshTools.H"
 #include "mappedWallPolyPatch.H"
 #include "createShellMesh.H"
 #include "syncTools.H"
 #include "cyclicPolyPatch.H"
 #include "wedgePolyPatch.H"
-#include "nonuniformTransformCyclicPolyPatch.H"
 #include "extrudeModel.H"
-#include "globalIndex.H"
 #include "faceSet.H"
-
-#include "volFields.H"
-#include "surfaceFields.H"
-#include "pointFields.H"
-//#include "ReadFields.H"
 #include "fvMeshTools.H"
 #include "OBJstream.H"
 #include "PatchTools.H"
@@ -718,7 +706,7 @@ void countExtrudePatches
             }
         }
     }
-    // Synchronise decistion. Actual numbers are not important, just make
+    // Synchronise decision. Actual numbers are not important, just make
     // sure that they're > 0 on all processors.
     Pstream::listCombineGather(zoneSidePatch, plusEqOp<label>());
     Pstream::listCombineScatter(zoneSidePatch);
@@ -810,7 +798,7 @@ void addCouplingPatches
                 << '\t' << newPatches[interRegionBottomPatch[zoneI]]->type()
                 << nl;
         }
-        else    //patch using shadow face zones.
+        else    // patch using shadow face zones.
         {
             interRegionTopPatch[zoneI] = addPatch<mappedWallPolyPatch>
             (
@@ -1060,86 +1048,6 @@ void addZoneSidePatches
 }
 
 
-void addInterZonePatches
-(
-    const fvMesh& mesh,
-    const wordList& zoneNames,
-    const bool oneD,
-
-    labelList& zoneZonePatch_min,
-    labelList& zoneZonePatch_max,
-    DynamicList<polyPatch*>& newPatches
-)
-{
-    Pout<< "Adding inter-zone patches:" << nl << nl
-        << "patchID\tpatch" << nl
-        << "-------\t-----"
-        << endl;
-
-    dictionary transformDict;
-    transformDict.add
-    (
-        "transform",
-        cyclicPolyPatch::transformTypeNames[cyclicPolyPatch::NOORDERING]
-    );
-
-    label nOldPatches = newPatches.size();
-
-    if (!oneD)
-    {
-        forAll(zoneZonePatch_min, minZone)
-        {
-            for (label maxZone = minZone; maxZone < zoneNames.size(); maxZone++)
-            {
-                label index = minZone*zoneNames.size()+maxZone;
-
-                if (zoneZonePatch_min[index] > 0)
-                {
-                    word minToMax =
-                        zoneNames[minZone]
-                      + "_to_"
-                      + zoneNames[maxZone];
-                    word maxToMin =
-                        zoneNames[maxZone]
-                      + "_to_"
-                      + zoneNames[minZone];
-
-                    {
-                        transformDict.set("neighbourPatch", maxToMin);
-                        zoneZonePatch_min[index] =
-                        addPatch<nonuniformTransformCyclicPolyPatch>
-                        (
-                            mesh.boundaryMesh(),
-                            minToMax,
-                            transformDict,
-                            newPatches
-                        );
-                        Pout<< zoneZonePatch_min[index] << '\t' << minToMax
-                            << nl;
-                    }
-                    {
-                        transformDict.set("neighbourPatch", minToMax);
-                        zoneZonePatch_max[index] =
-                        addPatch<nonuniformTransformCyclicPolyPatch>
-                        (
-                            mesh.boundaryMesh(),
-                            maxToMin,
-                            transformDict,
-                            newPatches
-                        );
-                        Pout<< zoneZonePatch_max[index] << '\t' << maxToMin
-                            << nl;
-                    }
-
-                }
-            }
-        }
-    }
-    Pout<< "Added " << newPatches.size()-nOldPatches << " inter-zone patches."
-        << nl << endl;
-}
-
-
 tmp<pointField> calcOffset
 (
     const primitiveFacePatch& extrudePatch,
@@ -1256,7 +1164,7 @@ void extrudeGeometricProperties
         )
     );
 
-    //forAll(extrudePatch.edges(), edgeI)
+    // forAll(extrudePatch.edges(), edgeI)
     //{
     //    const edge& e = extrudePatch.edges()[edgeI];
     //    Pout<< "Edge:" << e.centre(extrudePatch.localPoints()) << nl
@@ -1596,55 +1504,6 @@ int main(int argc, char *argv[])
     }
 
 
-
-
-    //// Read objects in time directory
-    //IOobjectList objects(mesh, runTime.timeName());
-    //
-    //// Read vol fields.
-    //
-    //PtrList<volScalarField> vsFlds;
-    //ReadFields(mesh, objects, vsFlds);
-    //
-    //PtrList<volVectorField> vvFlds;
-    //ReadFields(mesh, objects, vvFlds);
-    //
-    //PtrList<volSphericalTensorField> vstFlds;
-    //ReadFields(mesh, objects, vstFlds);
-    //
-    //PtrList<volSymmTensorField> vsymtFlds;
-    //ReadFields(mesh, objects, vsymtFlds);
-    //
-    //PtrList<volTensorField> vtFlds;
-    //ReadFields(mesh, objects, vtFlds);
-    //
-    //// Read surface fields.
-    //
-    //PtrList<surfaceScalarField> ssFlds;
-    //ReadFields(mesh, objects, ssFlds);
-    //
-    //PtrList<surfaceVectorField> svFlds;
-    //ReadFields(mesh, objects, svFlds);
-    //
-    //PtrList<surfaceSphericalTensorField> sstFlds;
-    //ReadFields(mesh, objects, sstFlds);
-    //
-    //PtrList<surfaceSymmTensorField> ssymtFlds;
-    //ReadFields(mesh, objects, ssymtFlds);
-    //
-    //PtrList<surfaceTensorField> stFlds;
-    //ReadFields(mesh, objects, stFlds);
-    //
-    //// Read point fields.
-    //
-    //PtrList<pointScalarField> psFlds;
-    //ReadFields(pointMesh::New(mesh), objects, psFlds);
-    //
-    //PtrList<pointVectorField> pvFlds;
-    //ReadFields(pointMesh::New(mesh), objects, pvFlds);
-
-
-
     // Create dummy fv* files
     createDummyFvMeshFiles(mesh, shellRegionName);
 
@@ -1879,7 +1738,7 @@ int main(int argc, char *argv[])
             }
         }
     }
-    const primitiveFacePatch extrudePatch(zoneFaces.xfer(), mesh.points());
+    const primitiveFacePatch extrudePatch(move(zoneFaces), mesh.points());
 
 
     Pstream::listCombineGather(isInternal, orEqOp<bool>());
@@ -2097,19 +1956,6 @@ int main(int argc, char *argv[])
     );
 
 
-    // Add the patches in between zones
-    addInterZonePatches
-    (
-        mesh,
-        zoneNames,
-        oneD,
-
-        zoneZonePatch_min,
-        zoneZonePatch_max,
-        regionPatches
-    );
-
-
     // Sets sidePatchID[edgeI] to interprocessor patch. Adds any
     // interprocessor or cyclic patches if necessary.
     labelList sidePatchID;
@@ -2136,12 +1982,12 @@ int main(int argc, char *argv[])
 //                << " name:" << newPatches[patchi]->name()
 //                << endl;
 //        }
-//        //label nOldPatches = mesh.boundary().size();
+//        // label nOldPatches = mesh.boundary().size();
 //        mesh.clearOut();
 //        mesh.removeFvBoundary();
 //        mesh.addFvPatches(newPatches, true);
 //        //// Add calculated fvPatchFields for the added patches
-//        //for
+//        // for
 //        //(
 //        //    label patchi = nOldPatches;
 //        //    patchi < mesh.boundary().size();
@@ -2152,7 +1998,7 @@ int main(int argc, char *argv[])
 //        //        << endl;
 //        //    addCalculatedPatchFields(mesh);
 //        //}
-//        //Pout<< "** Added " << mesh.boundary().size()-nOldPatches
+//        // Pout<< "** Added " << mesh.boundary().size()-nOldPatches
 //        //    << " patches." << endl;
 //    }
 
@@ -2368,7 +2214,7 @@ int main(int argc, char *argv[])
     vectorField firstDisp(localRegionNormals.size());
     forAll(firstDisp, regionI)
     {
-        //const point& regionPt = regionCentres[regionI];
+        // const point& regionPt = regionCentres[regionI];
         const point& regionPt = extrudePatch.points()
         [
             extrudePatch.meshPoints()
@@ -2404,10 +2250,10 @@ int main(int argc, char *argv[])
             IOobject::AUTO_WRITE,
             false
         ),
-        xferCopy(pointField()),
-        xferCopy(faceList()),
-        xferCopy(labelList()),
-        xferCopy(labelList()),
+        pointField(),
+        faceList(),
+        labelList(),
+        labelList(),
         false
     );
 
@@ -2436,7 +2282,7 @@ int main(int argc, char *argv[])
             meshMod
         );
 
-        // Enforce actual point posititions according to extrudeModel (model)
+        // Enforce actual point positions according to extrudeModel (model)
         // (extruder.setRefinement only does fixed expansionRatio)
         // The regionPoints and nLayers are looped in the same way as in
         // createShellMesh
@@ -2724,7 +2570,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        if (zoneShadowNames.size() > 0) //if there is a top faceZone specified
+        if (zoneShadowNames.size() > 0) // if there is a top faceZone specified
         {
             forAll(extrudeMeshFaces, zoneFacei)
             {
@@ -2788,7 +2634,7 @@ int main(int argc, char *argv[])
                             true,                           // flip flux
                             interMeshTopPatch[zoneI],       // patch for face
                             -1,                             // zone for face
-                            false                           //face flip in zone
+                            false                           // face flip in zone
                         );
                     }
                 }

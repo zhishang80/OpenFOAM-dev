@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -64,7 +64,7 @@ Foam::functionObjects::icoUncoupledKinematicCloud::icoUncoupledKinematicCloud
             IOobject::READ_IF_PRESENT,
             IOobject::NO_WRITE
         ),
-        dimensionedVector("g", dimAcceleration, Zero)
+        dimensionedVector(dimAcceleration, Zero)
     ),
     laminarTransport_
     (

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -40,7 +40,7 @@ SourceFiles
 #include "scalarField.H"
 #include "PackedBoolList.H"
 #include "PrimitivePatch.H"
-#include "vectorTensorTransform.H"
+#include "transformer.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -83,7 +83,7 @@ class PatchEdgeFaceWave
         static label dummyTrackData_;
 
 
-    // Private data
+    // Private Data
 
         //- Reference to mesh
         const polyMesh& mesh_;
@@ -151,12 +151,6 @@ class PatchEdgeFaceWave
         //- Update coupled edges
         void syncEdges();
 
-        //- Disallow default bitwise copy construct
-        PatchEdgeFaceWave(const PatchEdgeFaceWave&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const PatchEdgeFaceWave&);
-
 
 public:
 
@@ -204,6 +198,9 @@ public:
             UList<Type>& allFaceInfo,
             TrackingData& td = dummyTrackData_
         );
+
+        //- Disallow default bitwise copy construction
+        PatchEdgeFaceWave(const PatchEdgeFaceWave&) = delete;
 
 
     // Member Functions
@@ -253,6 +250,12 @@ public:
         //- Iterate until no changes or maxIter reached. Returns actual
         //  number of iterations.
         label iterate(const label maxIter);
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const PatchEdgeFaceWave&) = delete;
 };
 
 
@@ -330,7 +333,7 @@ public:
 
     void operator()
     (
-        const vectorTensorTransform& vt,
+        const transformer& vt,
         const bool forward,
         List<Type>& fld
     ) const
@@ -339,14 +342,14 @@ public:
         {
             forAll(fld, i)
             {
-                fld[i].transform(mesh_, patch_, vt.R(), tol_, td_);
+                fld[i].transform(mesh_, patch_, vt.T(), tol_, td_);
             }
         }
         else
         {
             forAll(fld, i)
             {
-                fld[i].transform(mesh_, patch_, vt.R().T(), tol_, td_);
+                fld[i].transform(mesh_, patch_, vt.T().T(), tol_, td_);
             }
         }
     }

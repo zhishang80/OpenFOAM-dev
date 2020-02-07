@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -57,13 +57,20 @@ void Foam::distributionModel::check() const
 }
 
 
+void Foam::distributionModel::info() const
+{
+    Info<< "    Distribution min: " << minValue() << " max: " << maxValue()
+        << " mean: " << meanValue() << endl;
+}
+
+
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 Foam::distributionModel::distributionModel
 (
     const word& name,
     const dictionary& dict,
-    cachedRandom& rndGen
+    Random& rndGen
 )
 :
     distributionModelDict_(dict.subDict(name + "Distribution")),

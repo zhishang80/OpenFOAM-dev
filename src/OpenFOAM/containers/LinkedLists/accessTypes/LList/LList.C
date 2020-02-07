@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -36,6 +36,15 @@ Foam::LList<LListBase, T>::LList(const LList<LListBase, T>& lst)
     {
         this->append(val);
     }
+}
+
+
+template<class LListBase, class T>
+Foam::LList<LListBase, T>::LList(LList<LListBase, T>&& lst)
+:
+    LListBase()
+{
+    transfer(lst);
 }
 
 
@@ -92,6 +101,13 @@ void Foam::LList<LListBase, T>::operator=(const LList<LListBase, T>& lst)
     {
         this->append(val);
     }
+}
+
+
+template<class LListBase, class T>
+void Foam::LList<LListBase, T>::operator=(LList<LListBase, T>&& lst)
+{
+    transfer(lst);
 }
 
 

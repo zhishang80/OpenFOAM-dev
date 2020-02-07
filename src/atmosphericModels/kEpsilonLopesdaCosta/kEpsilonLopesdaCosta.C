@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2018-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -48,7 +48,7 @@ void kEpsilonLopesdaCosta<BasicTurbulenceModel>::setPorosityCoefficient
     {
         const labelList& cellZoneIDs = pm.cellZoneIDs();
 
-        const scalar Cpm = readScalar(pm.dict().lookup(C.name()));
+        const scalar Cpm = pm.dict().lookup<scalar>(C.name());
 
         forAll(cellZoneIDs, zonei)
         {
@@ -77,7 +77,7 @@ void kEpsilonLopesdaCosta<BasicTurbulenceModel>::setCdSigma
         const labelList& cellZoneIDs = pm.cellZoneIDs();
         const scalarField& Sigma = pm.Sigma();
 
-        const scalar Cpm = readScalar(pm.dict().lookup(C.name()));
+        const scalar Cpm = pm.dict().lookup<scalar>(C.name());
 
         forAll(cellZoneIDs, zonei)
         {
@@ -287,7 +287,7 @@ kEpsilonLopesdaCosta<BasicTurbulenceModel>::kEpsilonLopesdaCosta
             this->mesh_
         ),
         this->mesh_,
-        dimensionedScalar("CdSigma", dimless/dimLength, 0)
+        dimensionedScalar(dimless/dimLength, 0)
     ),
     betap_
     (
@@ -298,7 +298,7 @@ kEpsilonLopesdaCosta<BasicTurbulenceModel>::kEpsilonLopesdaCosta
             this->mesh_
         ),
         this->mesh_,
-        dimensionedScalar("betap", dimless, 0)
+        dimensionedScalar(dimless, 0)
     ),
     betad_
     (
@@ -309,7 +309,7 @@ kEpsilonLopesdaCosta<BasicTurbulenceModel>::kEpsilonLopesdaCosta
             this->mesh_
         ),
         this->mesh_,
-        dimensionedScalar("betad", dimless, 0)
+        dimensionedScalar(dimless, 0)
     ),
     C4_
     (
@@ -320,7 +320,7 @@ kEpsilonLopesdaCosta<BasicTurbulenceModel>::kEpsilonLopesdaCosta
             this->mesh_
         ),
         this->mesh_,
-        dimensionedScalar("C4", dimless, 0)
+        dimensionedScalar(dimless, 0)
     ),
     C5_
     (
@@ -331,7 +331,7 @@ kEpsilonLopesdaCosta<BasicTurbulenceModel>::kEpsilonLopesdaCosta
             this->mesh_
         ),
         this->mesh_,
-        dimensionedScalar("C5", dimless, 0)
+        dimensionedScalar(dimless, 0)
     ),
 
     k_

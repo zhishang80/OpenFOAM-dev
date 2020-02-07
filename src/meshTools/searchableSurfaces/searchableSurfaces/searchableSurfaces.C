@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -592,7 +592,7 @@ bool Foam::searchableSurfaces::checkIntersection
         Info<< "Checking for intersection." << endl;
     }
 
-    //cpuTime timer;
+    // cpuTime timer;
 
     bool hasError = false;
 
@@ -667,7 +667,7 @@ bool Foam::searchableSurfaces::checkIntersection
                             << " locations."
                             << endl;
 
-                        //vtkSetWriter<scalar> setWriter;
+                        // vtkSetWriter<scalar> setWriter;
                         if (setWriter.valid())
                         {
                             scalarField dist(mag(intersections));
@@ -675,7 +675,7 @@ bool Foam::searchableSurfaces::checkIntersection
                             (
                                 names()[i] + '_' + names()[j],
                                 "xyz",
-                                intersections.xfer(),
+                                move(intersections),
                                 dist
                             );
                             wordList valueSetNames(1, "edgeIndex");

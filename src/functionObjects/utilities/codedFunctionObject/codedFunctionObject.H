@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::codedFunctionObject
-
-Group
-    grpUtilitiesFunctionObjects
 
 Description
     Provides a general interface to enable dynamic code compilation.
@@ -75,7 +72,7 @@ SourceFiles
 #define functionObjects_codedFunctionObject_H
 
 #include "functionObject.H"
-#include "codedBase.H"
+#include "CodedBase.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -89,55 +86,27 @@ namespace Foam
 class codedFunctionObject
 :
     public functionObject,
-    public codedBase
+    public CodedBase<functionObject>
 {
-protected:
-
-    // Protected data
+    // Private Data
 
         //- Reference to the time database
         const Time& time_;
 
-        //- Input dictionary
-        dictionary dict_;
-
-        word name_;
-
-        string codeData_;
-        string codeRead_;
-        string codeExecute_;
-        string codeWrite_;
-        string codeEnd_;
-
-        //- Underlying functionObject
+        //- The dynamically generated functionObject pointer
         mutable autoPtr<functionObject> redirectFunctionObjectPtr_;
 
 
-    // Protected Member Functions
-
-        //- Get the loaded dynamic libraries
-        virtual dlLibraryTable& libs() const;
+    // Private Member Functions
 
         //- Adapt the context for the current object
         virtual void prepare(dynamicCode&, const dynamicCodeContext&) const;
 
-        // Return a description (type + name) for the output
-        virtual string description() const;
-
-        // Clear any redirected objects
+        //- Clear any redirected objects
         virtual void clearRedirect() const;
 
-        // Get the dictionary to initialize the codeContext
-        virtual const dictionary& codeDict() const;
-
-
-private:
-
-        //- Disallow default bitwise copy construct
-        codedFunctionObject(const codedFunctionObject&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const codedFunctionObject&);
+        //- Compile, link and return the now coded functionObject
+        functionObject& redirectFunctionObject() const;
 
 
 public:
@@ -156,15 +125,15 @@ public:
             const dictionary& dict
         );
 
+        //- Disallow default bitwise copy construction
+        codedFunctionObject(const codedFunctionObject&) = delete;
+
 
     //- Destructor
     virtual ~codedFunctionObject();
 
 
     // Member Functions
-
-        //- Dynamically compiled functionObject
-        functionObject& redirectFunctionObject() const;
 
         //- Called at each ++ or += of the time-loop.
         //  postProcess overrides the usual executeControl behaviour and
@@ -182,6 +151,12 @@ public:
 
         //- Read and set the function object if its data have changed
         virtual bool read(const dictionary&);
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const codedFunctionObject&) = delete;
 };
 
 

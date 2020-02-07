@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -25,7 +25,7 @@ Class
     Foam::regionCoupledBase
 
 Description
-    Base class with common functinality for regionCoupled polyPatch.
+    Base class with common functionality for regionCoupled polyPatch.
     It includes AMI.
 
 
@@ -37,7 +37,7 @@ SourceFiles
 #ifndef regionCoupledBase_H
 #define regionCoupledBase_H
 
-#include "AMIPatchToPatchInterpolation.H"
+#include "AMIInterpolation.H"
 #include "polyBoundaryMesh.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -51,9 +51,7 @@ namespace Foam
 
 class regionCoupledBase
 {
-private:
-
-    // Private data
+    // Private Data
 
         //- Patch to sample
         const polyPatch& patch_;
@@ -71,7 +69,7 @@ private:
         const bool sameRegion_;
 
         //- AMI interpolation class
-        mutable autoPtr<AMIPatchToPatchInterpolation> AMIPtr_;
+        mutable autoPtr<AMIInterpolation> AMIPtr_;
 
         //- Flag to indicate that slave patch should be reversed for AMI
         const bool AMIReverse_;
@@ -142,19 +140,19 @@ public:
             }
 
             //- Neighbour patch ID
-            label neighbPatchID() const;
+            label nbrPatchID() const;
 
             //- Does this side own the patch?
             bool owner() const;
 
             //- Return a reference to the neighbour patch
-            const regionCoupledBase& neighbPatch() const;
+            const regionCoupledBase& nbrPatch() const;
 
             //- Return a reference to the projection surface
             const autoPtr<searchableSurface>& surfPtr() const;
 
             //- Return a reference to the AMI interpolator
-            const AMIPatchToPatchInterpolation& AMI() const;
+            const AMIInterpolation& AMI() const;
 
 
             // Interpolations

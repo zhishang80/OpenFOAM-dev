@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::LESModels::dynamicLagrangian
-
-Group
-    grpLESTurbulence
 
 Description
     Dynamic SGS model with Lagrangian averaging
@@ -64,13 +61,6 @@ class dynamicLagrangian
 :
     public LESeddyViscosity<BasicTurbulenceModel>
 {
-    // Private Member Functions
-
-        // Disallow default bitwise copy construct and assignment
-        dynamicLagrangian(const dynamicLagrangian&);
-        void operator=(const dynamicLagrangian&);
-
-
 protected:
 
     // Protected data
@@ -121,6 +111,9 @@ public:
             const word& type = typeName
         );
 
+        //- Disallow default bitwise copy construction
+        dynamicLagrangian(const dynamicLagrangian&) = delete;
+
 
     //- Destructor
     virtual ~dynamicLagrangian()
@@ -150,14 +143,21 @@ public:
         //- Return the effective diffusivity for k
         tmp<volScalarField> DkEff() const
         {
-            return tmp<volScalarField>
+            return volScalarField::New
             (
-                new volScalarField("DkEff", this->nut_ + this->nu())
+                "DkEff",
+                this->nut_ + this->nu()
             );
         }
 
         //- Correct Eddy-Viscosity and related properties
         virtual void correct();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const dynamicLagrangian&) = delete;
 };
 
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::mappedFixedInternalValueFvPatchField
-
-Group
-    grpGenericBoundaryConditions grpCoupledBoundaryConditions
 
 Description
     This boundary condition maps the boundary and internal values of a
@@ -118,7 +115,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         mappedFixedInternalValueFvPatchField
         (
             const mappedFixedInternalValueFvPatchField<Type>&
@@ -133,7 +130,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         mappedFixedInternalValueFvPatchField
         (
             const mappedFixedInternalValueFvPatchField<Type>&,
@@ -153,7 +150,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Evaluation functions
 

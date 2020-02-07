@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -63,7 +63,7 @@ pointFile::pointFile
     randomiseInitialGrid_(detailsDict().lookup("randomiseInitialGrid")),
     randomPerturbationCoeff_
     (
-        readScalar(detailsDict().lookup("randomPerturbationCoeff"))
+        detailsDict().lookup<scalar>("randomPerturbationCoeff")
     )
 {
     Info<< "    Inside/Outside check is " << insideOutsideCheck_.asText()
@@ -194,7 +194,7 @@ List<Vb::Point> pointFile::initialPoints() const
             << pointFileName_.name() << endl;
     }
 
-    return initialPoints;
+    return Foam::move(initialPoints);
 }
 
 

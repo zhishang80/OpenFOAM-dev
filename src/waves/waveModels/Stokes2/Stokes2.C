@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -61,11 +61,12 @@ Foam::waveModels::Stokes2::~Stokes2()
 Foam::tmp<Foam::scalarField> Foam::waveModels::Stokes2::elevation
 (
     const scalar t,
-    const scalar u,
     const scalarField& x
 ) const
 {
-    const scalar kd = k()*depth(), ka = k()*amplitude(t);
+    static const scalar kdGreat = log(great);
+    const scalar kd = min(max(k()*depth(), - kdGreat), kdGreat);
+    const scalar ka = k()*amplitude(t);
 
     const scalar T = deep() ? 1 : tanh(kd);
 
@@ -77,19 +78,20 @@ Foam::tmp<Foam::scalarField> Foam::waveModels::Stokes2::elevation
     }
 
     return
-        Airy::elevation(t, u, x)
-      + (1/k())*sqr(ka)*B22*cos(2*angle(t, u, x));
+        Airy::elevation(t, x)
+      + (1/k())*sqr(ka)*B22*cos(2*angle(t, x));
 }
 
 
 Foam::tmp<Foam::vector2DField> Foam::waveModels::Stokes2::velocity
 (
     const scalar t,
-    const scalar u,
     const vector2DField& xz
 ) const
 {
-    const scalar kd = k()*depth(), ka = k()*amplitude(t);
+    static const scalar kdGreat = log(great);
+    const scalar kd = min(max(k()*depth(), - kdGreat), kdGreat);
+    const scalar ka = k()*amplitude(t);
 
     const scalar A22ByA11 = deep() ? 0 : 0.375/pow3(sinh(kd));
 
@@ -100,8 +102,8 @@ Foam::tmp<Foam::vector2DField> Foam::waveModels::Stokes2::velocity
     }
 
     return
-        Airy::velocity(t, u, xz)
-      + celerity()*sqr(ka)*A22ByA11*vi(2, t, u, xz);
+        Airy::velocity(t, xz)
+      + celerity()*sqr(ka)*A22ByA11*vi(2, t, xz);
 }
 
 

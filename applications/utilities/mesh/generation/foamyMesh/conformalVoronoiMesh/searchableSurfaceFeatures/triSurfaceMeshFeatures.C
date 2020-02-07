@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -57,7 +57,7 @@ Foam::triSurfaceMeshFeatures::triSurfaceMeshFeatures
 )
 :
     searchableSurfaceFeatures(surface, dict),
-    includedAngle_(readScalar(dict.lookup("includedAngle"))),
+    includedAngle_(dict.lookup<scalar>("includedAngle")),
     mode_
     (
         extendedFeatureEdgeMesh::sideVolumeTypeNames_

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,46 +24,23 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "sampledPlane.H"
-#include "dictionary.H"
-#include "polyMesh.H"
-#include "volFields.H"
-
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
 namespace Foam
 {
-    defineTypeNameAndDebug(sampledPlane, 0);
-    addNamedToRunTimeSelectionTable(sampledSurface, sampledPlane, word, plane);
+namespace sampledSurfaces
+{
+    defineTypeNameAndDebug(plane, 0);
+    addToRunTimeSelectionTable(sampledSurface, plane, word);
 }
+}
+
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::sampledPlane::sampledPlane
-(
-    const word& name,
-    const polyMesh& mesh,
-    const plane& planeDesc,
-    const keyType& zoneKey,
-    const bool triangulate
-)
-:
-    sampledSurface(name, mesh),
-    cuttingPlane(planeDesc),
-    zoneKey_(zoneKey),
-    triangulate_(triangulate),
-    needsUpdate_(true)
-{
-    if (debug && zoneKey_.size() && mesh.cellZones().findIndex(zoneKey_) < 0)
-    {
-        Info<< "cellZone " << zoneKey_
-            << " not found - using entire mesh" << endl;
-    }
-}
-
-
-Foam::sampledPlane::sampledPlane
+Foam::sampledSurfaces::plane::plane
 (
     const word& name,
     const polyMesh& mesh,
@@ -71,7 +48,7 @@ Foam::sampledPlane::sampledPlane
 )
 :
     sampledSurface(name, mesh, dict),
-    cuttingPlane(plane(dict)),
+    cuttingPlane(Foam::plane(dict)),
     zoneKey_(keyType::null),
     triangulate_(dict.lookupOrDefault("triangulate", true)),
     needsUpdate_(true)
@@ -86,7 +63,7 @@ Foam::sampledPlane::sampledPlane
         vector norm = cs.globalVector(planeDesc().normal());
 
         // Assign the plane description
-        static_cast<plane&>(*this) = plane(base, norm);
+        static_cast<Foam::plane&>(*this) = Foam::plane(base, norm);
     }
 
     dict.readIfPresent("zone", zoneKey_);
@@ -101,19 +78,19 @@ Foam::sampledPlane::sampledPlane
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
-Foam::sampledPlane::~sampledPlane()
+Foam::sampledSurfaces::plane::~plane()
 {}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-bool Foam::sampledPlane::needsUpdate() const
+bool Foam::sampledSurfaces::plane::needsUpdate() const
 {
     return needsUpdate_;
 }
 
 
-bool Foam::sampledPlane::expire()
+bool Foam::sampledSurfaces::plane::expire()
 {
     // Already marked as expired
     if (needsUpdate_)
@@ -128,7 +105,7 @@ bool Foam::sampledPlane::expire()
 }
 
 
-bool Foam::sampledPlane::update()
+bool Foam::sampledSurfaces::plane::update()
 {
     if (!needsUpdate_)
     {
@@ -159,7 +136,7 @@ bool Foam::sampledPlane::update()
 }
 
 
-Foam::tmp<Foam::scalarField> Foam::sampledPlane::sample
+Foam::tmp<Foam::scalarField> Foam::sampledSurfaces::plane::sample
 (
     const volScalarField& vField
 ) const
@@ -168,7 +145,7 @@ Foam::tmp<Foam::scalarField> Foam::sampledPlane::sample
 }
 
 
-Foam::tmp<Foam::vectorField> Foam::sampledPlane::sample
+Foam::tmp<Foam::vectorField> Foam::sampledSurfaces::plane::sample
 (
     const volVectorField& vField
 ) const
@@ -177,7 +154,7 @@ Foam::tmp<Foam::vectorField> Foam::sampledPlane::sample
 }
 
 
-Foam::tmp<Foam::sphericalTensorField> Foam::sampledPlane::sample
+Foam::tmp<Foam::sphericalTensorField> Foam::sampledSurfaces::plane::sample
 (
     const volSphericalTensorField& vField
 ) const
@@ -186,7 +163,7 @@ Foam::tmp<Foam::sphericalTensorField> Foam::sampledPlane::sample
 }
 
 
-Foam::tmp<Foam::symmTensorField> Foam::sampledPlane::sample
+Foam::tmp<Foam::symmTensorField> Foam::sampledSurfaces::plane::sample
 (
     const volSymmTensorField& vField
 ) const
@@ -195,7 +172,7 @@ Foam::tmp<Foam::symmTensorField> Foam::sampledPlane::sample
 }
 
 
-Foam::tmp<Foam::tensorField> Foam::sampledPlane::sample
+Foam::tmp<Foam::tensorField> Foam::sampledSurfaces::plane::sample
 (
     const volTensorField& vField
 ) const
@@ -204,7 +181,7 @@ Foam::tmp<Foam::tensorField> Foam::sampledPlane::sample
 }
 
 
-Foam::tmp<Foam::scalarField> Foam::sampledPlane::interpolate
+Foam::tmp<Foam::scalarField> Foam::sampledSurfaces::plane::interpolate
 (
     const interpolation<scalar>& interpolator
 ) const
@@ -213,7 +190,7 @@ Foam::tmp<Foam::scalarField> Foam::sampledPlane::interpolate
 }
 
 
-Foam::tmp<Foam::vectorField> Foam::sampledPlane::interpolate
+Foam::tmp<Foam::vectorField> Foam::sampledSurfaces::plane::interpolate
 (
     const interpolation<vector>& interpolator
 ) const
@@ -221,7 +198,7 @@ Foam::tmp<Foam::vectorField> Foam::sampledPlane::interpolate
     return interpolateField(interpolator);
 }
 
-Foam::tmp<Foam::sphericalTensorField> Foam::sampledPlane::interpolate
+Foam::tmp<Foam::sphericalTensorField> Foam::sampledSurfaces::plane::interpolate
 (
     const interpolation<sphericalTensor>& interpolator
 ) const
@@ -230,7 +207,7 @@ Foam::tmp<Foam::sphericalTensorField> Foam::sampledPlane::interpolate
 }
 
 
-Foam::tmp<Foam::symmTensorField> Foam::sampledPlane::interpolate
+Foam::tmp<Foam::symmTensorField> Foam::sampledSurfaces::plane::interpolate
 (
     const interpolation<symmTensor>& interpolator
 ) const
@@ -239,7 +216,7 @@ Foam::tmp<Foam::symmTensorField> Foam::sampledPlane::interpolate
 }
 
 
-Foam::tmp<Foam::tensorField> Foam::sampledPlane::interpolate
+Foam::tmp<Foam::tensorField> Foam::sampledSurfaces::plane::interpolate
 (
     const interpolation<tensor>& interpolator
 ) const
@@ -248,9 +225,9 @@ Foam::tmp<Foam::tensorField> Foam::sampledPlane::interpolate
 }
 
 
-void Foam::sampledPlane::print(Ostream& os) const
+void Foam::sampledSurfaces::plane::print(Ostream& os) const
 {
-    os  << "sampledPlane: " << name() << " :"
+    os  << "plane: " << name() << " :"
         << "  base:" << refPoint()
         << "  normal:" << normal()
         << "  triangulate:" << triangulate_

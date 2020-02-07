@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -69,6 +69,9 @@ makeLaminarModel(Stokes);
 
 #include "kEpsilon.H"
 makeRASModel(kEpsilon);
+
+#include "kOmegaSST.H"
+makeRASModel(kOmegaSST);
 
 #include "Smagorinsky.H"
 makeLESModel(Smagorinsky);

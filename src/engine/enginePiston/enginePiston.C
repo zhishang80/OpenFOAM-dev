@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2013 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -67,8 +67,8 @@ Foam::enginePiston::enginePiston
             dict.subDict("coordinateSystem")
         )
     ),
-    minLayer_(readScalar(dict.lookup("minLayer"))),
-    maxLayer_(readScalar(dict.lookup("maxLayer")))
+    minLayer_(dict.lookup<scalar>("minLayer")),
+    maxLayer_(dict.lookup<scalar>("maxLayer"))
 {}
 
 

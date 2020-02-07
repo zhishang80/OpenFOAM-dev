@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -64,7 +64,7 @@ Ostream& operator<<(Ostream&, const cellModel&);
 
 class cellModel
 {
-    // Private data
+    // Private Data
 
         //- Name
         word name_;
@@ -102,7 +102,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Access
 

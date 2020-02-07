@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,18 +22,17 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::VakhrushevEfremov
+    Foam::aspectRatioModels::VakhrushevEfremov
 
 Description
     Aspect ratio model of Vakhrushev and Efremov.
 
     Reference:
     \verbatim
-        "Interpolation formula for computing the velocities of single gas
-         bubbles in liquids"
-        Vakhrushev, I.A. and Efremov, G.I.,
-        Chemistry and Technology of Fuels and Oils
-        Volume 6, Issue 5, May 1970, pp. 376-379,
+        Vakhrushev, I. A., & Efremov, G. I. (1970).
+        Interpolation formula for computing the velocities of single gas bubbles
+        in liquids.
+        Chemistry and Technology of Fuels and Oils, 6(5), 376-379.
     \endverbatim
 
 SourceFiles

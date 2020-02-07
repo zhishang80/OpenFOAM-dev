@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -58,6 +58,12 @@ Foam::scalar Foam::TimeState::userTimeToTime(const scalar theta) const
 Foam::scalar Foam::TimeState::timeToUserTime(const scalar t) const
 {
     return t;
+}
+
+
+Foam::scalar Foam::TimeState::timeToUserTimeRatio() const
+{
+    return 1;
 }
 
 

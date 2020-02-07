@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -33,6 +33,7 @@ inline bool Foam::regIOobject::ownedByRegistry() const
 
 inline void Foam::regIOobject::store()
 {
+    checkIn();
     ownedByRegistry_ = true;
 }
 
@@ -47,6 +48,7 @@ inline Type& Foam::regIOobject::store(Type* tPtr)
             << abort(FatalError);
     }
 
+    tPtr->regIOobject::checkIn();
     tPtr->regIOobject::ownedByRegistry_ = true;
 
     return *tPtr;
@@ -65,6 +67,7 @@ inline Type& Foam::regIOobject::store(autoPtr<Type>& atPtr)
                 << abort(FatalError);
     }
 
+    tPtr->regIOobject::checkIn();
     tPtr->regIOobject::ownedByRegistry_ = true;
 
     return *tPtr;

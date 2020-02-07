@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -27,18 +27,10 @@ License
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-template
-<
-    class Face,
-    template<class> class FaceList,
-    class PointField,
-    class PointType
->
-
-Foam::labelListList
-Foam::PatchTools::sortedPointEdges
+template<class FaceList, class PointField>
+Foam::labelListList Foam::PatchTools::sortedPointEdges
 (
-    const PrimitivePatch<Face, FaceList, PointField, PointType>& p
+    const PrimitivePatch<FaceList, PointField>& p
 )
 {
     // Now order the edges of each point according to whether they share a

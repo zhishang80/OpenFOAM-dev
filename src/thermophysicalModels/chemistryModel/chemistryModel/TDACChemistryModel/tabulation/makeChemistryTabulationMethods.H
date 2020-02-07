@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -34,18 +34,20 @@ License
 
 #define makeChemistryTabulationMethod(SS, Comp, Thermo)                        \
                                                                                \
-    typedef chemistryTabulationMethods::SS<Comp, Thermo> SS##Comp##Thermo;     \
+    typedef chemistryTabulationMethods::SS<Comp, Thermo>                       \
+        chemistryTabulationMethod##SS##Comp##Thermo;                           \
                                                                                \
     defineTemplateTypeNameAndDebugWithName                                     \
     (                                                                          \
-        SS##Comp##Thermo,                                                      \
+        chemistryTabulationMethod##SS##Comp##Thermo,                           \
         (#SS"<" + word(Comp::typeName_())                                      \
       + "," + Thermo::typeName() + ">").c_str(),                               \
         0                                                                      \
     );                                                                         \
                                                                                \
     chemistryTabulationMethod<Comp, Thermo>::                                  \
-        adddictionaryConstructorToTable<SS##Comp##Thermo>                      \
+        adddictionaryConstructorToTable                                        \
+        <chemistryTabulationMethod##SS##Comp##Thermo>                          \
         add##chemistryTabulationMethods##SS##Comp##Thermo##ConstructorToTable_;
 
 

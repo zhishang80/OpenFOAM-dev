@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -58,7 +58,7 @@ laplacian
             IOobject::NO_READ
         ),
         vf.mesh(),
-        dimensionedScalar("1", dimless, 1.0)
+        dimensionedScalar(dimless, 1.0)
     );
 
     return fvm::laplacian(Gamma, vf, name);
@@ -82,7 +82,7 @@ laplacian
             IOobject::NO_READ
         ),
         vf.mesh(),
-        dimensionedScalar("1", dimless, 1.0)
+        dimensionedScalar(dimless, 1.0)
     );
 
     return fvm::laplacian

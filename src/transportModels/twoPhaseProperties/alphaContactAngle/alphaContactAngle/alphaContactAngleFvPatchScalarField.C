@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -166,8 +166,7 @@ void Foam::alphaContactAngleFvPatchScalarField::write
 ) const
 {
     fixedGradientFvPatchScalarField::write(os);
-    os.writeKeyword("limit")
-        << limitControlNames_[limit_] << token::END_STATEMENT << nl;
+    writeEntry(os, "limit", limitControlNames_[limit_]);
 }
 
 

@@ -1,9 +1,9 @@
 /*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  dev                                   |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
-|    \\/     M anipulation  |                                                 |
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  dev
+     \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
@@ -13,6 +13,7 @@ FoamFile
     object      snappyHexMeshDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+#inputSyntax slash;
 
 // Which of the steps to run
 castellatedMesh true;
@@ -24,7 +25,7 @@ geometry
     vessel
     {
         type triSurfaceMesh;
-        file "vessel.stl";
+        file "mixerVessel-vessel.stl";
 
         regions
         {
@@ -35,16 +36,16 @@ geometry
         }
     }
 
-    gasInlet
+    oilInlet
     {
         type triSurfaceMesh;
-        file "gasInlet.stl";
+        file "mixerVessel-oilInlet.stl";
 
         regions
         {
-            gasInlet
+            oilInlet
             {
-                name gasInlet;
+                name oilInlet;
             }
         }
     }
@@ -52,7 +53,7 @@ geometry
     outlet
     {
         type triSurfaceMesh;
-        file "outlet.stl";
+        file "mixerVessel-outlet.stl";
 
         regions
         {
@@ -66,7 +67,7 @@ geometry
     shaftRotating
     {
         type triSurfaceMesh;
-        file "shaftRotating.stl";
+        file "mixerVessel-shaftRotating.stl";
 
         regions
         {
@@ -80,7 +81,7 @@ geometry
     shaft
     {
         type triSurfaceMesh;
-        file "shaft.stl";
+        file "mixerVessel-shaft.stl";
 
         regions
         {
@@ -94,7 +95,7 @@ geometry
     sparger
     {
         type triSurfaceMesh;
-        file "sparger.stl";
+        file "mixerVessel-sparger.stl";
 
         regions
         {
@@ -108,7 +109,7 @@ geometry
     stirrer
     {
         type triSurfaceMesh;
-        file "stirrer.stl";
+        file "mixerVessel-stirrer.stl";
 
         regions
         {
@@ -122,7 +123,7 @@ geometry
     baffles
     {
         type triSurfaceMesh;
-        file "baffles.stl";
+        file "mixerVessel-baffles.stl";
 
         regions
         {
@@ -192,15 +193,39 @@ castellatedMeshControls
     features
     (
         {
-           file "gasInlet.eMesh";
+           file "mixerVessel-shaftRotating.eMesh";
            levels ((1 1));
         }
         {
-           file "vessel.eMesh";
+           file "mixerVessel-shaft.eMesh";
            levels ((1 1));
         }
         {
-           file "outlet.eMesh";
+           file "mixerVessel-sparger.eMesh";
+           levels ((1 1));
+        }
+        {
+           file "mixerVessel-stirrer.eMesh";
+           levels ((1 1));
+        }
+        {
+           file "mixerVessel-baffles.eMesh";
+           levels ((1 1));
+        }
+        {
+           file "rotating.eMesh";
+           levels ((1 1));
+        }
+        {
+           file "mixerVessel-oilInlet.eMesh";
+           levels ((1 1));
+        }
+        {
+           file "mixerVessel-vessel.eMesh";
+           levels ((1 1));
+        }
+        {
+           file "mixerVessel-outlet.eMesh";
            levels ((1 1));
         }
 
@@ -227,7 +252,7 @@ castellatedMeshControls
             }
         }
 
-        gasInlet
+        oilInlet
         {
             level (0 1);
             patchInfo
@@ -250,7 +275,7 @@ castellatedMeshControls
             level (1 1);
             patchInfo
             {
-                ${...vessel.patchInfo}
+                $../../vessel/patchInfo
             }
         }
 
@@ -259,7 +284,7 @@ castellatedMeshControls
             level (1 1);
             patchInfo
             {
-                ${...vessel.patchInfo}
+                $../../vessel/patchInfo
             }
         }
 
@@ -268,7 +293,7 @@ castellatedMeshControls
             level (1 1);
             patchInfo
             {
-                ${...vessel.patchInfo}
+                $../../vessel/patchInfo
             }
         }
 
@@ -277,7 +302,7 @@ castellatedMeshControls
             level (1 1);
             patchInfo
             {
-                ${...vessel.patchInfo}
+                $../../vessel/patchInfo
             }
         }
 
@@ -286,7 +311,7 @@ castellatedMeshControls
             level (1 1);
             patchInfo
             {
-                ${...vessel.patchInfo}
+                $../../vessel/patchInfo
             }
         }
 
@@ -401,12 +426,12 @@ addLayersControls
         // Wanted thickness of the layer next to the wall.
         // If relativeSizes this is relative to undistorted size of cell
         // outside layer.
-        //firstLayerThickness 0.3;
+        // firstLayerThickness 0.3;
 
         // Wanted overall thickness of layers.
         // If relativeSizes this is relative to undistorted size of cell
         // outside layer.
-        //thickness 0.5
+        // thickness 0.5
 
 
     // Minimum overall thickness of total layers. If for any reason layer
@@ -488,7 +513,7 @@ addLayersControls
     // Additional reporting: if there are just a few faces where there
     // are mesh errors (after adding the layers) print their face centres.
     // This helps in tracking down problematic mesh areas.
-    //additionalReporting true;
+    // additionalReporting true;
 }
 
 // Generic mesh quality settings. At any undoable phase these determine
@@ -520,7 +545,7 @@ meshQualityControls
     //    <0 = inside out tet,
     //     0 = flat tet
     //     1 = regular tet
-    minTetQuality 1e-9;
+    minTetQuality -1e-30;
 
     // Minimum face area. Set to <0 to disable.
     minArea -1;
@@ -546,7 +571,7 @@ meshQualityControls
     //  resulting volume after snapping (by approximation) is larger than
     //  minVolCollapseRatio times old volume (i.e. not collapsed to flat cell).
     //  If <0 : delete always.
-    //minVolCollapseRatio 0.5;
+    // minVolCollapseRatio 0.5;
 
     // Advanced
 

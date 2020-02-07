@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2013 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -25,6 +25,8 @@ License
 
 #include "cyclicAMIPointPatch.H"
 #include "pointBoundaryMesh.H"
+#include "pointMesh.H"
+#include "Time.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -94,6 +96,16 @@ Foam::cyclicAMIPointPatch::cyclicAMIPointPatch
 
 Foam::cyclicAMIPointPatch::~cyclicAMIPointPatch()
 {}
+
+
+// * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
+
+bool Foam::cyclicAMIPointPatch::coupled() const
+{
+    return
+        Pstream::parRun()
+     || !this->boundaryMesh().mesh().mesh().time().processorCase();
+}
 
 
 // ************************************************************************* //

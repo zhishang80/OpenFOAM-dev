@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
+   \\    /   O peration     | Website:  https://openfoam.org
     \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
@@ -330,8 +330,8 @@ int main(int argc, char *argv[])
     // Calculate total number of fine and coarse faces
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    label nCoarseFaces = 0;      //total number of coarse faces
-    label nFineFaces = 0;        //total number of fine faces
+    label nCoarseFaces = 0;      // total number of coarse faces
+    label nFineFaces = 0;        // total number of fine faces
 
     const polyBoundaryMesh& patches = mesh.boundaryMesh();
     const polyBoundaryMesh& coarsePatches = coarseMesh.boundaryMesh();
@@ -828,7 +828,7 @@ int main(int argc, char *argv[])
                 IOobject::NO_WRITE
             ),
             mesh,
-            dimensionedScalar("viewFactorField", dimless, 0)
+            dimensionedScalar(dimless, 0)
         );
 
         volScalarField::Boundary& viewFactorFieldBf =

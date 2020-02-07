@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -307,7 +307,7 @@ void Foam::searchableCylinder::findLineAll
         {
             t1 = -b/(2*a);
 
-            //Pout<< "single solution t:" << t1
+            // Pout<< "single solution t:" << t1
             //    << " for start:" << start << " end:" << end
             //    << " c:" << c << endl;
 
@@ -332,7 +332,7 @@ void Foam::searchableCylinder::findLineAll
         else
         {
             // Aligned with axis. Check if outside radius
-            //Pout<< "small discriminant:" << disc
+            // Pout<< "small discriminant:" << disc
             //    << " for start:" << start << " end:" << end
             //    << " magV:" << magV
             //    << " c:" << c << endl;
@@ -381,7 +381,7 @@ void Foam::searchableCylinder::findLineAll
                     tFar = t2;
                 }
             }
-            //Pout<< "two solutions t1:" << t1 << " t2:" << t2
+            // Pout<< "two solutions t1:" << t1 << " t2:" << t2
             //    << " for start:" << start << " end:" << end
             //    << " magV:" << magV
             //    << " c:" << c << endl;
@@ -389,7 +389,7 @@ void Foam::searchableCylinder::findLineAll
         else
         {
             // Aligned with axis. Check if outside radius
-            //Pout<< "large discriminant:" << disc
+            // Pout<< "large discriminant:" << disc
             //    << " small a:" << a
             //    << " for start:" << start << " end:" << end
             //    << " magV:" << magV
@@ -504,7 +504,7 @@ Foam::searchableCylinder::searchableCylinder
     point2_(dict.lookup("point2")),
     magDir_(mag(point2_-point1_)),
     unitDir_((point2_-point1_)/magDir_),
-    radius_(readScalar(dict.lookup("radius")))
+    radius_(dict.lookup<scalar>("radius"))
 {
     bounds() = calcBounds();
 }
@@ -728,7 +728,7 @@ void Foam::searchableCylinder::getVolumeType
 ) const
 {
     volType.setSize(points.size());
-    volType = volumeType::INSIDE;
+    volType = volumeType::inside;
 
     forAll(points, pointi)
     {
@@ -742,12 +742,12 @@ void Foam::searchableCylinder::getVolumeType
         if (parallel < 0)
         {
             // left of point1 endcap
-            volType[pointi] = volumeType::OUTSIDE;
+            volType[pointi] = volumeType::outside;
         }
         else if (parallel > magDir_)
         {
             // right of point2 endcap
-            volType[pointi] = volumeType::OUTSIDE;
+            volType[pointi] = volumeType::outside;
         }
         else
         {
@@ -756,11 +756,11 @@ void Foam::searchableCylinder::getVolumeType
 
             if (mag(v) > radius_)
             {
-                volType[pointi] = volumeType::OUTSIDE;
+                volType[pointi] = volumeType::outside;
             }
             else
             {
-                volType[pointi] = volumeType::INSIDE;
+                volType[pointi] = volumeType::inside;
             }
         }
     }

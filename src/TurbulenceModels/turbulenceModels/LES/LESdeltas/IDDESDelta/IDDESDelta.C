@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -51,18 +51,11 @@ void Foam::LESModels::IDDESDelta::calcDelta()
 
     tmp<volScalarField> tfaceToFacenMax
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                "faceToFaceMax",
-                mesh.time().timeName(),
-                mesh,
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
+            "faceToFaceMax",
             mesh,
-            dimensionedScalar("zero", dimLength, 0.0)
+            dimensionedScalar(dimLength, 0)
         )
     );
 

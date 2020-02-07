@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,9 +24,6 @@ License
 Class
     Foam::nutWallFunctionFvPatchScalarField
 
-Group
-    grpWallFunctions
-
 Description
     This boundary condition provides a turbulent kinematic viscosity condition
     when using wall functions, based on turbulence kinetic energy.
@@ -45,7 +42,7 @@ Usage
     <patchName>
     {
         type            nutWallFunction;
-        value           uniform 0.0;
+        value           uniform 0;
     }
     \endverbatim
 
@@ -73,6 +70,8 @@ SourceFiles
 
 namespace Foam
 {
+
+class turbulenceModel;
 
 /*---------------------------------------------------------------------------*\
              Class nutWallFunctionFvPatchScalarField Declaration
@@ -105,7 +104,7 @@ protected:
         virtual void checkType();
 
         //- Calculate the turbulence viscosity
-        virtual tmp<scalarField> calcNut() const = 0;
+        virtual tmp<scalarField> nut() const = 0;
 
         //- Write local wall function variables
         virtual void writeLocalEntries(Ostream&) const;
@@ -145,13 +144,13 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         nutWallFunctionFvPatchScalarField
         (
             const nutWallFunctionFvPatchScalarField&
         );
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         nutWallFunctionFvPatchScalarField
         (
             const nutWallFunctionFvPatchScalarField&,
@@ -159,7 +158,32 @@ public:
         );
 
 
-    // Member functions
+    // Member Functions
+
+        //- Return Cmu
+        scalar Cmu() const
+        {
+            return Cmu_;
+        }
+
+        //- Return kappa
+        scalar kappa() const
+        {
+            return kappa_;
+        }
+
+        //- Return E
+        scalar E() const
+        {
+            return E_;
+        }
+
+        //- Return the nut patchField for the given wall patch
+        static const nutWallFunctionFvPatchScalarField& nutw
+        (
+            const turbulenceModel& turbModel,
+            const label patchi
+        );
 
         //- Calculate the Y+ at the edge of the laminar sublayer
         static scalar yPlusLam(const scalar kappa, const scalar E);

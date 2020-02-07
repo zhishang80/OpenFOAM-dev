@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -127,7 +127,7 @@ void Foam::functionObjects::nearWallFields::calcAddressing()
     scalar maxTrackLen = 2.0*mesh_.bounds().mag();
 
 
-    //Debug: collect start points
+    // Debug: collect start points
     pointField start;
     if (debug)
     {
@@ -216,7 +216,7 @@ bool Foam::functionObjects::nearWallFields::read(const dictionary& dict)
     dict.lookup("fields") >> fieldSet_;
     patchSet_ =
         mesh_.boundaryMesh().patchSet(wordReList(dict.lookup("patches")));
-    distance_ = readScalar(dict.lookup("distance"));
+    distance_ = dict.lookup<scalar>("distance");
 
 
     // Clear out any previously loaded fields

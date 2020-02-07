@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -276,9 +276,9 @@ Foam::EulerCoordinateRotation::EulerCoordinateRotation
 
 void Foam::EulerCoordinateRotation::write(Ostream& os) const
 {
-     os.writeKeyword("e1") << e1() << token::END_STATEMENT << nl;
-     os.writeKeyword("e2") << e2() << token::END_STATEMENT << nl;
-     os.writeKeyword("e3") << e3() << token::END_STATEMENT << nl;
+     writeEntry(os, "e1", e1());
+     writeEntry(os, "e2", e2());
+     writeEntry(os, "e3", e3());
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

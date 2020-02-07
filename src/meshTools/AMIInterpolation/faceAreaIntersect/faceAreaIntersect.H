@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -69,7 +69,7 @@ public:
 
 private:
 
-    // Private data
+    // Private Data
 
         //- Reference to the points of sideA
         const pointField& pointsA_;
@@ -81,7 +81,7 @@ private:
         const bool reverseB_;
 
 
-    // Static data members
+    // Static Data Members
 
         static scalar tol;
 

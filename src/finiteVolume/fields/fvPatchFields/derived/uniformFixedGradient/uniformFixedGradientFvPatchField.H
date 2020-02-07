@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::uniformFixedGradientFvPatchField
-
-Group
-    grpGenericBoundaryConditions
 
 Description
     This boundary condition provides a uniform fixed gradient condition.
@@ -51,7 +48,7 @@ Note
     constant value.
 
 See also
-    Foam::Function1Types
+    Foam::Function1s
     Foam::fixedGradientFvPatchField
 
 SourceFiles
@@ -79,7 +76,7 @@ class uniformFixedGradientFvPatchField
 :
     public fixedGradientFvPatchField<Type>
 {
-    // Private data
+    // Private Data
 
         //- Gradient
         autoPtr<Function1<Type>> uniformGradient_;
@@ -126,7 +123,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         uniformFixedGradientFvPatchField
         (
             const uniformFixedGradientFvPatchField<Type>&
@@ -141,7 +138,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         uniformFixedGradientFvPatchField
         (
             const uniformFixedGradientFvPatchField<Type>&,
@@ -161,7 +158,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         //- Update the coefficients associated with the patch field
         virtual void updateCoeffs();

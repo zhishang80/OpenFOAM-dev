@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::functionObjects::icoUncoupledKinematicCloud
-
-Group
-    grpLagrangianFunctionObjects
 
 Description
     This functionObject tracks a uncoupled kinematic particle cloud in the
@@ -121,15 +118,6 @@ class icoUncoupledKinematicCloud
         basicKinematicCollidingCloud kinematicCloud_;
 
 
-    // Private member functions
-
-        //- Disallow default bitwise copy construct
-        icoUncoupledKinematicCloud(const icoUncoupledKinematicCloud&);
-
-        //- Disallow default bitwise assignment
-        void operator==(const icoUncoupledKinematicCloud&);
-
-
 public:
 
     //- Runtime type information
@@ -147,6 +135,9 @@ public:
             const dictionary& dict
         );
 
+        //- Disallow default bitwise copy construction
+        icoUncoupledKinematicCloud(const icoUncoupledKinematicCloud&) = delete;
+
 
     //- Destructor
     virtual ~icoUncoupledKinematicCloud();
@@ -162,6 +153,12 @@ public:
 
         //- Write the cloud
         virtual bool write();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator==(const icoUncoupledKinematicCloud&) = delete;
 };
 
 

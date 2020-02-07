@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,15 +24,12 @@ License
 Class
     Foam::functionObjects::setTimeStepFunctionObject
 
-Group
-    grpUtilitiesFunctionObjects
-
 Description
     Overrides the timeStep. Can only be used with
     solvers with adjustTimeStep control (e.g. pimpleFoam). Makes no attempt
     to cooperate with other timeStep 'controllers' (maxCo, other
     functionObjects). Supports 'enabled' flag but none of the other ones
-    'timeStart', 'timeEnd', 'writeControl' etc.
+    'startTime', 'endTime', 'writeControl' etc.
 
 SourceFiles
     setTimeStepFunctionObject.C
@@ -44,6 +41,7 @@ SourceFiles
 
 #include "functionObject.H"
 #include "Function1.H"
+#include "Time.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -60,22 +58,13 @@ class setTimeStepFunctionObject
 :
     public functionObject
 {
-    // Private data
+    // Private Data
 
         //- Reference to the time database
         const Time& time_;
 
         //- Time step function/table
         autoPtr<Function1<scalar>> timeStepPtr_;
-
-
-    // Private member functions
-
-        //- Disallow default bitwise copy construct
-        setTimeStepFunctionObject(const setTimeStepFunctionObject&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const setTimeStepFunctionObject&);
 
 
 public:
@@ -93,6 +82,9 @@ public:
             const Time& runTime,
             const dictionary& dict
         );
+
+        //- Disallow default bitwise copy construction
+        setTimeStepFunctionObject(const setTimeStepFunctionObject&) = delete;
 
 
     // Destructor
@@ -119,6 +111,12 @@ public:
         //  postProcess overrides the usual writeControl behaviour and
         //  forces writing always (used in post-processing mode)
         virtual bool write();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const setTimeStepFunctionObject&) = delete;
 };
 
 

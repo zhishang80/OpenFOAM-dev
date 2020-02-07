@@ -44,7 +44,7 @@ forAllIter(PtrDictionary<phaseModel>, fluid.phases(), iter)
                *max
                 (
                     mag(U()) - maxSlamVelocity,
-                    dimensionedScalar("U0", dimVelocity, 0)
+                    dimensionedScalar(dimVelocity, 0)
                 )
                /pow(mesh.V(), 1.0/3.0),
                 U
@@ -56,7 +56,7 @@ forAllIter(PtrDictionary<phaseModel>, fluid.phases(), iter)
         alpha*(1 + (1/phase.rho())*fluid.Cvm(phase)),
         UEqns[phasei]
     );
-    //UEqns[phasei].relax();
+    // UEqns[phasei].relax();
 
     phasei++;
 }

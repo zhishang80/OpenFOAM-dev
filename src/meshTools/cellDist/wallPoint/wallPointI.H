@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -38,8 +38,8 @@ inline bool Foam::wallPoint::update
     TrackingData& td
 )
 {
-    //Already done in calling algorithm
-    //if (w2.origin() == origin_)
+    // Already done in calling algorithm
+    // if (w2.origin() == origin_)
     //{
     //    // Shortcut. Same input so same distance.
     //    return false;
@@ -93,13 +93,6 @@ inline Foam::wallPoint::wallPoint(const point& origin, const scalar distSqr)
 :
     origin_(origin),
     distSqr_(distSqr)
-{}
-
-
-inline Foam::wallPoint::wallPoint(const wallPoint& wpt)
-:
-    origin_(wpt.origin()),
-    distSqr_(wpt.distSqr())
 {}
 
 

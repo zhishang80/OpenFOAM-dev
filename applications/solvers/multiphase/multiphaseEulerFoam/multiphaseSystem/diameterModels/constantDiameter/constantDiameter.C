@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -67,19 +67,11 @@ Foam::diameterModels::constant::~constant()
 
 Foam::tmp<Foam::volScalarField> Foam::diameterModels::constant::d() const
 {
-    return tmp<Foam::volScalarField>
+    return volScalarField::New
     (
-        new volScalarField
-        (
-            IOobject
-            (
-                "d",
-                phase_.U().time().timeName(),
-                phase_.U().mesh()
-            ),
-            phase_.U().mesh(),
-            d_
-        )
+        "d",
+        phase_.U().mesh(),
+        d_
     );
 }
 

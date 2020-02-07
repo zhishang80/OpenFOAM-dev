@@ -1,8 +1,8 @@
-/*---------------------------------------------------------------------------* \
+/*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -158,10 +158,10 @@ void Foam::SRFFreestreamVelocityFvPatchVectorField::updateCoeffs()
 void Foam::SRFFreestreamVelocityFvPatchVectorField::write(Ostream& os) const
 {
     fvPatchVectorField::write(os);
-    os.writeKeyword("relative") << relative_ << token::END_STATEMENT << nl;
-    os.writeKeyword("UInf") << UInf_ << token::END_STATEMENT << nl;
-    os.writeKeyword("phi") << this->phiName_ << token::END_STATEMENT << nl;
-    writeEntry("value", os);
+    writeEntry(os, "relative", relative_);
+    writeEntry(os, "UInf", UInf_);
+    writeEntry(os, "phi", this->phiName_);
+    writeEntry(os, "value", *this);
 }
 
 

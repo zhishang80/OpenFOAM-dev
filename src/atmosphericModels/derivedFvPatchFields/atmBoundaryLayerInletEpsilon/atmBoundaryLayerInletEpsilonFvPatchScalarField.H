@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::atmBoundaryLayerInletEpsilonFvPatchScalarField
-
-Group
-    grpRASBoundaryConditions grpInletBoundaryConditions
 
 Description
     This boundary condition specifies an inlet value for the turbulence
@@ -140,22 +137,17 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Mapping functions
 
             //- Map (and resize as needed) from self given a mapping object
-            virtual void autoMap
-            (
-                const fvPatchFieldMapper&
-            );
+            //  Used to update fields following mesh topology change
+            virtual void autoMap(const fvPatchFieldMapper&);
 
             //- Reverse map the given fvPatchField onto this fvPatchField
-            virtual void rmap
-            (
-                const fvPatchScalarField&,
-                const labelList&
-            );
+            //  Used to reconstruct fields
+            virtual void rmap(const fvPatchScalarField&, const labelList&);
 
 
         //- Write

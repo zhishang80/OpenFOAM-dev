@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -35,20 +35,6 @@ namespace Foam
 {
     defineTypeNameAndDebug(regIOobject, 0);
 }
-
-float Foam::regIOobject::fileModificationSkew
-(
-    Foam::debug::floatOptimisationSwitch("fileModificationSkew", 30)
-);
-registerOptSwitch
-(
-    "fileModificationSkew",
-    float,
-    Foam::regIOobject::fileModificationSkew
-);
-
-
-bool Foam::regIOobject::masterOnlyReading = false;
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
@@ -94,9 +80,12 @@ Foam::regIOobject::regIOobject(const regIOobject& rio, bool registerCopy)
     watchIndices_(),
     eventNo_(db().getEvent())
 {
-    if (registerCopy && rio.registered_)
+    if (registerCopy)
     {
-        const_cast<regIOobject&>(rio).checkOut();
+        if (rio.registered_)
+        {
+            const_cast<regIOobject&>(rio).checkOut();
+        }
         checkIn();
     }
 }
@@ -147,14 +136,23 @@ Foam::regIOobject::~regIOobject()
 {
     if (objectRegistry::debug)
     {
-        Pout<< "Destroying regIOobject called " << name()
-            << " of type " << type()
-            << " in directory " << path()
-            << endl;
+        if (this == &db())
+        {
+            Pout<< "Destroying objectRegistry " << name()
+                << " in directory " << rootPath()/caseName()/instance()
+                << endl;
+        }
+        else
+        {
+            Pout<< "Destroying regIOobject " << name()
+                << " in directory " << path()
+                << endl;
+        }
     }
 
-    // Check out of objectRegistry if not owned by the registry
+    db().resetCacheTemporaryObject(*this);
 
+    // Check out of objectRegistry if not owned by the registry
     if (!ownedByRegistry_)
     {
         checkOut();
@@ -438,6 +436,12 @@ bool Foam::regIOobject::headerOk()
     }
 
     return ok;
+}
+
+
+bool Foam::regIOobject::global() const
+{
+    return false;
 }
 
 

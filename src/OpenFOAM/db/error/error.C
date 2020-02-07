@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -60,7 +60,7 @@ Foam::error::error(const dictionary& errDict)
     messageStream(errDict),
     functionName_(errDict.lookup("functionName")),
     sourceFileName_(errDict.lookup("sourceFileName")),
-    sourceFileLineNumber_(readLabel(errDict.lookup("sourceFileLineNumber"))),
+    sourceFileLineNumber_(errDict.lookup<label>("sourceFileLineNumber")),
     abort_(env("FOAM_ABORT")),
     throwExceptions_(false),
     messageStreamPtr_(new OStringStream())

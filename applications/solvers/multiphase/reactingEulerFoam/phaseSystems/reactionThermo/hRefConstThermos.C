@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -31,12 +31,14 @@ License
 
 #include "specie.H"
 #include "perfectGas.H"
-#include "perfectFluid.H"
+#include "rPolynomial.H"
 #include "rhoConst.H"
 
 #include "sensibleEnthalpy.H"
 
 #include "hRefConstThermo.H"
+#include "eRefConstThermo.H"
+#include "janafThermo.H"
 
 #include "constTransport.H"
 
@@ -75,7 +77,7 @@ constTransport
     <
         hRefConstThermo
         <
-            perfectFluid<specie>
+            rPolynomial<specie>
         >,
         sensibleEnthalpy
     >
@@ -86,7 +88,7 @@ constTransport
 <
     species::thermo
     <
-        hRefConstThermo
+        eRefConstThermo
         <
             perfectGas<specie>
         >,
@@ -99,9 +101,9 @@ constTransport
 <
     species::thermo
     <
-        hRefConstThermo
+        eRefConstThermo
         <
-            perfectFluid<specie>
+            rPolynomial<specie>
         >,
         sensibleInternalEnergy
     >
@@ -112,7 +114,7 @@ constTransport
 <
     species::thermo
     <
-        hRefConstThermo
+        eRefConstThermo
         <
             rhoConst<specie>
         >,
@@ -132,6 +134,19 @@ constTransport
         sensibleEnthalpy
     >
 > constRefRhoConstHThermoPhysics;
+
+typedef
+constTransport
+<
+    species::thermo
+    <
+        janafThermo
+        <
+            rhoConst<specie>
+        >,
+        sensibleInternalEnergy
+    >
+> constJanafRhoConstEThermoPhysics;
 
 
 // pureMixture, sensibleEnthalpy:
@@ -156,7 +171,7 @@ makeThermos
     constTransport,
     sensibleEnthalpy,
     hRefConstThermo,
-    perfectFluid,
+    rPolynomial,
     specie
 );
 
@@ -182,7 +197,7 @@ makeThermos
     pureMixture,
     constTransport,
     sensibleInternalEnergy,
-    hRefConstThermo,
+    eRefConstThermo,
     perfectGas,
     specie
 );
@@ -194,8 +209,8 @@ makeThermos
     pureMixture,
     constTransport,
     sensibleInternalEnergy,
-    hRefConstThermo,
-    perfectFluid,
+    eRefConstThermo,
+    rPolynomial,
     specie
 );
 
@@ -206,7 +221,7 @@ makeThermos
     pureMixture,
     constTransport,
     sensibleInternalEnergy,
-    hRefConstThermo,
+    eRefConstThermo,
     rhoConst,
     specie
 );
@@ -239,6 +254,15 @@ makeThermoPhysicsReactionThermos
     heRhoThermo,
     multiComponentMixture,
     constRefRhoConstEThermoPhysics
+);
+
+makeThermoPhysicsReactionThermos
+(
+    rhoThermo,
+    rhoReactionThermo,
+    heRhoThermo,
+    multiComponentMixture,
+    constJanafRhoConstEThermoPhysics
 );
 
 

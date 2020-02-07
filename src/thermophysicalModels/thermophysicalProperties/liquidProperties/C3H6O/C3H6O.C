@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -67,7 +67,7 @@ Foam::C3H6O::C3H6O()
     ),
     h_
     (
-        2571201.780143,
+       -4.905296049462618e06,
         2334.71074380165,
        -1.52376033057851,
         0.00162821395775941,
@@ -95,19 +95,19 @@ Foam::C3H6O::C3H6O()
 Foam::C3H6O::C3H6O
 (
     const liquidProperties& l,
-    const NSRDSfunc5& density,
-    const NSRDSfunc1& vapourPressure,
-    const NSRDSfunc6& heatOfVapourisation,
-    const NSRDSfunc0& heatCapacity,
-    const NSRDSfunc0& enthalpy,
-    const NSRDSfunc7& idealGasHeatCapacity,
-    const NSRDSfunc4& secondVirialCoeff,
-    const NSRDSfunc1& dynamicViscosity,
-    const NSRDSfunc2& vapourDynamicViscosity,
-    const NSRDSfunc0& thermalConductivity,
-    const NSRDSfunc2& vapourThermalConductivity,
-    const NSRDSfunc6& surfaceTension,
-    const APIdiffCoefFunc& vapourDiffussivity
+    const thermophysicalFunctions::NSRDS5& density,
+    const thermophysicalFunctions::NSRDS1& vapourPressure,
+    const thermophysicalFunctions::NSRDS6& heatOfVapourisation,
+    const thermophysicalFunctions::NSRDS0& heatCapacity,
+    const thermophysicalFunctions::NSRDS0& enthalpy,
+    const thermophysicalFunctions::NSRDS7& idealGasHeatCapacity,
+    const thermophysicalFunctions::NSRDS4& secondVirialCoeff,
+    const thermophysicalFunctions::NSRDS1& dynamicViscosity,
+    const thermophysicalFunctions::NSRDS2& vapourDynamicViscosity,
+    const thermophysicalFunctions::NSRDS0& thermalConductivity,
+    const thermophysicalFunctions::NSRDS2& vapourThermalConductivity,
+    const thermophysicalFunctions::NSRDS6& surfaceTension,
+    const thermophysicalFunctions::APIdiffCoef& vapourDiffusivity
 )
 :
     liquidProperties(l),
@@ -123,7 +123,7 @@ Foam::C3H6O::C3H6O
     kappa_(thermalConductivity),
     kappag_(vapourThermalConductivity),
     sigma_(surfaceTension),
-    D_(vapourDiffussivity)
+    D_(vapourDiffusivity)
 {}
 
 
@@ -137,18 +137,9 @@ Foam::C3H6O::C3H6O(const dictionary& dict)
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-void Foam::C3H6O::writeData(Ostream& os) const
+void Foam::C3H6O::write(Ostream& os) const
 {
-    liquidProperties::writeData(*this, os);
-}
-
-
-// * * * * * * * * * * * * * * * Ostream Operator  * * * * * * * * * * * * * //
-
-Foam::Ostream& Foam::operator<<(Ostream& os, const C3H6O& l)
-{
-    l.writeData(os);
-    return os;
+    liquidProperties::write(*this, os);
 }
 
 

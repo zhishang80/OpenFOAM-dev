@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,9 +24,6 @@ License
 Class
     Foam::externalCoupledTemperatureMixedFvPatchScalarField
 
-Group
-    grpCoupledBoundaryConditions
-
 Description
     This boundary condition provides a temperature interface to an external
     application.  Values are transferred as plain text files, where OpenFOAM
@@ -41,7 +38,7 @@ Description
         <magSfN> <valueN> <qDotN> <htcN>
     \endverbatim
 
-    and received as the constituent pieces of the `mixed' condition, i.e.
+    and received as the constitutent pieces of the `mixed' condition, i.e.
 
     \verbatim
         # Patch: <patch name>
@@ -87,7 +84,7 @@ Usage
     \table
         Property     | Description             | Required    | Default value
         commsDir     | communications directory   | yes         |
-        fileName     | transfer file name      | yes         |
+        file         | transfer file name      | yes         |
         waitInterval | interval [s] between file checks | no | 1
         timeOut      | time after which error invoked [s] |no |100*waitInterval
         calcFrequency | calculation frequency  | no          | 1
@@ -100,7 +97,7 @@ Usage
         {
             type            externalCoupledTemperature;
             commsDir        "$FOAM_CASE/comms";
-            fileName        data;
+            file            data;
             calcFrequency   1;
         }
     \endverbatim
@@ -176,7 +173,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         externalCoupledTemperatureMixedFvPatchScalarField
         (
             const externalCoupledTemperatureMixedFvPatchScalarField&
@@ -191,7 +188,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         externalCoupledTemperatureMixedFvPatchScalarField
         (
             const externalCoupledTemperatureMixedFvPatchScalarField&,
@@ -219,7 +216,7 @@ public:
     virtual ~externalCoupledTemperatureMixedFvPatchScalarField();
 
 
-    // Member functions
+    // Member Functions
 
         //- Evaluate the patch field
         virtual void evaluate

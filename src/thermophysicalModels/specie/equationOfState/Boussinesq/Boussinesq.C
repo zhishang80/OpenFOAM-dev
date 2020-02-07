@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -35,9 +35,9 @@ Foam::Boussinesq<Specie>::Boussinesq
 )
 :
     Specie(dict),
-    rho0_(readScalar(dict.subDict("equationOfState").lookup("rho0"))),
-    T0_(readScalar(dict.subDict("equationOfState").lookup("T0"))),
-    beta_(readScalar(dict.subDict("equationOfState").lookup("beta")))
+    rho0_(dict.subDict("equationOfState").lookup<scalar>("rho0")),
+    T0_(dict.subDict("equationOfState").lookup<scalar>("T0")),
+    beta_(dict.subDict("equationOfState").lookup<scalar>("beta"))
 {}
 
 

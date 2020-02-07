@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,26 +24,23 @@ License
 Class
     Foam::nutkAtmRoughWallFunctionFvPatchScalarField
 
-Group
-    grpWallFunctions
-
 Description
     This boundary condition provides a turbulent kinematic viscosity for
-    atmospheric velocity profiles.  It is desinged to be used in conjunction
+    atmospheric velocity profiles.  It is designed to be used in conjunction
     with the atmBoundaryLayerInletVelocity boundary condition.  The values
     are calculated using:
 
         \f[
-            U = frac{U_f}{K} ln(\frac{z + z_0}{z_0})
+            U = frac{U_f}{\kappa} ln(\frac{z + z_0}{z_0})
         \f]
 
     where
 
     \vartable
-        U_f | frictional velocity
-        K   | Von Karman's constant
-        z_0 | surface roughness length
-        z   | vertical co-ordinate
+        U_f    | frictional velocity
+        \kappa | Von Karman's constant
+        z_0    | surface roughness length
+        z      | vertical co-ordinate
     \endvartable
 
 Usage
@@ -97,9 +94,8 @@ protected:
 
     // Protected Member Functions
 
-
         //- Calculate the turbulence viscosity
-        virtual tmp<scalarField> calcNut() const;
+        virtual tmp<scalarField> nut() const;
 
 
 public:
@@ -136,7 +132,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         nutkAtmRoughWallFunctionFvPatchScalarField
         (
             const nutkAtmRoughWallFunctionFvPatchScalarField&
@@ -151,7 +147,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         nutkAtmRoughWallFunctionFvPatchScalarField
         (
             const nutkAtmRoughWallFunctionFvPatchScalarField&,
@@ -171,7 +167,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Access functions
 

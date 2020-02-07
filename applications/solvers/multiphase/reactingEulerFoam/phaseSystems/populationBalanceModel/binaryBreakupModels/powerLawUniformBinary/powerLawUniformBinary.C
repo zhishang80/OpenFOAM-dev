@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -56,7 +56,7 @@ powerLawUniformBinary
 )
 :
     binaryBreakupModel(popBal, dict),
-    power_(readScalar(dict.lookup("power")))
+    power_(dict.lookup<scalar>("power"))
 {}
 
 
@@ -71,7 +71,7 @@ addToBinaryBreakupRate
     const label j
 )
 {
-    const sizeGroup& fj = *popBal_.sizeGroups()[j];
+    const sizeGroup& fj = popBal_.sizeGroups()[j];
 
     binaryBreakupRate.primitiveFieldRef() +=
         pow(fj.x().value(), power_)*2.0/fj.x().value();

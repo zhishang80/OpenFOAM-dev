@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -68,12 +68,15 @@ public:
         //- Construct given an IOobject, supply wanted typeName
         localIOdictionary(const IOobject& io, const word& wantedType);
 
+        //- Move constructor
+        localIOdictionary(localIOdictionary&&);
+
 
     //- Destructor
     virtual ~localIOdictionary();
 
 
-    // Member functions
+    // Member Functions
 
         //- Is object global
         virtual bool global() const
@@ -89,6 +92,11 @@ public:
             return localFilePath(type());
         }
 
+
+    // Member Operators
+
+        //- Move assignment
+        void operator=(localIOdictionary&&);
 };
 
 

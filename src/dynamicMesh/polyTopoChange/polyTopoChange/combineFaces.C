@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -127,6 +127,7 @@ bool Foam::combineFaces::validFace
 void Foam::combineFaces::regioniseFaces
 (
     const scalar minCos,
+    const labelHashSet& patchIDs,
     const label celli,
     const labelList& cEdges,
     Map<label>& faceRegion
@@ -145,9 +146,15 @@ void Foam::combineFaces::regioniseFaces
         label p1 = patches.whichPatch(f1);
 
         // Face can be merged if
-        // - same non-coupled patch
+        // - same non-coupled patch in list
         // - small angle
-        if (p0 != -1 && p0 == p1 && !patches[p0].coupled())
+        if
+        (
+            p0 != -1
+         && p0 == p1
+         && !patches[p0].coupled()
+         && patchIDs.found(p0)
+        )
         {
             vector f0Normal = mesh_.faceAreas()[f0];
             f0Normal /= mag(f0Normal);
@@ -298,6 +305,7 @@ Foam::labelListList Foam::combineFaces::getMergeSets
 (
     const scalar featureCos,
     const scalar minConcaveCos,
+    const labelHashSet& patchIDs,
     const labelHashSet& boundaryCells
 ) const
 {
@@ -317,7 +325,7 @@ Foam::labelListList Foam::combineFaces::getMergeSets
 
         // Region per face
         Map<label> faceRegion(cFaces.size());
-        regioniseFaces(featureCos, celli, cEdges, faceRegion);
+        regioniseFaces(featureCos, patchIDs, celli, cEdges, faceRegion);
 
         // Now we have in faceRegion for every face the region with planar
         // face sharing the same region. We now check whether the resulting
@@ -381,7 +389,8 @@ Foam::labelListList Foam::combineFaces::getMergeSets
 Foam::labelListList Foam::combineFaces::getMergeSets
 (
     const scalar featureCos,
-    const scalar minConcaveCos
+    const scalar minConcaveCos,
+    const labelHashSet& patchIDs
 ) const
 {
     const polyBoundaryMesh& patches = mesh_.boundaryMesh();
@@ -389,9 +398,9 @@ Foam::labelListList Foam::combineFaces::getMergeSets
     // Pick up all cells on boundary
     labelHashSet boundaryCells(mesh_.nFaces()-mesh_.nInternalFaces());
 
-    forAll(patches, patchi)
+    forAllConstIter(labelHashSet, patchIDs, iter)
     {
-        const polyPatch& patch = patches[patchi];
+        const polyPatch& patch = patches[iter.key()];
 
         if (!patch.coupled())
         {
@@ -402,7 +411,20 @@ Foam::labelListList Foam::combineFaces::getMergeSets
         }
     }
 
-    return getMergeSets(featureCos, minConcaveCos, boundaryCells);
+    return getMergeSets(featureCos, minConcaveCos, patchIDs, boundaryCells);
+}
+
+
+
+Foam::labelListList Foam::combineFaces::getMergeSets
+(
+    const scalar featureCos,
+    const scalar minConcaveCos
+) const
+{
+    const labelHashSet patchIDs(identity(mesh_.boundaryMesh().size()));
+
+    return getMergeSets(featureCos, minConcaveCos, patchIDs);
 }
 
 
@@ -931,7 +953,7 @@ void Foam::combineFaces::setUnrefinement
                 << abort(FatalError);
         }
 
-        //Pout<< "Restoring new master face " << masterFacei
+        // Pout<< "Restoring new master face " << masterFacei
         //    << " to vertices " << faces[0] << endl;
 
         // Modify the master face.
@@ -955,7 +977,7 @@ void Foam::combineFaces::setUnrefinement
         // Add the previously removed faces
         for (label i = 1; i < faces.size(); i++)
         {
-            //Pout<< "Restoring removed face with vertices " << faces[i]
+            // Pout<< "Restoring removed face with vertices " << faces[i]
             //    << endl;
 
             label facei = meshMod.setAction

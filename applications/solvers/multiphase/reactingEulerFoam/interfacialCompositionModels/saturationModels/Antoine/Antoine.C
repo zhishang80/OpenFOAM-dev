@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -43,10 +43,10 @@ namespace saturationModels
 Foam::saturationModels::Antoine::Antoine
 (
     const dictionary& dict,
-    const objectRegistry& db
+    const phasePair& pair
 )
 :
-    saturationModel(db),
+    saturationModel(pair),
     A_("A", dimless, dict),
     B_("B", dimTemperature, dict),
     C_("C", dimTemperature, dict)
@@ -68,7 +68,7 @@ Foam::saturationModels::Antoine::pSat
 ) const
 {
     return
-        dimensionedScalar("one", dimPressure, 1)
+        dimensionedScalar(dimPressure, 1)
        *exp(A_ + B_/(C_ + T));
 }
 
@@ -100,7 +100,7 @@ Foam::saturationModels::Antoine::Tsat
 ) const
 {
     return
-        B_/(log(p*dimensionedScalar("one", dimless/dimPressure, 1)) - A_)
+        B_/(log(p*dimensionedScalar(dimless/dimPressure, 1)) - A_)
       - C_;
 }
 

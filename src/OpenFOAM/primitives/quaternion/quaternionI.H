@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -522,12 +522,6 @@ inline Foam::vector Foam::quaternion::eulerAngles
 
 
 // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //
-
-inline void Foam::quaternion::operator=(const quaternion& q)
-{
-    w_ = q.w_;
-    v_ = q.v_;
-}
 
 inline void Foam::quaternion::operator+=(const quaternion& q)
 {

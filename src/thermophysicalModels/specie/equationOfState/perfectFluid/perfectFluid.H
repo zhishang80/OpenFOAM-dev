@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -25,7 +25,14 @@ Class
     Foam::perfectFluid
 
 Description
-    Perfect gas equation of state.
+    Simple extension of the perfect gas equation of state to liquids by
+    the addition of a constant density off-set.
+
+    Coefficient mixing is very inaccurate and not supported,
+    so this equation of state is not applicable to mixtures.
+
+    This equation of state is rather inaccurate and has been superseded by
+    rPolynomial which is much more accurate and supports mixtures.
 
 SourceFiles
     perfectFluidI.H
@@ -85,7 +92,7 @@ class perfectFluid
 :
     public Specie
 {
-    // Private data
+    // Private Data
 
         //- Fluid constant
         scalar R_;
@@ -119,7 +126,7 @@ public:
         inline static autoPtr<perfectFluid> New(const dictionary& dict);
 
 
-    // Member functions
+    // Member Functions
 
         //- Return the instantiated type name
         static word typeName()
@@ -136,7 +143,7 @@ public:
             //- Is the equation of state is isochoric i.e. rho = const
             static const bool isochoric = false;
 
-            //- Return fluid constant [J/(kg K)]
+            //- Return fluid constant [J/kg/K]
             inline scalar R() const;
 
             //- Return density [kg/m^3]
@@ -148,10 +155,16 @@ public:
             //- Return Cp departure [J/(kg K]
             inline scalar Cp(scalar p, scalar T) const;
 
-            //- Return entropy [J/(kg K)]
+            //- Return internal energy departure [J/kg]
+            inline scalar E(const scalar p, const scalar T) const;
+
+            //- Return Cv departure [J/(kg K]
+            inline scalar Cv(scalar p, scalar T) const;
+
+            //- Return entropy [J/kg/K]
             inline scalar S(const scalar p, const scalar T) const;
 
-            //- Return compressibility rho/p [s^2/m^2]
+            //- Return compressibility [s^2/m^2]
             inline scalar psi(scalar p, scalar T) const;
 
             //- Return compression factor []
@@ -167,7 +180,7 @@ public:
             void write(Ostream& os) const;
 
 
-    // Member operators
+    // Member Operators
 
         inline void operator+=(const perfectFluid&);
         inline void operator*=(const scalar);

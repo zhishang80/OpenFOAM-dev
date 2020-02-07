@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -167,7 +167,7 @@ Foam::mappedVariableThicknessWallPolyPatch::
 void Foam::mappedVariableThicknessWallPolyPatch::
 write(Foam::Ostream& os) const
 {
-    os.writeKeyword("thickness") << thickness_ << token::END_STATEMENT << nl;
+    writeEntry(os, "thickness", thickness_);
 }
 
 

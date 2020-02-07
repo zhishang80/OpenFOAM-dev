@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -58,15 +58,16 @@ class nonUniformField
 
 protected:
 
-    // Private typedef
+    // Private Typedefs
 
         typedef PrimitivePatchInterpolation
         <
-            PrimitivePatch<labelledTri, List, pointField, point>
-        >   primitivePatchInterpolation;
+            PrimitivePatch<List<labelledTri>, pointField>
+        >
+        primitivePatchInterpolation;
 
 
-    // Private data
+    // Private Data
 
         const triSurfaceMesh& surfaceTriMesh_;
 

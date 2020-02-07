@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -119,31 +119,13 @@ template<class Type, class TrackingData>
 void Foam::PointEdgeWave<Type, TrackingData>::transform
 (
     const polyPatch& patch,
-    const tensorField& rotTensor,
+    const tensor& rotTensor,
     List<Type>& pointInfo
 ) const
 {
-    if (rotTensor.size() == 1)
+    forAll(pointInfo, i)
     {
-        const tensor& T = rotTensor[0];
-
-        forAll(pointInfo, i)
-        {
-            pointInfo[i].transform(T, td_);
-        }
-    }
-    else
-    {
-        FatalErrorInFunction
-            << "Non-uniform transformation on patch " << patch.name()
-            << " of type " << patch.type()
-            << " not supported for point fields"
-            << abort(FatalError);
-
-        forAll(pointInfo, i)
-        {
-            pointInfo[i].transform(rotTensor[i], td_);
-        }
+        pointInfo[i].transform(rotTensor, td_);
     }
 }
 
@@ -331,7 +313,7 @@ void Foam::PointEdgeWave<Type, TrackingData>::handleProcPatches()
         nbrPoints.reserve(procPatch.nPoints());
 
         // Get all changed points in reverse order
-        const labelList& neighbPoints = procPatch.neighbPoints();
+        const labelList& neighbPoints = procPatch.nbrPoints();
         forAll(neighbPoints, thisPointi)
         {
             label meshPointi = procPatch.meshPoints()[thisPointi];
@@ -346,7 +328,7 @@ void Foam::PointEdgeWave<Type, TrackingData>::handleProcPatches()
         // Adapt for leaving domain
         leaveDomain(procPatch, thisPoints, patchInfo);
 
-        //if (debug)
+        // if (debug)
         //{
         //    Pout<< "Processor patch " << patchi << ' ' << procPatch.name()
         //        << " communicating with " << procPatch.neighbProcNo()
@@ -378,7 +360,7 @@ void Foam::PointEdgeWave<Type, TrackingData>::handleProcPatches()
             fromNeighbour >> patchPoints >> patchInfo;
         }
 
-        //if (debug)
+        // if (debug)
         //{
         //    Pout<< "Processor patch " << patchi << ' ' << procPatch.name()
         //        << " communicating with " << procPatch.neighbProcNo()
@@ -386,9 +368,9 @@ void Foam::PointEdgeWave<Type, TrackingData>::handleProcPatches()
         //}
 
         // Apply transform to received data for non-parallel planes
-        if (!procPatch.parallel())
+        if (procPatch.transform().transforms())
         {
-            transform(procPatch, procPatch.forwardT(), patchInfo);
+            transform(procPatch, procPatch.transform().T(), patchInfo);
         }
 
         // Adapt for entering domain
@@ -446,7 +428,7 @@ void Foam::PointEdgeWave<Type, TrackingData>::handleCyclicPatches()
 
             // Collect nbrPatch points that have changed
             {
-                const cyclicPolyPatch& nbrPatch = cycPatch.neighbPatch();
+                const cyclicPolyPatch& nbrPatch = cycPatch.nbrPatch();
                 const edgeList& pairs = cycPatch.coupledPoints();
                 const labelList& meshPoints = nbrPatch.meshPoints();
 
@@ -471,13 +453,13 @@ void Foam::PointEdgeWave<Type, TrackingData>::handleCyclicPatches()
 
             // Apply rotation for non-parallel planes
 
-            if (!cycPatch.parallel())
+            if (cycPatch.transform().transforms())
             {
                 // received data from half1
-                transform(cycPatch, cycPatch.forwardT(), nbrInfo);
+                transform(cycPatch, cycPatch.transform().T(), nbrInfo);
             }
 
-            //if (debug)
+            // if (debug)
             //{
             //    Pout<< "Cyclic patch " << patchi << ' ' << patch.name()
             //        << "  Changed : " << nbrInfo.size()
@@ -569,7 +551,7 @@ Foam::label Foam::PointEdgeWave<Type, TrackingData>::handleCollocatedPoints()
 
             // Like updatePoint but bypass Type::updatePoint with its tolerance
             // checking
-            //if (!elem.valid(td_) || !elem.equal(elems[pointi], td_))
+            // if (!elem.valid(td_) || !elem.equal(elems[pointi], td_))
             if (!elem.equal(elems[pointi], td_))
             {
                 nEvals_++;
@@ -826,7 +808,7 @@ Foam::label Foam::PointEdgeWave<Type, TrackingData>::edgeToPoint()
         handleProcPatches();
     }
 
-    //if (debug)
+    // if (debug)
     //{
     //    Pout<< "Changed points            : " << nChangedPoints_ << endl;
     //}
@@ -894,7 +876,7 @@ Foam::label Foam::PointEdgeWave<Type, TrackingData>::pointToEdge()
     // Handled all changed points by now
     nChangedPoints_ = 0;
 
-    //if (debug)
+    // if (debug)
     //{
     //    Pout<< "Changed edges             : " << nChangedEdges_ << endl;
     //}

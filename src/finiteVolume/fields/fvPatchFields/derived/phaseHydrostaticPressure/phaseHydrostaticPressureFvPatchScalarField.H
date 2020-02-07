@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,9 +24,6 @@ License
 Class
     Foam::phaseHydrostaticPressureFvPatchScalarField
 
-Group
-    grpGenericBoundaryConditions
-
 Description
     This boundary condition provides a phase-based hydrostatic pressure
     condition, calculated as:
@@ -41,7 +38,7 @@ Description
         p_{ref} | reference pressure [Pa]
         x_{ref} | reference point in Cartesian co-ordinates
         \rho    | density (assumed uniform)
-        g       | acceleration due to gravity [m/s2]
+        g       | acceleration due to gravity [m/s^2]
     \endtable
 
     The values are assigned according to the phase-fraction field:
@@ -147,7 +144,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         phaseHydrostaticPressureFvPatchScalarField
         (
             const phaseHydrostaticPressureFvPatchScalarField&
@@ -162,7 +159,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         phaseHydrostaticPressureFvPatchScalarField
         (
             const phaseHydrostaticPressureFvPatchScalarField&,
@@ -182,7 +179,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Attributes
 
@@ -253,7 +250,7 @@ public:
         virtual void write(Ostream&) const;
 
 
-    // Member operators
+    // Member Operators
 
         virtual void operator=(const fvPatchScalarField& pvf);
 };

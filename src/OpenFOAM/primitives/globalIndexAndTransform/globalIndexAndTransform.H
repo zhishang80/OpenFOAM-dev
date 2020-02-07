@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -45,7 +45,7 @@ SourceFiles
 #define globalIndexAndTransform_H
 
 #include "labelPair.H"
-#include "vectorTensorTransform.H"
+#include "transformer.H"
 #include "HashSet.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -88,7 +88,7 @@ public:
 
 private:
 
-    // Private data
+    // Private Data
 
         //- Reference to mesh
         const polyMesh& mesh_;
@@ -98,13 +98,13 @@ private:
         //  stores the two transforms, not the eight permutations.
         //  Any point can not be on more than three transforms but overall
         //  the mesh can have more than three.
-        List<vectorTensorTransform> transforms_;
+        List<transformer> transforms_;
 
         //- The permutations of the transforms, stored for lookup
         //  efficiency.  If there are n transforms, then there are
         //  (3^n) permutations, including the no-transformation
         //  transform.
-        List<vectorTensorTransform> transformPermutations_;
+        List<transformer> transformPermutations_;
 
         //- Index of identity transform.
         label nullTransformIndex_;
@@ -133,9 +133,9 @@ private:
         //  sign of the match, or 0 if none matches.
         label matchTransform
         (
-            const List<vectorTensorTransform>& refTransforms,
+            const List<transformer>& refTransforms,
             label& matchedRefTransformI,
-            const vectorTensorTransform& testTransform,
+            const transformer& testTransform,
             scalar tolerance,
             bool checkBothSigns
         ) const;
@@ -150,12 +150,6 @@ private:
             const labelPair& patchTrafo
         ) const;
 
-        //- Disallow default bitwise copy construct
-        globalIndexAndTransform(const globalIndexAndTransform&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const globalIndexAndTransform&);
-
 
 public:
 
@@ -167,6 +161,9 @@ public:
 
         //- Construct from components
         globalIndexAndTransform(const polyMesh& mesh);
+
+        //- Disallow default bitwise copy construction
+        globalIndexAndTransform(const globalIndexAndTransform&) = delete;
 
 
     // Member Functions
@@ -242,10 +239,10 @@ public:
         inline label nIndependentTransforms() const;
 
         //- Return access to the stored independent transforms
-        inline const List<vectorTensorTransform>& transforms() const;
+        inline const List<transformer>& transforms() const;
 
         //- Return access to the permuted transforms
-        inline const List<vectorTensorTransform>&
+        inline const List<transformer>&
         transformPermutations() const;
 
         //- Return the transformIndex (index in transformPermutations)
@@ -257,7 +254,7 @@ public:
 
         //- Access the overall (permuted) transform corresponding
         //  to the transformIndex
-        inline const vectorTensorTransform& transform
+        inline const transformer& transform
         (
             label transformIndex
         ) const;
@@ -281,6 +278,11 @@ public:
             const point& pt
         ) const;
 
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const globalIndexAndTransform&) = delete;
 };
 
 

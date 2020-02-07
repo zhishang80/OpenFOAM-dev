@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
         fcs[1] = face(labelList(2, 222));
 
         CompactListList<label, face> compactFcs(fcs);
-        Info<< "comactFcs:" << compactFcs << endl;
+        Info<< "compactFcs:" << compactFcs << endl;
 
         faceList fcs2 = compactFcs();
         Info<< "fcs2:" << fcs2 << endl;

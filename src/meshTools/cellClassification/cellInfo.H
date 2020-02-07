@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -63,7 +63,7 @@ Ostream& operator<<(Ostream&, const cellInfo&);
 
 class cellInfo
 {
-    // Private data
+    // Private Data
 
         label type_;
 
@@ -92,9 +92,6 @@ public:
 
         //- Construct from cType
         inline cellInfo(const label);
-
-        //- Construct as copy
-        inline cellInfo(const cellInfo&);
 
 
     // Member Functions
@@ -197,7 +194,7 @@ public:
 
     // Member Operators
 
-        //Note: Used to determine whether to call update.
+        // Note: Used to determine whether to call update.
         inline bool operator==(const cellInfo&) const;
 
         inline bool operator!=(const cellInfo&) const;

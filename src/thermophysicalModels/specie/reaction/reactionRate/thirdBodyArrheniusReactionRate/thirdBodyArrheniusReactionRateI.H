@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -35,7 +35,12 @@ inline Foam::thirdBodyArrheniusReactionRate::thirdBodyArrheniusReactionRate
 :
     ArrheniusReactionRate(A, beta, Ta),
     thirdBodyEfficiencies_(tbes)
-{}
+{
+    forAll(tbes, i)
+    {
+        beta_.append(Tuple2<label, scalar>(i, tbes[i]));
+    }
+}
 
 
 inline Foam::thirdBodyArrheniusReactionRate::thirdBodyArrheniusReactionRate
@@ -50,7 +55,19 @@ inline Foam::thirdBodyArrheniusReactionRate::thirdBodyArrheniusReactionRate
         dict
     ),
     thirdBodyEfficiencies_(species, dict)
-{}
+{
+    forAll(thirdBodyEfficiencies_, i)
+    {
+        beta_.append
+        (
+            Tuple2<label, scalar>
+            (
+                i,
+                thirdBodyEfficiencies_[i]
+            )
+        );
+    }
+}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
@@ -59,12 +76,56 @@ inline Foam::scalar Foam::thirdBodyArrheniusReactionRate::operator()
 (
     const scalar p,
     const scalar T,
-    const scalarField& c
+    const scalarField& c,
+    const label li
 ) const
 {
     return
         thirdBodyEfficiencies_.M(c)
-       *ArrheniusReactionRate::operator()(p, T, c);
+       *ArrheniusReactionRate::operator()(p, T, c, li);
+}
+
+
+inline Foam::scalar Foam::thirdBodyArrheniusReactionRate::ddT
+(
+    const scalar p,
+    const scalar T,
+    const scalarField& c,
+    const label li
+) const
+{
+    return
+        thirdBodyEfficiencies_.M(c)
+       *ArrheniusReactionRate::ddT(p, T, c, li);
+}
+
+
+inline void Foam::thirdBodyArrheniusReactionRate::dcidc
+(
+    const scalar p,
+    const scalar T,
+    const scalarField& c,
+    const label li,
+    scalarField& dcidc
+) const
+{
+    scalar M = thirdBodyEfficiencies_.M(c);
+    forAll(beta_, i)
+    {
+        dcidc[i] = beta_[i].second()/max(M, small);
+    }
+}
+
+
+inline Foam::scalar Foam::thirdBodyArrheniusReactionRate::dcidT
+(
+    const scalar p,
+    const scalar T,
+    const scalarField& c,
+    const label li
+) const
+{
+    return -1.0/T;
 }
 
 

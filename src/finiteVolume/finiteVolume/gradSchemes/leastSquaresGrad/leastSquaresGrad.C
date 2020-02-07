@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -56,16 +56,9 @@ Foam::fv::leastSquaresGrad<Type>::calcGrad
 
     tmp<GeometricField<GradType, fvPatchField, volMesh>> tlsGrad
     (
-        new GeometricField<GradType, fvPatchField, volMesh>
+        GeometricField<GradType, fvPatchField, volMesh>::New
         (
-            IOobject
-            (
-                name,
-                vsf.instance(),
-                mesh,
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
+            name,
             mesh,
             dimensioned<GradType>
             (

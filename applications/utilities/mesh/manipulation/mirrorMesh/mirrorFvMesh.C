@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -29,17 +29,17 @@ License
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::mirrorFvMesh::mirrorFvMesh(const IOobject& io)
+Foam::mirrorFvMesh::mirrorFvMesh(const IOobject& io, const word& dictName)
 :
     fvMesh(io),
     mirrorMeshDict_
     (
         IOobject
         (
-            "mirrorMeshDict",
+            dictName,
             time().system(),
             *this,
-            IOobject::MUST_READ_IF_MODIFIED,
+            IOobject::MUST_READ,
             IOobject::NO_WRITE
         )
     )
@@ -48,7 +48,7 @@ Foam::mirrorFvMesh::mirrorFvMesh(const IOobject& io)
 
     scalar planeTolerance
     (
-        readScalar(mirrorMeshDict_.lookup("planeTolerance"))
+        mirrorMeshDict_.lookup<scalar>("planeTolerance")
     );
 
     const pointField& oldPoints = points();
@@ -392,9 +392,9 @@ Foam::mirrorFvMesh::mirrorFvMesh(const IOobject& io)
         new fvMesh
         (
             io,
-            xferMove(newPoints),
-            xferMove(newFaces),
-            xferMove(newCells)
+            move(newPoints),
+            move(newFaces),
+            move(newCells)
         )
     );
 

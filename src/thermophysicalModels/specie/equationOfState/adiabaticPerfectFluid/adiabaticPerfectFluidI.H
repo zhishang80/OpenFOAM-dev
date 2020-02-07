@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -107,12 +107,36 @@ inline Foam::scalar Foam::adiabaticPerfectFluid<Specie>::H
     scalar T
 ) const
 {
+    // ***HGW This needs to be added, it is not 0
     return 0;
 }
 
 
 template<class Specie>
 inline Foam::scalar Foam::adiabaticPerfectFluid<Specie>::Cp
+(
+    scalar p,
+    scalar T
+) const
+{
+    return 0;
+}
+
+
+template<class Specie>
+inline Foam::scalar Foam::adiabaticPerfectFluid<Specie>::E
+(
+    scalar p,
+    scalar T
+) const
+{
+    // ***HGW This needs to be added, it is H - p/rho
+    return 0;
+}
+
+
+template<class Specie>
+inline Foam::scalar Foam::adiabaticPerfectFluid<Specie>::Cv
 (
     scalar p,
     scalar T
@@ -175,19 +199,7 @@ inline void Foam::adiabaticPerfectFluid<Specie>::operator+=
     const adiabaticPerfectFluid<Specie>& pf
 )
 {
-    scalar Y1 = this->Y();
-    Specie::operator+=(pf);
-
-    if (mag(this->Y()) > small)
-    {
-        Y1 /= this->Y();
-        const scalar Y2 = pf.Y()/this->Y();
-
-        p0_ = Y1*p0_ + Y2*pf.p0_;
-        rho0_ = Y1*rho0_ + Y2*pf.rho0_;
-        gamma_ = Y1*gamma_ + Y2*pf.gamma_;
-        B_ = Y1*B_ + Y2*pf.B_;
-    }
+    NotImplemented;
 }
 
 
@@ -207,37 +219,8 @@ inline Foam::adiabaticPerfectFluid<Specie> Foam::operator+
     const adiabaticPerfectFluid<Specie>& pf2
 )
 {
-    Specie sp
-    (
-        static_cast<const Specie&>(pf1)
-      + static_cast<const Specie&>(pf2)
-    );
-
-    if (mag(sp.Y()) < small)
-    {
-        return adiabaticPerfectFluid<Specie>
-        (
-            sp,
-            pf1.p0_,
-            pf1.rho0_,
-            pf1.gamma_,
-            pf1.B_
-        );
-    }
-    else
-    {
-        const scalar Y1 = pf1.Y()/sp.Y();
-        const scalar Y2 = pf2.Y()/sp.Y();
-
-        return adiabaticPerfectFluid<Specie>
-        (
-            sp,
-            Y1*pf1.p0_ + Y2*pf2.p0_,
-            Y1*pf1.rho0_ + Y2*pf2.rho0_,
-            Y1*pf1.gamma_ + Y2*pf2.gamma_,
-            Y1*pf1.B_ + Y2*pf2.B_
-        );
-    }
+    NotImplemented;
+    return pf1;
 }
 
 
@@ -266,23 +249,8 @@ inline Foam::adiabaticPerfectFluid<Specie> Foam::operator==
     const adiabaticPerfectFluid<Specie>& pf2
 )
 {
-    Specie sp
-    (
-        static_cast<const Specie&>(pf1)
-     == static_cast<const Specie&>(pf2)
-    );
-
-    const scalar Y1 = pf1.Y()/sp.Y();
-    const scalar Y2 = pf2.Y()/sp.Y();
-
-    return adiabaticPerfectFluid<Specie>
-    (
-        sp,
-        Y2*pf2.p0_    - Y1*pf1.p0_,
-        Y2*pf2.rho0_  - Y1*pf1.rho0_,
-        Y2*pf2.gamma_ - Y1*pf1.gamma_,
-        Y2*pf2.B_     - Y1*pf1.B_
-    );
+    NotImplemented;
+    return pf1;
 }
 
 

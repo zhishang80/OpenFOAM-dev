@@ -1,9 +1,11 @@
 {
-    autoPtr<phaseSystem::massTransferTable>
-        massTransferPtr(fluid.massTransfer());
+    autoPtr<phaseSystem::specieTransferTable>
+        specieTransferPtr(fluid.specieTransfer());
 
-    phaseSystem::massTransferTable&
-        massTransfer(massTransferPtr());
+    phaseSystem::specieTransferTable&
+        specieTransfer(specieTransferPtr());
+
+    fluid.correctReactions();
 
     forAll(fluid.multiComponentPhases(), multiComponentPhasei)
     {
@@ -19,14 +21,14 @@
             (
                 phase.YiEqn(Y[i])
              ==
-               *massTransfer[Y[i].name()]
+               *specieTransfer[Y[i].name()]
               + fvOptions(alpha, rho, Y[i])
             );
 
             YiEqn.relax();
-            YiEqn.solve(mesh.solver("Yi"));
+            YiEqn.solve("Yi");
         }
     }
 
-    fluid.massTransfer(); // updates interfacial mass flow rates
+    fluid.correctSpecies();
 }

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -49,10 +49,10 @@ Foam::saturationModels::constantSaturationConditions::
 constantSaturationConditions
 (
     const dictionary& dict,
-    const objectRegistry& db
+    const phasePair& pair
 )
 :
-    saturationModel(db),
+    saturationModel(pair),
     pSat_("pSat", dimPressure, dict),
     Tsat_("Tsat", dimTemperature, dict)
 {}
@@ -73,22 +73,11 @@ Foam::saturationModels::constantSaturationConditions::pSat
     const volScalarField& T
 ) const
 {
-    return tmp<volScalarField>
+    return volScalarField::New
     (
-        new volScalarField
-        (
-            IOobject
-            (
-                "pSat",
-                T.mesh().time().timeName(),
-                T.mesh(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
-            T.mesh(),
-            pSat_
-        )
+        "pSat",
+        T.mesh(),
+        pSat_
     );
 }
 
@@ -99,22 +88,11 @@ Foam::saturationModels::constantSaturationConditions::pSatPrime
     const volScalarField& T
 ) const
 {
-    return tmp<volScalarField>
+    return volScalarField::New
     (
-        new volScalarField
-        (
-            IOobject
-            (
-                "pSatPrime",
-                T.mesh().time().timeName(),
-                T.mesh(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
-            T.mesh(),
-            dimensionedScalar("zero", dimPressure/dimTemperature, 0)
-        )
+        "pSatPrime",
+        T.mesh(),
+        dimensionedScalar(dimPressure/dimTemperature, 0)
     );
 }
 
@@ -125,22 +103,11 @@ Foam::saturationModels::constantSaturationConditions::lnPSat
     const volScalarField& T
 ) const
 {
-    return tmp<volScalarField>
+    return volScalarField::New
     (
-        new volScalarField
-        (
-            IOobject
-            (
-                "lnPSat",
-                T.mesh().time().timeName(),
-                T.mesh(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
-            T.mesh(),
-            dimensionedScalar("lnPSat", dimless, log(pSat_.value()))
-        )
+        "lnPSat",
+        T.mesh(),
+        dimensionedScalar(dimless, log(pSat_.value()))
     );
 }
 
@@ -151,22 +118,11 @@ Foam::saturationModels::constantSaturationConditions::Tsat
     const volScalarField& p
 ) const
 {
-    return tmp<volScalarField>
+    return volScalarField::New
     (
-        new volScalarField
-        (
-            IOobject
-            (
-                "Tsat",
-                p.mesh().time().timeName(),
-                p.mesh(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
-            p.mesh(),
-            Tsat_
-        )
+        "Tsat",
+        p.mesh(),
+        Tsat_
     );
 }
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -36,7 +36,6 @@ SourceFiles
 #define coalescenceModel_H
 
 #include "populationBalanceModel.H"
-#include "phaseCompressibleTurbulenceModel.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -53,20 +52,10 @@ class coalescenceModel
 {
 protected:
 
-    // Protected data
+    // Protected Data
 
         //- Reference to the populationBalanceModel
         const populationBalanceModel& popBal_;
-
-
-    // Protected member functions
-
-        //- Return the surface tension coefficient
-        const tmp<volScalarField> sigma
-        (
-            const word& phase1,
-            const word& phase2
-        ) const;
 
 
 public:
@@ -143,9 +132,6 @@ public:
 
 
     // Member Functions
-
-        //- Return a reference to the turbulence model for the continuous phase
-        const phaseCompressibleTurbulenceModel& continuousTurbulence() const;
 
         //- Correct diameter independent expressions
         virtual void correct();

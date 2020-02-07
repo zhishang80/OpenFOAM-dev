@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::cubeRootVolDelta
+    Foam::LESModels::cubeRootVolDelta
 
 Description
     Simple cube-root of cell volume delta used in LES SGS models.
@@ -52,16 +52,12 @@ class cubeRootVolDelta
 :
     public LESdelta
 {
-    // Private data
+    // Private Data
 
         scalar deltaCoeff_;
 
 
     // Private Member Functions
-
-        //- Disallow default bitwise copy construct and assignment
-        cubeRootVolDelta(const cubeRootVolDelta&);
-        void operator=(const cubeRootVolDelta&);
 
         // Calculate the delta values
         void calcDelta();
@@ -83,6 +79,9 @@ public:
             const dictionary&
         );
 
+        //- Disallow default bitwise copy construction
+        cubeRootVolDelta(const cubeRootVolDelta&) = delete;
+
 
     //- Destructor
     virtual ~cubeRootVolDelta()
@@ -96,6 +95,12 @@ public:
 
         // Correct values
         virtual void correct();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const cubeRootVolDelta&) = delete;
 };
 
 

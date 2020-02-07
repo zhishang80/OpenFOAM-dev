@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::functionObjects::writeCellCentres
-
-Group
-    grpFieldFunctionObjects
 
 Description
     Writes the cell-centres volVectorField and the three component fields as
@@ -75,15 +72,6 @@ class writeCellCentres
 :
     public fvMeshFunctionObject
 {
-    // Private member functions
-
-        //- Disallow default bitwise copy construct
-        writeCellCentres(const writeCellCentres&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const writeCellCentres&);
-
-
 public:
 
     //- Runtime type information
@@ -100,6 +88,9 @@ public:
             const dictionary& dict
         );
 
+        //- Disallow default bitwise copy construction
+        writeCellCentres(const writeCellCentres&) = delete;
+
 
     //- Destructor
     virtual ~writeCellCentres();
@@ -112,6 +103,12 @@ public:
 
         //- Write the cell-centre fields
         virtual bool write();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const writeCellCentres&) = delete;
 };
 
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -25,37 +25,19 @@ License
 
 #include "sampledTriSurfaceMesh.H"
 #include "meshSearch.H"
-#include "Tuple2.H"
-#include "globalIndex.H"
 #include "treeDataCell.H"
 #include "treeDataFace.H"
 #include "meshTools.H"
-
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
 namespace Foam
 {
-    defineTypeNameAndDebug(sampledTriSurfaceMesh, 0);
-    addToRunTimeSelectionTable
-    (
-        sampledSurface,
-        sampledTriSurfaceMesh,
-        word
-    );
-
-    template<>
-    const char* NamedEnum<sampledTriSurfaceMesh::samplingSource, 3>::names[] =
-    {
-        "cells",
-        "insideCells",
-        "boundaryFaces"
-    };
-
-    const NamedEnum<sampledTriSurfaceMesh::samplingSource, 3>
-    sampledTriSurfaceMesh::samplingSourceNames_;
-
+namespace sampledSurfaces
+{
+    defineTypeNameAndDebug(triSurfaceMesh, 0);
+    addToRunTimeSelectionTable(sampledSurface, triSurfaceMesh, word);
 
     //- Private class for finding nearest
     //  Comprising:
@@ -77,12 +59,31 @@ namespace Foam
         }
     };
 }
+}
+
+template<>
+const char* Foam::NamedEnum
+<
+    Foam::sampledSurfaces::triSurfaceMesh::samplingSource,
+    3
+>::names[] =
+{
+    "cells",
+    "insideCells",
+    "boundaryFaces"
+};
+
+const Foam::NamedEnum
+<
+    Foam::sampledSurfaces::triSurfaceMesh::samplingSource,
+    3
+> Foam::sampledSurfaces::triSurfaceMesh::samplingSourceNames_;
 
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
 const Foam::indexedOctree<Foam::treeDataFace>&
-Foam::sampledTriSurfaceMesh::nonCoupledboundaryTree() const
+Foam::sampledSurfaces::triSurfaceMesh::nonCoupledboundaryTree() const
 {
     // Variant of meshSearch::boundaryTree() that only does non-coupled
     // boundary faces.
@@ -109,10 +110,7 @@ Foam::sampledTriSurfaceMesh::nonCoupledboundaryTree() const
 
 
         treeBoundBox overallBb(mesh().points());
-        Random rndGen(123456);
-        overallBb = overallBb.extend(rndGen, 1e-4);
-        overallBb.min() -= point(rootVSmall, rootVSmall, rootVSmall);
-        overallBb.max() += point(rootVSmall, rootVSmall, rootVSmall);
+        overallBb = overallBb.extend(1e-4);
 
         boundaryTreePtr_.reset
         (
@@ -136,7 +134,10 @@ Foam::sampledTriSurfaceMesh::nonCoupledboundaryTree() const
 }
 
 
-bool Foam::sampledTriSurfaceMesh::update(const meshSearch& meshSearcher)
+bool Foam::sampledSurfaces::triSurfaceMesh::update
+(
+    const meshSearch& meshSearcher
+)
 {
     // Find the cells the triangles of the surface are in.
     // Does approximation by looking at the face centres only
@@ -200,11 +201,8 @@ bool Foam::sampledTriSurfaceMesh::update(const meshSearch& meshSearcher)
     }
     else
     {
-        // Search for nearest boundaryFace
+        // Search on all non-coupled boundary faces
 
-        ////- Search on all (including coupled) boundary faces
-        //const indexedOctree<treeDataFace>& bTree = meshSearcher.boundaryTree()
-        //- Search on all non-coupled boundary faces
         const indexedOctree<treeDataFace>& bTree = nonCoupledboundaryTree();
 
         forAll(fc, triI)
@@ -516,7 +514,7 @@ bool Foam::sampledTriSurfaceMesh::update(const meshSearch& meshSearcher)
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::sampledTriSurfaceMesh::sampledTriSurfaceMesh
+Foam::sampledSurfaces::triSurfaceMesh::triSurfaceMesh
 (
     const word& name,
     const polyMesh& mesh,
@@ -545,7 +543,7 @@ Foam::sampledTriSurfaceMesh::sampledTriSurfaceMesh
 {}
 
 
-Foam::sampledTriSurfaceMesh::sampledTriSurfaceMesh
+Foam::sampledSurfaces::triSurfaceMesh::triSurfaceMesh
 (
     const word& name,
     const polyMesh& mesh,
@@ -573,7 +571,7 @@ Foam::sampledTriSurfaceMesh::sampledTriSurfaceMesh
 {}
 
 
-Foam::sampledTriSurfaceMesh::sampledTriSurfaceMesh
+Foam::sampledSurfaces::triSurfaceMesh::triSurfaceMesh
 (
     const word& name,
     const polyMesh& mesh,
@@ -605,19 +603,19 @@ Foam::sampledTriSurfaceMesh::sampledTriSurfaceMesh
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
-Foam::sampledTriSurfaceMesh::~sampledTriSurfaceMesh()
+Foam::sampledSurfaces::triSurfaceMesh::~triSurfaceMesh()
 {}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-bool Foam::sampledTriSurfaceMesh::needsUpdate() const
+bool Foam::sampledSurfaces::triSurfaceMesh::needsUpdate() const
 {
     return needsUpdate_;
 }
 
 
-bool Foam::sampledTriSurfaceMesh::expire()
+bool Foam::sampledSurfaces::triSurfaceMesh::expire()
 {
     // already marked as expired
     if (needsUpdate_)
@@ -637,7 +635,7 @@ bool Foam::sampledTriSurfaceMesh::expire()
 }
 
 
-bool Foam::sampledTriSurfaceMesh::update()
+bool Foam::sampledSurfaces::triSurfaceMesh::update()
 {
     if (!needsUpdate_)
     {
@@ -651,7 +649,7 @@ bool Foam::sampledTriSurfaceMesh::update()
 }
 
 
-bool Foam::sampledTriSurfaceMesh::update(const treeBoundBox& bb)
+bool Foam::sampledSurfaces::triSurfaceMesh::update(const treeBoundBox& bb)
 {
     if (!needsUpdate_)
     {
@@ -665,7 +663,8 @@ bool Foam::sampledTriSurfaceMesh::update(const treeBoundBox& bb)
 }
 
 
-Foam::tmp<Foam::scalarField> Foam::sampledTriSurfaceMesh::sample
+Foam::tmp<Foam::scalarField>
+Foam::sampledSurfaces::triSurfaceMesh::sample
 (
     const volScalarField& vField
 ) const
@@ -674,7 +673,8 @@ Foam::tmp<Foam::scalarField> Foam::sampledTriSurfaceMesh::sample
 }
 
 
-Foam::tmp<Foam::vectorField> Foam::sampledTriSurfaceMesh::sample
+Foam::tmp<Foam::vectorField>
+Foam::sampledSurfaces::triSurfaceMesh::sample
 (
     const volVectorField& vField
 ) const
@@ -682,7 +682,8 @@ Foam::tmp<Foam::vectorField> Foam::sampledTriSurfaceMesh::sample
     return sampleField(vField);
 }
 
-Foam::tmp<Foam::sphericalTensorField> Foam::sampledTriSurfaceMesh::sample
+Foam::tmp<Foam::sphericalTensorField>
+Foam::sampledSurfaces::triSurfaceMesh::sample
 (
     const volSphericalTensorField& vField
 ) const
@@ -691,7 +692,8 @@ Foam::tmp<Foam::sphericalTensorField> Foam::sampledTriSurfaceMesh::sample
 }
 
 
-Foam::tmp<Foam::symmTensorField> Foam::sampledTriSurfaceMesh::sample
+Foam::tmp<Foam::symmTensorField>
+Foam::sampledSurfaces::triSurfaceMesh::sample
 (
     const volSymmTensorField& vField
 ) const
@@ -700,7 +702,8 @@ Foam::tmp<Foam::symmTensorField> Foam::sampledTriSurfaceMesh::sample
 }
 
 
-Foam::tmp<Foam::tensorField> Foam::sampledTriSurfaceMesh::sample
+Foam::tmp<Foam::tensorField>
+Foam::sampledSurfaces::triSurfaceMesh::sample
 (
     const volTensorField& vField
 ) const
@@ -709,7 +712,8 @@ Foam::tmp<Foam::tensorField> Foam::sampledTriSurfaceMesh::sample
 }
 
 
-Foam::tmp<Foam::scalarField> Foam::sampledTriSurfaceMesh::interpolate
+Foam::tmp<Foam::scalarField>
+Foam::sampledSurfaces::triSurfaceMesh::interpolate
 (
     const interpolation<scalar>& interpolator
 ) const
@@ -718,7 +722,8 @@ Foam::tmp<Foam::scalarField> Foam::sampledTriSurfaceMesh::interpolate
 }
 
 
-Foam::tmp<Foam::vectorField> Foam::sampledTriSurfaceMesh::interpolate
+Foam::tmp<Foam::vectorField>
+Foam::sampledSurfaces::triSurfaceMesh::interpolate
 (
     const interpolation<vector>& interpolator
 ) const
@@ -726,7 +731,8 @@ Foam::tmp<Foam::vectorField> Foam::sampledTriSurfaceMesh::interpolate
     return interpolateField(interpolator);
 }
 
-Foam::tmp<Foam::sphericalTensorField> Foam::sampledTriSurfaceMesh::interpolate
+Foam::tmp<Foam::sphericalTensorField>
+Foam::sampledSurfaces::triSurfaceMesh::interpolate
 (
     const interpolation<sphericalTensor>& interpolator
 ) const
@@ -735,7 +741,8 @@ Foam::tmp<Foam::sphericalTensorField> Foam::sampledTriSurfaceMesh::interpolate
 }
 
 
-Foam::tmp<Foam::symmTensorField> Foam::sampledTriSurfaceMesh::interpolate
+Foam::tmp<Foam::symmTensorField>
+Foam::sampledSurfaces::triSurfaceMesh::interpolate
 (
     const interpolation<symmTensor>& interpolator
 ) const
@@ -744,7 +751,8 @@ Foam::tmp<Foam::symmTensorField> Foam::sampledTriSurfaceMesh::interpolate
 }
 
 
-Foam::tmp<Foam::tensorField> Foam::sampledTriSurfaceMesh::interpolate
+Foam::tmp<Foam::tensorField>
+Foam::sampledSurfaces::triSurfaceMesh::interpolate
 (
     const interpolation<tensor>& interpolator
 ) const
@@ -753,9 +761,9 @@ Foam::tmp<Foam::tensorField> Foam::sampledTriSurfaceMesh::interpolate
 }
 
 
-void Foam::sampledTriSurfaceMesh::print(Ostream& os) const
+void Foam::sampledSurfaces::triSurfaceMesh::print(Ostream& os) const
 {
-    os  << "sampledTriSurfaceMesh: " << name() << " :"
+    os  << "triSurfaceMesh: " << name() << " :"
         << "  surface:" << surface_.objectRegistry::name()
         << "  faces:" << faces().size()
         << "  points:" << points().size();

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -35,11 +35,11 @@ Description
       - ~/.OpenFOAM/\<VERSION\>/caseDicts/postProcessing
       - ~/.OpenFOAM/caseDicts/postProcessing
     - \b group (site) settings (when $WM_PROJECT_SITE is set):
-      - $WM_PROJECT_SITE/\<VERSION\>/caseDicts/postProcessing
-      - $WM_PROJECT_SITE/caseDicts/postProcessing
+      - $WM_PROJECT_SITE/\<VERSION\>/etc/caseDicts/postProcessing
+      - $WM_PROJECT_SITE/etc/caseDicts/postProcessing
     - \b group (site) settings (when $WM_PROJECT_SITE is not set):
-      - $WM_PROJECT_INST_DIR/site/\<VERSION\>/caseDicts/postProcessing
-      - $WM_PROJECT_INST_DIR/site/caseDicts/postProcessing
+      - $WM_PROJECT_INST_DIR/site/\<VERSION\>/etc/caseDicts/postProcessing
+      - $WM_PROJECT_INST_DIR/site/etc/caseDicts/postProcessing
     - \b other (shipped) settings:
       - $WM_PROJECT_DIR/etc/caseDicts/postProcessing
 

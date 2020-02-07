@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -52,7 +52,7 @@ class processorPointPatchField
 :
     public coupledPointPatchField<Type>
 {
-    // Private data
+    // Private Data
 
         //- Local reference to processor patch
         const processorPointPatch& procPatch_;
@@ -129,7 +129,7 @@ public:
     virtual ~processorPointPatchField();
 
 
-    // Member functions
+    // Member Functions
 
         // Access
 
@@ -144,16 +144,6 @@ public:
                 {
                     return false;
                 }
-            }
-
-            //- Does the patch field perform the transformation
-            virtual bool doTransform() const
-            {
-                return
-                   !(
-                        procPatch_.procPolyPatch().parallel()
-                     || pTraits<Type>::rank == 0
-                    );
             }
 
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -37,7 +37,7 @@ Description
     model choice. For models which state a total breakup rate and a separate
     daughter size distribution function, the formulation of Kumar and Ramkrishna
     (1996) is applied which is applicable for binary and multiple breakup
-    events. The second formulation is given by Liao et al. (2017). It is useful
+    events. The second formulation is given by Liao et al. (2018). It is useful
     for binary breakup models which give the breakup rate between a sizeGroup
     pair directly, without an explicit expression for the daughter size
     distribution. The drift term is implemented using a finite difference upwind
@@ -52,19 +52,17 @@ Description
     References:
     \verbatim
         Coalescence and breakup term formulation:
-            Kumar, S. & Ramkrishna, D. (1996).
-            On the solution of population balance equations by
-            discretization - I. A fixed pivot technique.
-            Chemical Engineering Science,
-            51(8), 1311-1332.
+        Kumar, S., & Ramkrishna, D. (1996).
+        On the solution of population balance equations by discretization-I. A
+        fixed pivot technique.
+        Chemical Engineering Science, 51(8), 1311-1332.
     \endverbatim
 
     \verbatim
         Binary breakup term formulation:
-            Liao, Y.; Oertel, R.; Kriebitzsch, S.; Schlegel, F.; Lucas, D.
-            (2018). A Discrete Population Balance Equation for Binary Breakage.
-            International Journal for Numerical Methods in Fluids,
-            DOI 10.1002/fld.4491.
+        Liao, Y., Oertel, R., Kriebitzsch, S., Schlegel, F., & Lucas, D. (2018).
+        A discrete population balance equation for binary breakage.
+        International Journal for Numerical Methods in Fluids, 87(4), 202-215.
     \endverbatim
 
 Usage
@@ -84,16 +82,16 @@ Usage
         {
             populationBalance    bubbles;
 
-            formFactor      0.5235987756;
+            shapeModel           constant;
 
             sizeGroups
             (
-                f0{d  1.00e-3; value 0;}
-                f1{d  1.08e-3; value 0;}
-                f2{d  1.16e-3; value 0.25;}
-                f3{d  1.25e-3; value 0.5;}
-                f4{d  1.36e-3; value 0.25;}
-                f5{d  1.46e-3; value 0;}
+                f0{dSph  1.00e-3; value 0;}
+                f1{dSph  1.08e-3; value 0;}
+                f2{dSph  1.16e-3; value 0.25;}
+                f3{dSph  1.25e-3; value 0.5;}
+                f4{dSph  1.36e-3; value 0.25;}
+                f5{dSph  1.46e-3; value 0;}
                 ...
             );
         }
@@ -124,7 +122,7 @@ Usage
                 {
                     C 0.5;
                     exponent 0.01;
-                    daughterSizeDistributionModel uniformBinary;
+                    daughterSizeDistributionModel uniform;
                 }
             );
 
@@ -154,6 +152,8 @@ SourceFiles
 #include "sizeGroup.H"
 #include "phasePair.H"
 #include "pimpleControl.H"
+#include "phaseCompressibleTurbulenceModelFwd.H"
+#include "HashPtrTable.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -179,20 +179,26 @@ class populationBalanceModel
 :
     public regIOobject
 {
-    // Private typedefs
+private:
+
+    // Private Typedefs
 
         typedef
             HashTable<autoPtr<phasePair>, phasePairKey, phasePairKey::hash>
             phasePairTable;
 
+        typedef
+            HashPtrTable<volScalarField, phasePairKey, phasePairKey::hash>
+            pDmdtTable;
 
-    // Private data
+
+    // Private Data
 
         //- Reference to the phaseSystem
         const phaseSystem& fluid_;
 
-        //- Interfacial Mass transfer rate between velocityGroups
-        HashPtrTable<volScalarField, phasePairKey, phasePairKey::hash>& pDmdt_;
+        //- Interfacial mass transfer rates
+        pDmdtTable& pDmdt_;
 
         //- Reference to the mesh
         const fvMesh& mesh_;
@@ -210,10 +216,10 @@ class populationBalanceModel
         const phaseModel& continuousPhase_;
 
         //- velocityGroups belonging to this populationBalance
-        List<velocityGroup*> velocityGroups_;
+        UPtrList<velocityGroup> velocityGroups_;
 
         //- sizeGroups belonging to this populationBalance
-        List<sizeGroup*> sizeGroups_;
+        UPtrList<sizeGroup> sizeGroups_;
 
         //- List of unordered phasePairs in this populationBalance
         phasePairTable phasePairs_;
@@ -269,18 +275,24 @@ class populationBalanceModel
         //- Zeroeth order rate
         autoPtr<volScalarField> nucleationRate_;
 
-        //- Total void fraction of phases belonging to this populationBalance
-        volScalarField alphas_;
+        //- Total void fraction
+        autoPtr<volScalarField> alphas_;
+
+        //- Mean Sauter diameter
+        autoPtr<volScalarField> dsm_;
 
         //- Average velocity
-        volVectorField U_;
+        autoPtr<volVectorField> U_;
+
+        //- Counter for interval between source term updates
+        label sourceUpdateCounter_;
 
 
-    // Private member functions
+    // Private Member Functions
 
-        void registerVelocityAndSizeGroups();
+        void registerVelocityGroups();
 
-        void add(sizeGroup* group);
+        void registerSizeGroups(sizeGroup& group);
 
         void createPhasePairs();
 
@@ -300,9 +312,9 @@ class populationBalanceModel
 
         void deathByBinaryBreakup(const label j, const label i);
 
-        void drift(const label i);
+        void drift(const label i, driftModel& model);
 
-        void nucleation(const label i);
+        void nucleation(const label i, nucleationModel& model);
 
         void sources();
 
@@ -310,13 +322,24 @@ class populationBalanceModel
 
         void calcAlphas();
 
+        tmp<volScalarField> calcDsm();
+
         void calcVelocity();
 
+        //- Return whether the sources should be updated on this iteration
+        bool updateSources();
+
+        //- Return the number of corrections
+        inline label nCorr() const;
+
+        //- Return the interval at which the sources are updated
+        inline label sourceUpdateInterval() const;
 
 public:
 
-    friend class sizeGroup;
-    friend class velocityGroup;
+    //- Runtime type information
+    TypeName("populationBalanceModel");
+
 
     // Constructor
 
@@ -388,13 +411,20 @@ public:
         inline const phaseModel& continuousPhase() const;
 
         //- Return the velocityGroups belonging to this populationBalance
-        inline const List<velocityGroup*>& velocityGroups() const;
+        inline const UPtrList<velocityGroup>& velocityGroups() const;
 
         //- Return the sizeGroups belonging to this populationBalance
-        inline const List<sizeGroup*>& sizeGroups() const;
+        inline const UPtrList<sizeGroup>& sizeGroups() const;
+
+        //- Return semi-implicit source terms
+        inline const volScalarField& SuSp(const label i) const;
 
         //- Return list of unordered phasePairs in this populationBalance
         inline const phasePairTable& phasePairs() const;
+
+        //- Returns true if both phases are velocity groups and
+        //  belong to this populationBalance
+        inline bool isVelocityGroupPair(const phasePair& pair) const;
 
         //- Return the sizeGroup boundaries
         inline const PtrList<dimensionedScalar>& v() const;
@@ -406,11 +436,21 @@ public:
         inline const volVectorField& U() const;
 
         //- Return allocation coefficient
-        const dimensionedScalar gamma
+        const dimensionedScalar eta
         (
             const label i,
             const dimensionedScalar& v
         ) const;
+
+        //- Return the surface tension coefficient between a given dispersed
+        //  and the continuous phase
+        const tmp<volScalarField> sigmaWithContinuousPhase
+        (
+            const phaseModel& dispersedPhase
+        ) const;
+
+        //- Return reference to turbulence model of the continuous phase
+        const phaseCompressibleTurbulenceModel& continuousTurbulence() const;
 
         //- Solve the population balance equation
         void solve();

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -42,9 +42,9 @@ void Foam::fv::option::writeFooter(Ostream& os) const
 
 void Foam::fv::option::writeData(Ostream& os) const
 {
-    os.writeKeyword("type") << type() << token::END_STATEMENT << nl;
-    os.writeKeyword("active") << active_ << token::END_STATEMENT << nl << nl;
-
+    writeEntry(os, "type", type());
+    writeEntry(os, "active", active_);
+    os << nl;
     os << indent << word(type() + "Coeffs");
     coeffs_.write(os);
 }

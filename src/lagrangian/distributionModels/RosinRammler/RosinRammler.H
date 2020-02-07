@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::RosinRammler
+    Foam::distributionModels::RosinRammler
 
 Description
     Rosin-Rammler distributionModel
@@ -59,7 +59,7 @@ class RosinRammler
 :
     public distributionModel
 {
-    // Private data
+    // Private Data
 
         //- Distribution minimum
         scalar minValue_;
@@ -82,7 +82,7 @@ public:
     // Constructors
 
         //- Construct from components
-        RosinRammler(const dictionary& dict, cachedRandom& rndGen);
+        RosinRammler(const dictionary& dict, Random& rndGen);
 
         //- Construct copy
         RosinRammler(const RosinRammler& p);

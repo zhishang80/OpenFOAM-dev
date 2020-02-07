@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -62,58 +62,58 @@ bool Foam::motionSmootherAlgo::checkMesh
 {
     const scalar maxNonOrtho
     (
-        readScalar(dict.lookup("maxNonOrtho", true))
+        dict.lookup<scalar>("maxNonOrtho", true)
     );
     const scalar minVol
     (
-        readScalar(dict.lookup("minVol", true))
+        dict.lookup<scalar>("minVol", true)
     );
     const scalar minTetQuality
     (
-        readScalar(dict.lookup("minTetQuality", true))
+        dict.lookup<scalar>("minTetQuality", true)
     );
     const scalar maxConcave
     (
-        readScalar(dict.lookup("maxConcave", true))
+        dict.lookup<scalar>("maxConcave", true)
     );
     const scalar minArea
     (
-        readScalar(dict.lookup("minArea", true))
+        dict.lookup<scalar>("minArea", true)
     );
     const scalar maxIntSkew
     (
-        readScalar(dict.lookup("maxInternalSkewness", true))
+        dict.lookup<scalar>("maxInternalSkewness", true)
     );
     const scalar maxBounSkew
     (
-        readScalar(dict.lookup("maxBoundarySkewness", true))
+        dict.lookup<scalar>("maxBoundarySkewness", true)
     );
     const scalar minWeight
     (
-        readScalar(dict.lookup("minFaceWeight", true))
+        dict.lookup<scalar>("minFaceWeight", true)
     );
     const scalar minVolRatio
     (
-        readScalar(dict.lookup("minVolRatio", true))
+        dict.lookup<scalar>("minVolRatio", true)
     );
     const scalar minTwist
     (
-        readScalar(dict.lookup("minTwist", true))
+        dict.lookup<scalar>("minTwist", true)
     );
     const scalar minTriangleTwist
     (
-        readScalar(dict.lookup("minTriangleTwist", true))
+        dict.lookup<scalar>("minTriangleTwist", true)
     );
     scalar minFaceFlatness = -1.0;
     dict.readIfPresent("minFaceFlatness", minFaceFlatness, true);
     const scalar minDet
     (
-        readScalar(dict.lookup("minDeterminant", true))
+        dict.lookup<scalar>("minDeterminant", true)
     );
     label nWrongFaces = 0;
 
     Info<< "Checking faces in error :" << endl;
-    //Pout.setf(ios_base::left);
+    // Pout.setf(ios_base::left);
 
     if (maxNonOrtho < 180.0-small)
     {
@@ -308,7 +308,7 @@ bool Foam::motionSmootherAlgo::checkMesh
 
     if (minTwist > -1)
     {
-        //Pout<< "Checking face twist: dot product of face normal "
+        // Pout<< "Checking face twist: dot product of face normal "
         //    << "with face triangle normals" << endl;
         polyMeshGeometry::checkFaceTwist
         (
@@ -335,7 +335,7 @@ bool Foam::motionSmootherAlgo::checkMesh
 
     if (minTriangleTwist > -1)
     {
-        //Pout<< "Checking triangle twist: dot product of consecutive triangle"
+        // Pout<< "Checking triangle twist: dot product of consecutive triangle"
         //    << " normals resulting from face-centre decomposition" << endl;
         polyMeshGeometry::checkTriangleTwist
         (
@@ -405,7 +405,7 @@ bool Foam::motionSmootherAlgo::checkMesh
         nWrongFaces = nNewWrongFaces;
     }
 
-    //Pout.setf(ios_base::right);
+    // Pout.setf(ios_base::right);
 
     return nWrongFaces > 0;
 }
@@ -464,59 +464,59 @@ bool Foam::motionSmootherAlgo::checkMesh
 {
     const scalar maxNonOrtho
     (
-        readScalar(dict.lookup("maxNonOrtho", true))
+        dict.lookup<scalar>("maxNonOrtho", true)
     );
     const scalar minVol
     (
-        readScalar(dict.lookup("minVol", true))
+        dict.lookup<scalar>("minVol", true)
     );
     const scalar minTetQuality
     (
-        readScalar(dict.lookup("minTetQuality", true))
+        dict.lookup<scalar>("minTetQuality", true)
     );
     const scalar maxConcave
     (
-        readScalar(dict.lookup("maxConcave", true))
+        dict.lookup<scalar>("maxConcave", true)
     );
     const scalar minArea
     (
-        readScalar(dict.lookup("minArea", true))
+        dict.lookup<scalar>("minArea", true)
     );
-    //const scalar maxIntSkew
+    // const scalar maxIntSkew
     //(
-    //    readScalar(dict.lookup("maxInternalSkewness", true))
+    //    dict.lookup<scalar>("maxInternalSkewness", true)
     //);
-    //const scalar maxBounSkew
+    // const scalar maxBounSkew
     //(
-    //    readScalar(dict.lookup("maxBoundarySkewness", true))
+    //    dict.lookup<scalar>("maxBoundarySkewness", true)
     //);
     const scalar minWeight
     (
-        readScalar(dict.lookup("minFaceWeight", true))
+        dict.lookup<scalar>("minFaceWeight", true)
     );
     const scalar minVolRatio
     (
-        readScalar(dict.lookup("minVolRatio", true))
+        dict.lookup<scalar>("minVolRatio", true)
     );
     const scalar minTwist
     (
-        readScalar(dict.lookup("minTwist", true))
+        dict.lookup<scalar>("minTwist", true)
     );
     const scalar minTriangleTwist
     (
-        readScalar(dict.lookup("minTriangleTwist", true))
+        dict.lookup<scalar>("minTriangleTwist", true)
     );
     scalar minFaceFlatness = -1.0;
     dict.readIfPresent("minFaceFlatness", minFaceFlatness, true);
     const scalar minDet
     (
-        readScalar(dict.lookup("minDeterminant", true))
+        dict.lookup<scalar>("minDeterminant", true)
     );
 
     label nWrongFaces = 0;
 
     Info<< "Checking faces in error :" << endl;
-    //Pout.setf(ios_base::left);
+    // Pout.setf(ios_base::left);
 
     if (maxNonOrtho < 180.0-small)
     {
@@ -619,7 +619,7 @@ bool Foam::motionSmootherAlgo::checkMesh
 
     //- Note: cannot check the skewness without the points and don't want
     //  to store them on polyMeshGeometry.
-    //if (maxIntSkew > 0 || maxBounSkew > 0)
+    // if (maxIntSkew > 0 || maxBounSkew > 0)
     //{
     //    meshGeom.checkFaceSkewness
     //    (
@@ -685,7 +685,7 @@ bool Foam::motionSmootherAlgo::checkMesh
 
     if (minTwist > -1)
     {
-        //Pout<< "Checking face twist: dot product of face normal "
+        // Pout<< "Checking face twist: dot product of face normal "
         //    << "with face triangle normals" << endl;
         meshGeom.checkFaceTwist
         (
@@ -708,7 +708,7 @@ bool Foam::motionSmootherAlgo::checkMesh
 
     if (minTriangleTwist > -1)
     {
-        //Pout<< "Checking triangle twist: dot product of consecutive triangle"
+        // Pout<< "Checking triangle twist: dot product of consecutive triangle"
         //    << " normals resulting from face-centre decomposition" << endl;
         meshGeom.checkTriangleTwist
         (
@@ -770,7 +770,7 @@ bool Foam::motionSmootherAlgo::checkMesh
         nWrongFaces = nNewWrongFaces;
     }
 
-    //Pout.setf(ios_base::right);
+    // Pout.setf(ios_base::right);
 
     return nWrongFaces > 0;
 }

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -124,8 +124,8 @@ Foam::tabulatedWallFunctions::SpaldingsLaw::SpaldingsLaw
 )
 :
     tabulatedWallFunction(dict, mesh, typeName),
-    kappa_(readScalar(coeffDict_.lookup("kappa"))),
-    E_(readScalar(coeffDict_.lookup("E")))
+    kappa_(coeffDict_.lookup<scalar>("kappa")),
+    E_(coeffDict_.lookup<scalar>("E"))
 {
     invertFunction();
 

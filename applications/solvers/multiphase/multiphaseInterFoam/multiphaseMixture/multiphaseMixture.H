@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -131,7 +131,7 @@ public:
 
 private:
 
-    // Private data
+    // Private Data
 
         //- Dictionary of phases
         PtrDictionary<phase> phases_;
@@ -154,11 +154,8 @@ private:
         //- Stabilisation for normalisation of the interface normal
         const dimensionedScalar deltaN_;
 
-        //- Conversion factor for degrees into radians
-        static const scalar convertToRad;
 
-
-    // Private member functions
+    // Private Member Functions
 
         void calcAlphas();
 

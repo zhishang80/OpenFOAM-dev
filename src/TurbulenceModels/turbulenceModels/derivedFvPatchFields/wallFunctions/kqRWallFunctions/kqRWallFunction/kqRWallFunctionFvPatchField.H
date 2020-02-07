@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::kqRWallFunctionFvPatchField
-
-Group
-    grpWallFunctions
 
 Description
     This boundary condition provides a suitable condition for turbulence
@@ -71,12 +68,6 @@ class kqRWallFunctionFvPatchField
     public zeroGradientFvPatchField<Type>
 {
 
-    // Private Member Functions
-
-        //- Check the type of the patch
-        void checkType();
-
-
 public:
 
     //- Runtime type information
@@ -111,7 +102,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         kqRWallFunctionFvPatchField
         (
             const kqRWallFunctionFvPatchField&
@@ -126,7 +117,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         kqRWallFunctionFvPatchField
         (
             const kqRWallFunctionFvPatchField&,
@@ -146,7 +137,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         //- Evaluate the patchField
         virtual void evaluate

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -32,8 +32,8 @@ template<class EquationOfState>
 Foam::eConstThermo<EquationOfState>::eConstThermo(const dictionary& dict)
 :
     EquationOfState(dict),
-    Cv_(readScalar(dict.subDict("thermodynamics").lookup("Cv"))),
-    Hf_(readScalar(dict.subDict("thermodynamics").lookup("Hf")))
+    Cv_(dict.subDict("thermodynamics").lookup<scalar>("Cv")),
+    Hf_(dict.subDict("thermodynamics").lookup<scalar>("Hf"))
 {}
 
 

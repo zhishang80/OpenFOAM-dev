@@ -1,3 +1,3 @@
-#include "readTimeControls.H"
+#include "readDyMControls.H"
 
-maxAcousticCo = readScalar(runTime.controlDict().lookup("maxAcousticCo"));
+maxAcousticCo = runTime.controlDict().lookup<scalar>("maxAcousticCo");

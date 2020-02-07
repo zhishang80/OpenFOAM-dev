@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,9 +24,6 @@ License
 Class
     Foam::codedFixedValueFvPatchField
 
-Group
-    grpGenericBoundaryConditions
-
 Description
     Constructs on-the-fly a new boundary condition (derived from
     fixedValueFvPatchField) which is then used to evaluate.
@@ -45,12 +42,12 @@ Usage
             operator==(min(10, 0.1*this->db().time().value()));
         #};
 
-        //codeInclude
+        // codeInclude
         //#{
         //    #include "fvCFD.H"
         //#};
 
-        //codeOptions
+        // codeOptions
         //#{
         //    -I$(LIB_SRC)/finiteVolume/lnInclude
         //#};
@@ -84,17 +81,24 @@ SourceFiles
 #define codedFixedValueFvPatchField_H
 
 #include "fixedValueFvPatchFields.H"
-#include "codedBase.H"
+#include "CodedBase.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
 {
 
-// Forward declaration of classes
-class dynamicCode;
-class dynamicCodeContext;
-class IOdictionary;
+/*---------------------------------------------------------------------------*\
+              Class codedFixedValueFvPatchFieldBase Declaration
+\*---------------------------------------------------------------------------*/
+
+class codedFixedValueFvPatchFieldBase
+{
+public:
+
+    ClassNameNoDebug("fixedValueFvPatchField");
+};
+
 
 /*---------------------------------------------------------------------------*\
                  Class codedFixedValueFvPatchField Declaration
@@ -104,51 +108,23 @@ template<class Type>
 class codedFixedValueFvPatchField
 :
     public fixedValueFvPatchField<Type>,
-    public codedBase
+    public CodedBase<codedFixedValueFvPatchFieldBase>
 {
-    // Private data
-
-        //- Dictionary contents for the boundary condition
-        const dictionary dict_;
-
-        const word name_;
+    // Private Data
 
         mutable autoPtr<fvPatchField<Type>> redirectPatchFieldPtr_;
 
 
     // Private Member Functions
 
-        const IOdictionary& dict() const;
-
-        //- Set the rewrite vars controlling the Type
-        static void setFieldTemplates(dynamicCode& dynCode);
-
-        //- Get the loaded dynamic libraries
-        virtual dlLibraryTable& libs() const;
-
         //- Adapt the context for the current object
         virtual void prepare(dynamicCode&, const dynamicCodeContext&) const;
 
-        // Return a description (type + name) for the output
-        virtual string description() const;
-
-        // Clear the ptr to the redirected object
+        //- Clear the ptr to the redirected object
         virtual void clearRedirect() const;
-
-        // Get the dictionary to initialize the codeContext
-        virtual const dictionary& codeDict() const;
 
 
 public:
-
-    // Static data members
-
-        //- Name of the C code template to be used
-        static const word codeTemplateC;
-
-        //- Name of the H code template to be used
-        static const word codeTemplateH;
-
 
     //- Runtime type information
     TypeName("codedFixedValue");
@@ -181,7 +157,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         codedFixedValueFvPatchField
         (
             const codedFixedValueFvPatchField<Type>&
@@ -196,7 +172,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         codedFixedValueFvPatchField
         (
             const codedFixedValueFvPatchField<Type>&,
@@ -216,7 +192,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         //- Get reference to the underlying patch
         const fvPatchField<Type>& redirectPatchField() const;

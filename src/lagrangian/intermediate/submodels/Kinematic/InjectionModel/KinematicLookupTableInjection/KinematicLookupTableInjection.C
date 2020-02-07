@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -38,10 +38,10 @@ Foam::KinematicLookupTableInjection<CloudType>::KinematicLookupTableInjection
 :
     InjectionModel<CloudType>(dict, owner, modelName, typeName),
     inputFileName_(this->coeffDict().lookup("inputFile")),
-    duration_(readScalar(this->coeffDict().lookup("duration"))),
+    duration_(this->coeffDict().template lookup<scalar>("duration")),
     parcelsPerSecond_
     (
-        readScalar(this->coeffDict().lookup("parcelsPerSecond"))
+        this->coeffDict().template lookup<scalar>("parcelsPerSecond")
     ),
     randomise_(readBool(this->coeffDict().lookup("randomise"))),
     injectors_
@@ -182,8 +182,8 @@ void Foam::KinematicLookupTableInjection<CloudType>::setPositionAndCell
     label injectorI = 0;
     if (randomise_)
     {
-        cachedRandom& rnd = this->owner().rndGen();
-        injectorI = rnd.position<label>(0, injectorCells_.size() - 1);
+        Random& rnd = this->owner().rndGen();
+        injectorI = rnd.sampleAB<label>(0, injectorCells_.size());
     }
     else
     {

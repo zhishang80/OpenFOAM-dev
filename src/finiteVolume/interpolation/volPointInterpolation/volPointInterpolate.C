@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -222,13 +222,10 @@ void Foam::volPointInterpolation::interpolateBoundaryField
     tmp<Field<Type>> tboundaryVals(flatBoundaryField(vf));
     const Field<Type>& boundaryVals = tboundaryVals();
 
-
     // Do points on 'normal' patches from the surrounding patch faces
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     forAll(boundary.meshPoints(), i)
     {
-        label pointi = boundary.meshPoints()[i];
+        const label pointi = boundary.meshPoints()[i];
 
         if (isPatchPoint_[pointi])
         {
@@ -258,6 +255,74 @@ void Foam::volPointInterpolation::interpolateBoundaryField
     // a coupled point to have its master on a different patch so
     // to make sure just push master data to slaves.
     pushUntransformedData(pfi);
+
+
+    // Detect whether the field has overridden constraint patch types. If not,
+    // we are done, so return.
+    bool havePatchTypes = false;
+    wordList patchTypes(pf.boundaryField().size(), word::null);
+    forAll(pf.boundaryField(), patchi)
+    {
+        const word patchType = pf.boundaryField()[patchi].patchType();
+        if (patchType != word::null)
+        {
+            havePatchTypes = true;
+            patchTypes[patchi] = patchType;
+        }
+    }
+    if (!havePatchTypes)
+    {
+        return;
+    }
+
+    // If the patch types have been overridden than we need to re-normalise the
+    // boundary points weights. Re-calculate the weight sum.
+    pointScalarField psw
+    (
+        IOobject
+        (
+            "volPointSumWeights",
+            mesh().polyMesh::instance(),
+            mesh()
+        ),
+        pointMesh::New(mesh()),
+        dimensionedScalar(dimless, 0),
+        wordList
+        (
+            pf.boundaryField().size(),
+            calculatedPointPatchField<scalar>::typeName
+        ),
+        patchTypes
+    );
+
+    scalarField& pswi = psw.primitiveFieldRef();
+
+    forAll(boundary.meshPoints(), i)
+    {
+        const label pointi = boundary.meshPoints()[i];
+
+        if (isPatchPoint_[pointi])
+        {
+            pswi[pointi] = sum(boundaryPointWeights_[i]);
+        }
+    }
+
+    pointConstraints::syncUntransformedData(mesh(), pswi, plusEqOp<scalar>());
+
+    addSeparated(psw);
+
+    pushUntransformedData(pswi);
+
+    // Apply the new weight sum to the result to re-normalise it
+    forAll(boundary.meshPoints(), i)
+    {
+        const label pointi = boundary.meshPoints()[i];
+
+        if (isPatchPoint_[pointi])
+        {
+            pfi[pointi] /= pswi[pointi];
+        }
+    }
 }
 
 
@@ -314,14 +379,9 @@ Foam::volPointInterpolation::interpolate
     // Construct tmp<pointField>
     tmp<GeometricField<Type, pointPatchField, pointMesh>> tpf
     (
-        new GeometricField<Type, pointPatchField, pointMesh>
+        GeometricField<Type, pointPatchField, pointMesh>::New
         (
-            IOobject
-            (
-                "volPointInterpolate(" + vf.name() + ')',
-                vf.instance(),
-                pm.thisDb()
-            ),
+            "volPointInterpolate(" + vf.name() + ')',
             pm,
             vf.dimensions(),
             patchFieldTypes
@@ -389,14 +449,9 @@ Foam::volPointInterpolation::interpolate
 
         tmp<GeometricField<Type, pointPatchField, pointMesh>> tpf
         (
-            new GeometricField<Type, pointPatchField, pointMesh>
+            GeometricField<Type, pointPatchField, pointMesh>::New
             (
-                IOobject
-                (
-                    name,
-                    vf.instance(),
-                    pm.thisDb()
-                ),
+                name,
                 pm,
                 vf.dimensions()
             )
@@ -424,7 +479,7 @@ Foam::volPointInterpolation::interpolate
                     name
                 );
 
-            if (pf.upToDate(vf))    //TBD: , vf.mesh().points()))
+            if (pf.upToDate(vf))    // TBD: , vf.mesh().points()))
             {
                 solution::cachePrintMessage("Reusing", name, vf);
                 return pf;

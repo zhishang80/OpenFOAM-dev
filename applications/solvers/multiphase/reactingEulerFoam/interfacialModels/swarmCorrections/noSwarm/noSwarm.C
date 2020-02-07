@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -63,21 +63,12 @@ Foam::tmp<Foam::volScalarField> Foam::swarmCorrections::noSwarm::Cs() const
 {
     const fvMesh& mesh(this->pair_.phase1().mesh());
 
-    return
-        tmp<volScalarField>
-        (
-            new volScalarField
-            (
-                IOobject
-                (
-                    "one",
-                    mesh.time().timeName(),
-                    mesh
-                ),
-                mesh,
-                dimensionedScalar("one", dimless, 1)
-            )
-        );
+    return volScalarField::New
+    (
+        "Cs",
+        mesh,
+        dimensionedScalar(dimless, 1)
+    );
 }
 
 

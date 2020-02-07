@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -122,7 +122,7 @@ void Foam::rotatingTotalPressureFvPatchScalarField::updateCoeffs()
 void Foam::rotatingTotalPressureFvPatchScalarField::write(Ostream& os) const
 {
     totalPressureFvPatchScalarField::write(os);
-    omega_->writeData(os);
+    writeEntry(os, omega_());
 }
 
 

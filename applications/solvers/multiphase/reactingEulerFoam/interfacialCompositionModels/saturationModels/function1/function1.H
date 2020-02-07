@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -52,16 +52,16 @@ Description
 
     \verbatim
         type function1;
-
-        function csvFile;
+        function tableFile;
         functionCoeffs
         {
+            file                "filename.csv";
+            format              csv;
             nHeaderLine         1;
             refColumn           0;
             componentColumns    (1);
             separator           ",";
             mergeSeparators     no;
-            file                "filename.csv";
             outOfBounds         clamp;
             interpolationScheme linear;
         };
@@ -93,7 +93,7 @@ class function1
 :
     public saturationModel
 {
-    // Private data
+    // Private Data
 
         //- Saturation temperature as a function of pressure
         autoPtr<Function1<scalar>> function_;
@@ -107,7 +107,7 @@ public:
     // Constructors
 
         //- Construct from a dictionary
-        function1(const dictionary& dict, const objectRegistry& db);
+        function1(const dictionary& dict, const phasePair& pair);
 
 
     //- Destructor
@@ -119,7 +119,7 @@ public:
         //- Saturation pressure
         virtual tmp<volScalarField> pSat(const volScalarField& T) const;
 
-        //- Saturation pressure derivetive w.r.t. temperature
+        //- Saturation pressure derivative w.r.t. temperature
         virtual tmp<volScalarField> pSatPrime(const volScalarField& T) const;
 
         //- Natural log of the saturation pressure

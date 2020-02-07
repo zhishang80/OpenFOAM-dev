@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -51,7 +51,7 @@ Foam::displacementComponentLaplacianFvMotionSolver::
 displacementComponentLaplacianFvMotionSolver
 (
     const polyMesh& mesh,
-    const IOdictionary& dict
+    const dictionary& dict
 )
 :
     componentDisplacementMotionSolver(mesh, dict, type()),
@@ -67,12 +67,7 @@ displacementComponentLaplacianFvMotionSolver
             IOobject::AUTO_WRITE
         ),
         fvMesh_,
-        dimensionedScalar
-        (
-            "cellDisplacement",
-            pointDisplacement_.dimensions(),
-            0
-        ),
+        dimensionedScalar(pointDisplacement_.dimensions(), 0),
         cellMotionBoundaryTypes<scalar>(pointDisplacement_.boundaryField())
     ),
     pointLocation_(nullptr),
@@ -114,7 +109,7 @@ displacementComponentLaplacianFvMotionSolver
             )
         );
 
-        //if (debug)
+        // if (debug)
         {
             Info<< "displacementComponentLaplacianFvMotionSolver :"
                 << " Read pointVectorField "

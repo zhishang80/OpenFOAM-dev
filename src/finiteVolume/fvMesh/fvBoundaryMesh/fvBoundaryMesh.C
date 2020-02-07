@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -108,6 +108,17 @@ void Foam::fvBoundaryMesh::movePoints()
     {
         operator[](patchi).movePoints();
     }
+}
+
+
+void Foam::fvBoundaryMesh::shuffle
+(
+    const labelUList& newToOld,
+    const bool validBoundary
+)
+{
+    fvPatchList& patches = *this;
+    patches.shuffle(newToOld);
 }
 
 

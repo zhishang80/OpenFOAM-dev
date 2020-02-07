@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -37,7 +37,8 @@ freestreamPressureFvPatchScalarField
 )
 :
     mixedFvPatchScalarField(p, iF),
-    UName_("U")
+    UName_("U"),
+    supersonic_(false)
 {}
 
 
@@ -50,7 +51,11 @@ freestreamPressureFvPatchScalarField
 )
 :
     mixedFvPatchScalarField(p, iF),
-    UName_(dict.lookupOrDefault<word>("U", "U"))
+    UName_(dict.lookupOrDefault<word>("U", "U")),
+    supersonic_
+    (
+        dict.lookupOrDefault<Switch>("supersonic", false)
+    )
 {
     freestreamValue() = scalarField("freestreamValue", dict, p.size());
 
@@ -74,37 +79,40 @@ freestreamPressureFvPatchScalarField
 Foam::freestreamPressureFvPatchScalarField::
 freestreamPressureFvPatchScalarField
 (
-    const freestreamPressureFvPatchScalarField& ptf,
+    const freestreamPressureFvPatchScalarField& psf,
     const fvPatch& p,
     const DimensionedField<scalar, volMesh>& iF,
     const fvPatchFieldMapper& mapper
 )
 :
-    mixedFvPatchScalarField(ptf, p, iF, mapper),
-    UName_(ptf.UName_)
+    mixedFvPatchScalarField(psf, p, iF, mapper),
+    UName_(psf.UName_),
+    supersonic_(psf.supersonic_)
 {}
 
 
 Foam::freestreamPressureFvPatchScalarField::
 freestreamPressureFvPatchScalarField
 (
-    const freestreamPressureFvPatchScalarField& wbppsf
+    const freestreamPressureFvPatchScalarField& psf
 )
 :
-    mixedFvPatchScalarField(wbppsf),
-    UName_(wbppsf.UName_)
+    mixedFvPatchScalarField(psf),
+    UName_(psf.UName_),
+    supersonic_(psf.supersonic_)
 {}
 
 
 Foam::freestreamPressureFvPatchScalarField::
 freestreamPressureFvPatchScalarField
 (
-    const freestreamPressureFvPatchScalarField& wbppsf,
+    const freestreamPressureFvPatchScalarField& psf,
     const DimensionedField<scalar, volMesh>& iF
 )
 :
-    mixedFvPatchScalarField(wbppsf, iF),
-    UName_(wbppsf.UName_)
+    mixedFvPatchScalarField(psf, iF),
+    UName_(psf.UName_),
+    supersonic_(psf.supersonic_)
 {}
 
 
@@ -123,7 +131,40 @@ void Foam::freestreamPressureFvPatchScalarField::updateCoeffs()
             UName_
         );
 
-    valueFraction() = 0.5 + 0.5*(Up & patch().nf())/mag(Up);
+    const Field<scalar> magUp(mag(Up));
+
+    const Field<vector> nf(patch().nf());
+
+    Field<scalar>& vf = valueFraction();
+
+    if (supersonic_)
+    {
+        forAll(vf, i)
+        {
+            if (magUp[i] > vSmall)
+            {
+                vf[i] = 0.5 - 0.5*(Up[i] & nf[i])/magUp[i];
+            }
+            else
+            {
+                vf[i] = 0.5;
+            }
+        }
+    }
+    else
+    {
+        forAll(vf, i)
+        {
+            if (magUp[i] > vSmall)
+            {
+                vf[i] = 0.5 + 0.5*(Up[i] & nf[i])/magUp[i];
+            }
+            else
+            {
+                vf[i] = 0.5;
+            }
+        }
+    }
 
     mixedFvPatchField<scalar>::updateCoeffs();
 }
@@ -133,8 +174,9 @@ void Foam::freestreamPressureFvPatchScalarField::write(Ostream& os) const
 {
     fvPatchScalarField::write(os);
     writeEntryIfDifferent<word>(os, "U", "U", UName_);
-    freestreamValue().writeEntry("freestreamValue", os);
-    writeEntry("value", os);
+    writeEntry(os, "freestreamValue", freestreamValue());
+    writeEntry(os, "supersonic", supersonic_);
+    writeEntry(os, "value", *this);
 }
 
 

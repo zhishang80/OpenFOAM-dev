@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -37,8 +37,6 @@ bool Foam::functionObjects::randomise::calcRandomised()
     {
         const VolFieldType& field = lookupObject<VolFieldType>(fieldName_);
 
-        resultName_ = fieldName_ + "Random";
-
         tmp<VolFieldType> rfieldt(new VolFieldType(field));
         VolFieldType& rfield = rfieldt.ref();
 
@@ -46,8 +44,7 @@ bool Foam::functionObjects::randomise::calcRandomised()
 
         forAll(field, celli)
         {
-            Type rndPert;
-            rand.randomise(rndPert);
+            Type rndPert = rand.sample01<Type>();
             rndPert = 2.0*rndPert - pTraits<Type>::one;
             rndPert /= mag(rndPert);
             rfield[celli] += magPerturbation_*rndPert;

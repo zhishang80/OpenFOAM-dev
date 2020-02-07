@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -1018,11 +1018,11 @@ Foam::faceList Foam::intersectedSurface::splitFace
             break;
         }
 
-        //Pout<< "splitFace: starting walk from edge:" << startEdgeI
+        // Pout<< "splitFace: starting walk from edge:" << startEdgeI
         //    << ' ' << edges[startEdgeI] << " vertex:" << startVertI << endl;
 
         //// Print current visited state.
-        //printVisit(eSurf.edges(), fEdges, visited);
+        // printVisit(eSurf.edges(), fEdges, visited);
 
         //{
         //    Pout<< "Writing face:" << facei << " to face.obj" << endl;
@@ -1114,7 +1114,7 @@ Foam::faceList Foam::intersectedSurface::splitFace
         }
     }
 
-    return faces;
+    return move(faces);
 }
 
 

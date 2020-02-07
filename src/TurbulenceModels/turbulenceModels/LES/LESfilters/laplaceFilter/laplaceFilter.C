@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -53,7 +53,7 @@ Foam::laplaceFilter::laplaceFilter(const fvMesh& mesh, scalar widthCoeff)
             mesh
         ),
         mesh,
-        dimensionedScalar("zero", dimLength*dimLength, 0),
+        dimensionedScalar(dimLength*dimLength, 0),
         calculatedFvPatchScalarField::typeName
     )
 {
@@ -66,7 +66,7 @@ Foam::laplaceFilter::laplaceFilter(const fvMesh& mesh, const dictionary& bd)
     LESfilter(mesh),
     widthCoeff_
     (
-        readScalar(bd.optionalSubDict(type() + "Coeffs").lookup("widthCoeff"))
+        bd.optionalSubDict(type() + "Coeffs").lookup<scalar>("widthCoeff")
     ),
     coeff_
     (
@@ -77,7 +77,7 @@ Foam::laplaceFilter::laplaceFilter(const fvMesh& mesh, const dictionary& bd)
             mesh
         ),
         mesh,
-        dimensionedScalar("zero", dimLength*dimLength, 0),
+        dimensionedScalar(dimLength*dimLength, 0),
         calculatedFvPatchScalarField::typeName
     )
 {

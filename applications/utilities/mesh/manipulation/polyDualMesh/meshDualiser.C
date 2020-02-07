@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -270,10 +270,10 @@ Foam::label Foam::meshDualiser::addInternalFace
             zoneFlip        // zoneFlip
         );
 
-        //pointField dualPoints(meshMod.points());
-        //vector n(newFace.normal(dualPoints));
-        //n /= mag(n);
-        //Pout<< "Generated internal dualFace:" << dualFacei
+        // pointField dualPoints(meshMod.points());
+        // vector n(newFace.normal(dualPoints));
+        // n /= mag(n);
+        // Pout<< "Generated internal dualFace:" << dualFacei
         //    << " verts:" << newFace
         //    << " points:" << UIndirectList<point>(meshMod.points(), newFace)()
         //    << " n:" << n
@@ -297,10 +297,10 @@ Foam::label Foam::meshDualiser::addInternalFace
             zoneFlip        // zoneFlip
         );
 
-        //pointField dualPoints(meshMod.points());
-        //vector n(newFace.normal(dualPoints));
-        //n /= mag(n);
-        //Pout<< "Generated internal dualFace:" << dualFacei
+        // pointField dualPoints(meshMod.points());
+        // vector n(newFace.normal(dualPoints));
+        // n /= mag(n);
+        // Pout<< "Generated internal dualFace:" << dualFacei
         //    << " verts:" << newFace
         //    << " points:" << UIndirectList<point>(meshMod.points(), newFace)()
         //    << " n:" << n
@@ -354,10 +354,10 @@ Foam::label Foam::meshDualiser::addBoundaryFace
         zoneFlip        // zoneFlip
     );
 
-    //pointField dualPoints(meshMod.points());
-    //vector n(newFace.normal(dualPoints));
-    //n /= mag(n);
-    //Pout<< "Generated boundary dualFace:" << dualFacei
+    // pointField dualPoints(meshMod.points());
+    // vector n(newFace.normal(dualPoints));
+    // n /= mag(n);
+    // Pout<< "Generated boundary dualFace:" << dualFacei
     //    << " verts:" << newFace
     //    << " points:" << UIndirectList<point>(meshMod.points(), newFace)()
     //    << " n:" << n
@@ -404,7 +404,7 @@ void Foam::meshDualiser::createFacesAroundEdge
     bool edgeOrder = ie.sameOrder(e[0], e[1]);
     label startFaceLabel = ie.faceLabel();
 
-    //Pout<< "At edge:" << edgeI << " verts:" << e
+    // Pout<< "At edge:" << edgeI << " verts:" << e
     //    << " points:" << mesh_.points()[e[0]] << mesh_.points()[e[1]]
     //    << " started walking at face:" << ie.faceLabel()
     //    << " verts:" << mesh_.faces()[ie.faceLabel()]
@@ -552,7 +552,7 @@ void Foam::meshDualiser::createFaceFromInternalFace
     label own = mesh_.faceOwner()[facei];
     label nei = mesh_.faceNeighbour()[facei];
 
-    //Pout<< "createFaceFromInternalFace : At face:" << facei
+    // Pout<< "createFaceFromInternalFace : At face:" << facei
     //    << " verts:" << f
     //    << " points:" << UIndirectList<point>(mesh_.points(), f)()
     //    << " started walking at edge:" << fEdges[fp]
@@ -735,13 +735,13 @@ void Foam::meshDualiser::createFacesAroundBoundaryPoint
 
         label dualCelli = findDualCell(own[facei], pointi);
 
-        //Bit dodgy: create dualface from the last face (instead of from
+        // Bit dodgy: create dualface from the last face (instead of from
         // the central point). This will also use the original faceZone to
         // put the new face (which might span multiple original faces) in.
 
         addBoundaryFace
         (
-            //pointi,     // masterPointi
+            // pointi,     // masterPointi
             -1,         // masterPointi
             -1,         // masterEdgeI
             facei,      // masterFacei
@@ -1030,11 +1030,11 @@ void Foam::meshDualiser::setRefinement
         pointToDualCells_[pointi].setSize(1);
         pointToDualCells_[pointi][0] = meshMod.addCell
         (
-            pointi, //masterPointID,
-            -1,     //masterEdgeID,
-            -1,     //masterFaceID,
-            -1,     //masterCellID,
-            -1      //zoneID
+            pointi, // masterPointID,
+            -1,     // masterEdgeID,
+            -1,     // masterFaceID,
+            -1,     // masterCellID,
+            -1      // zoneID
         );
         if (dualCcStr.valid())
         {
@@ -1074,11 +1074,11 @@ void Foam::meshDualiser::setRefinement
         {
             pointToDualCells_[pointi][pCelli] = meshMod.addCell
             (
-                pointi,                                     //masterPointID
-                -1,                                         //masterEdgeID
-                -1,                                         //masterFaceID
-                -1,                                         //masterCellID
-                mesh_.cellZones().whichZone(pCells[pCelli]) //zoneID
+                pointi,                                     // masterPointID
+                -1,                                         // masterEdgeID
+                -1,                                         // masterFaceID
+                -1,                                         // masterCellID
+                mesh_.cellZones().whichZone(pCells[pCelli]) // zoneID
             );
             if (dualCcStr.valid())
             {
@@ -1098,11 +1098,11 @@ void Foam::meshDualiser::setRefinement
             pointToDualCells_[pointi].setSize(1);
             pointToDualCells_[pointi][0] = meshMod.addCell
             (
-                pointi, //masterPointID,
-                -1,     //masterEdgeID,
-                -1,     //masterFaceID,
-                -1,     //masterCellID,
-                -1      //zoneID
+                pointi, // masterPointID,
+                -1,     // masterEdgeID,
+                -1,     // masterFaceID,
+                -1,     // masterCellID,
+                -1      // zoneID
             );
 
             if (dualCcStr.valid())
@@ -1142,7 +1142,7 @@ void Foam::meshDualiser::setRefinement
         );
     }
     // Detect whether different dual cells on either side of a face. This
-    // would neccesitate having a dual face built from the face and thus a
+    // would necessitate having a dual face built from the face and thus a
     // dual point at the face centre.
     for (label facei = 0; facei < mesh_.nInternalFaces(); facei++)
     {
@@ -1189,7 +1189,7 @@ void Foam::meshDualiser::setRefinement
     }
 
     // Detect whether different dual cells on either side of an edge. This
-    // would neccesitate having a dual face built perpendicular to the edge
+    // would necessitate having a dual face built perpendicular to the edge
     // and thus a dual point at the mid of the edge.
     // Note: not really true - the face can be built without the edge centre!
     const labelListList& edgeCells = mesh_.edgeCells();
@@ -1301,7 +1301,7 @@ void Foam::meshDualiser::setRefinement
 
                 label startFacei = eFaces[i];
 
-                //Pout<< "Walking edge:" << edgeI
+                // Pout<< "Walking edge:" << edgeI
                 //    << " points:" << mesh_.points()[e[0]]
                 //    << mesh_.points()[e[1]]
                 //    << " startFace:" << startFacei
@@ -1409,7 +1409,7 @@ void Foam::meshDualiser::setRefinement
                     // Starting face
                     label startFacei = pp.start()+pFaces[i];
 
-                    //Pout<< "Walking around point:" << pointi
+                    // Pout<< "Walking around point:" << pointi
                     //    << " coord:" << mesh_.points()[pointi]
                     //    << " on patch:" << patchi
                     //    << " startFace:" << startFacei

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -129,7 +129,7 @@ void Foam::fixedPressureCompressibleDensityFvPatchScalarField::write
 {
     fvPatchField<scalar>::write(os);
     writeEntryIfDifferent<word>(os, "p", "p", pName_);
-    writeEntry("value", os);
+    writeEntry(os, "value", *this);
 }
 
 

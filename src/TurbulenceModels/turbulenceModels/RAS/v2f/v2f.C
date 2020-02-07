@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
+   \\    /   O peration     | Website:  https://openfoam.org
     \\  /    A nd           | Copyright (C) 2012-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
@@ -230,8 +230,8 @@ v2f<BasicTurbulenceModel>::v2f
         ),
         this->mesh_
     ),
-    v2Min_(dimensionedScalar("v2Min", v2_.dimensions(), small)),
-    fMin_(dimensionedScalar("fMin", f_.dimensions(), 0.0))
+    v2Min_(dimensionedScalar(v2_.dimensions(), small)),
+    fMin_(dimensionedScalar(f_.dimensions(), 0))
 {
     bound(k_, this->kMin_);
     bound(epsilon_, this->epsilonMin_);

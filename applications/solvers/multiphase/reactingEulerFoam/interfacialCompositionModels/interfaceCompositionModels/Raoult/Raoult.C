@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,17 +24,30 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "Raoult.H"
+#include "phasePair.H"
+#include "addToRunTimeSelectionTable.H"
+
+// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
+
+namespace Foam
+{
+namespace interfaceCompositionModels
+{
+    defineTypeNameAndDebug(Raoult, 0);
+    addToRunTimeSelectionTable(interfaceCompositionModel, Raoult, dictionary);
+}
+}
+
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-template<class Thermo, class OtherThermo>
-Foam::interfaceCompositionModels::Raoult<Thermo, OtherThermo>::Raoult
+Foam::interfaceCompositionModels::Raoult::Raoult
 (
     const dictionary& dict,
     const phasePair& pair
 )
 :
-    InterfaceCompositionModel<Thermo, OtherThermo>(dict, pair),
+    interfaceCompositionModel(dict, pair),
     YNonVapour_
     (
         IOobject
@@ -44,7 +57,7 @@ Foam::interfaceCompositionModels::Raoult<Thermo, OtherThermo>::Raoult
             pair.phase1().mesh()
         ),
         pair.phase1().mesh(),
-        dimensionedScalar("one", dimless, 1)
+        dimensionedScalar(dimless, 1)
     ),
     YNonVapourPrime_
     (
@@ -55,10 +68,10 @@ Foam::interfaceCompositionModels::Raoult<Thermo, OtherThermo>::Raoult
             pair.phase1().mesh()
         ),
         pair.phase1().mesh(),
-        dimensionedScalar("zero", dimless/dimTemperature, 0)
+        dimensionedScalar(dimless/dimTemperature, 0)
     )
 {
-    forAllConstIter(hashedWordList, this->speciesNames_, iter)
+    forAllConstIter(hashedWordList, species(), iter)
     {
         speciesModels_.insert
         (
@@ -78,18 +91,13 @@ Foam::interfaceCompositionModels::Raoult<Thermo, OtherThermo>::Raoult
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
-template<class Thermo, class OtherThermo>
-Foam::interfaceCompositionModels::Raoult<Thermo, OtherThermo>::~Raoult()
+Foam::interfaceCompositionModels::Raoult::~Raoult()
 {}
 
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
-template<class Thermo, class OtherThermo>
-void Foam::interfaceCompositionModels::Raoult<Thermo, OtherThermo>::update
-(
-    const volScalarField& Tf
-)
+void Foam::interfaceCompositionModels::Raoult::update(const volScalarField& Tf)
 {
     YNonVapour_ = scalar(1);
 
@@ -103,58 +111,51 @@ void Foam::interfaceCompositionModels::Raoult<Thermo, OtherThermo>::update
         iter()->update(Tf);
 
         YNonVapour_ -=
-            this->otherThermo_.composition().Y(iter.key())
+            otherComposition().Y(iter.key())
            *iter()->Yf(iter.key(), Tf);
 
         YNonVapourPrime_ -=
-            this->otherThermo_.composition().Y(iter.key())
+            otherComposition().Y(iter.key())
            *iter()->YfPrime(iter.key(), Tf);
     }
 }
 
 
-template<class Thermo, class OtherThermo>
-Foam::tmp<Foam::volScalarField>
-Foam::interfaceCompositionModels::Raoult<Thermo, OtherThermo>::Yf
+Foam::tmp<Foam::volScalarField> Foam::interfaceCompositionModels::Raoult::Yf
 (
     const word& speciesName,
     const volScalarField& Tf
 ) const
 {
-    if (this->speciesNames_.contains(speciesName))
+    if (species().contains(speciesName))
     {
         return
-             this->otherThermo_.composition().Y(speciesName)
+             otherComposition().Y(speciesName)
             *speciesModels_[speciesName]->Yf(speciesName, Tf);
     }
     else
     {
-        return
-             this->thermo_.composition().Y(speciesName)
-            *YNonVapour_;
+        return composition().Y(speciesName)*YNonVapour_;
     }
 }
 
 
-template<class Thermo, class OtherThermo>
 Foam::tmp<Foam::volScalarField>
-Foam::interfaceCompositionModels::Raoult<Thermo, OtherThermo>::YfPrime
+Foam::interfaceCompositionModels::Raoult::YfPrime
 (
     const word& speciesName,
     const volScalarField& Tf
 ) const
 {
-    if (this->speciesNames_.contains(speciesName))
+    if (species().contains(speciesName))
     {
         return
-             this->otherThermo_.composition().Y(speciesName)
+             otherComposition().Y(speciesName)
             *speciesModels_[speciesName]->YfPrime(speciesName, Tf);
     }
     else
     {
-        return
-            this->otherThermo_.composition().Y(speciesName)
-           *YNonVapourPrime_;
+        return composition().Y(speciesName)*YNonVapourPrime_;
     }
 }
 

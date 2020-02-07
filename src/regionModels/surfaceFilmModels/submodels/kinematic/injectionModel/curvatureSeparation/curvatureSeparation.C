@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
+   \\    /   O peration     | Website:  https://openfoam.org
     \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ tmp<volScalarField> curvatureSeparation::calcInvR1
 /*
     tmp<volScalarField> tinvR1
     (
-        new volScalarField("invR1", fvc::div(film().nHat()))
+        volScalarField::New("invR1", fvc::div(film().nHat()))
     );
 */
 
@@ -74,7 +74,7 @@ tmp<volScalarField> curvatureSeparation::calcInvR1
     volVectorField UHat(U/(mag(U) + smallU));
     tmp<volScalarField> tinvR1
     (
-        new volScalarField("invR1", UHat & (UHat & gradNHat_))
+        volScalarField::New("invR1", UHat & (UHat & gradNHat_))
     );
 
 
@@ -204,7 +204,7 @@ tmp<scalarField> curvatureSeparation::calcCosAngle
                 IOobject::NO_READ
             ),
             mesh,
-            dimensionedScalar("zero", dimless, 0.0),
+            dimensionedScalar(dimless, 0),
             zeroGradientFvPatchScalarField::typeName
         );
         volCosAngle.primitiveFieldRef() = cosAngle;
@@ -346,7 +346,7 @@ void curvatureSeparation::correct
                 IOobject::NO_READ
             ),
             mesh,
-            dimensionedScalar("zero", dimForce, 0.0),
+            dimensionedScalar(dimForce, 0),
             zeroGradientFvPatchScalarField::typeName
         );
         volFnet.primitiveFieldRef() = Fnet;

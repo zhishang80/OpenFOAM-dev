@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -36,7 +36,6 @@ License
 #include "polyTopoChange.H"
 #include "mapDistributePolyMesh.H"
 #include "Cloud.H"
-//#include "globalIndex.H"
 #include "OBJstream.H"
 #include "cellSet.H"
 #include "treeDataCell.H"
@@ -622,7 +621,7 @@ void Foam::meshRefinement::markFeatureCellLevel
 
 
 
-    //if (debug&meshRefinement::FEATURESEEDS)
+    // if (debug&meshRefinement::FEATURESEEDS)
     //{
     //    forAll(maxFeatureLevel, celli)
     //    {
@@ -809,7 +808,13 @@ Foam::label Foam::meshRefinement::markInternalRefinement
 
     // Do test to see whether cells is inside/outside shell with higher level
     labelList maxLevel;
-    shells_.findHigherLevel(testCc, testLevels, maxLevel);
+    shells_.findHigherLevel
+    (
+        testCc,
+        testLevels,
+        meshCutter().level0EdgeLength(),
+        maxLevel
+    );
 
     // Mark for refinement. Note that we didn't store the original cellID so
     // now just reloop in same order.
@@ -1669,7 +1674,7 @@ bool Foam::meshRefinement::checkProximity
 
             if (closeSurfaces)
             {
-                //Pout<< "Found gap:" << nl
+                // Pout<< "Found gap:" << nl
                 //    << "    location:" << surfaceLocation
                 //    << "\tnormal  :" << surfaceNormal << nl
                 ///    << "    location:" << cellMaxLocation
@@ -1790,7 +1795,7 @@ Foam::label Foam::meshRefinement::markProximityRefinement
         minLevel.clear();
 
         //// Extract per cell information on the surface with the highest max
-        //OBJstream str
+        // OBJstream str
         //(
         //    mesh_.time().path()
         //  / "findAllHigherIntersections_"
@@ -1798,7 +1803,7 @@ Foam::label Foam::meshRefinement::markProximityRefinement
         //  + ".obj"
         //);
         //// All intersections
-        //OBJstream str2
+        // OBJstream str2
         //(
         //    mesh_.time().path()
         //  / "findAllHigherIntersections2_"
@@ -2054,12 +2059,12 @@ Foam::labelList Foam::meshRefinement::refineCandidates
         // lots of reduces to keep count of the total number of cells selected
         // for refinement.
 
-        //scalar fraction = scalar(mesh_.nCells())/totNCells;
-        //label myMaxCells = label(maxGlobalCells*fraction);
-        //label nAllowRefine = (myMaxCells - mesh_.nCells())/7;
+        // scalar fraction = scalar(mesh_.nCells())/totNCells;
+        // label myMaxCells = label(maxGlobalCells*fraction);
+        // label nAllowRefine = (myMaxCells - mesh_.nCells())/7;
         ////label nAllowRefine = (maxLocalCells - mesh_.nCells())/7;
         //
-        //Pout<< "refineCandidates:" << nl
+        // Pout<< "refineCandidates:" << nl
         //    << "    total cells:" << totNCells << nl
         //    << "    local cells:" << mesh_.nCells() << nl
         //    << "    local fraction:" << fraction << nl
@@ -2327,8 +2332,8 @@ Foam::meshRefinement::refineAndBalance
 
             distMap = balance
             (
-                false,  //keepZoneFaces
-                false,  //keepBaffles
+                false,  // keepZoneFaces
+                false,  // keepBaffles
                 cellWeights,
                 decomposer,
                 distributor
@@ -2435,8 +2440,8 @@ Foam::meshRefinement::balanceAndRefine
 
             distMap = balance
             (
-                false,  //keepZoneFaces
-                false,  //keepBaffles
+                false,  // keepZoneFaces
+                false,  // keepBaffles
                 cellWeights,
                 decomposer,
                 distributor

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -137,7 +137,7 @@ Foam::searchableDisk::searchableDisk
     radius_(radius)
 {
     // Rough approximation of bounding box
-    //vector span(radius_, radius_, radius_);
+    // vector span(radius_, radius_, radius_);
 
     // See searchableCylinder
     vector span
@@ -162,12 +162,12 @@ Foam::searchableDisk::searchableDisk
     searchableSurface(io),
     origin_(dict.lookup("origin")),
     normal_(dict.lookup("normal")),
-    radius_(readScalar(dict.lookup("radius")))
+    radius_(dict.lookup<scalar>("radius"))
 {
     normal_ /= mag(normal_);
 
     // Rough approximation of bounding box
-    //vector span(radius_, radius_, radius_);
+    // vector span(radius_, radius_, radius_);
 
     // See searchableCylinder
     vector span

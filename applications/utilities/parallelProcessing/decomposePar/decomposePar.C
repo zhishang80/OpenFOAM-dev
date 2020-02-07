@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -104,7 +104,6 @@ Usage
 #include "pointFieldDecomposer.H"
 #include "lagrangianFieldDecomposer.H"
 #include "decompositionModel.H"
-#include "collatedFileOperation.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -218,11 +217,7 @@ int main(int argc, char *argv[])
 
     argList::noParallel();
     #include "addRegionOption.H"
-    argList::addBoolOption
-    (
-        "allRegions",
-        "operate on all regions in regionProperties"
-    );
+    #include "addAllRegionsOption.H"
     argList::addBoolOption
     (
         "cellDist",
@@ -243,6 +238,11 @@ int main(int argc, char *argv[])
     (
         "fields",
         "use existing geometry decomposition and convert fields only"
+    );
+    argList::addBoolOption
+    (
+        "noFields",
+        "opposite of -fields; only decompose geometry"
     );
     argList::addBoolOption
     (
@@ -273,16 +273,32 @@ int main(int argc, char *argv[])
     #include "setRootCase.H"
 
     bool region                  = args.optionFound("region");
-    bool allRegions              = args.optionFound("allRegions");
     bool writeCellDist           = args.optionFound("cellDist");
     bool copyZero                = args.optionFound("copyZero");
     bool copyUniform             = args.optionFound("copyUniform");
     bool decomposeFieldsOnly     = args.optionFound("fields");
+    bool decomposeGeomOnly       = args.optionFound("noFields");
     bool decomposeSets           = !args.optionFound("noSets");
     bool forceOverwrite          = args.optionFound("force");
     bool ifRequiredDecomposition = args.optionFound("ifRequired");
 
     const word dictName("decomposeParDict");
+
+
+    if (decomposeGeomOnly)
+    {
+        Info<< "Skipping decomposing fields"
+            << nl << endl;
+
+        if (decomposeFieldsOnly || copyZero)
+        {
+            FatalErrorInFunction
+                << "Cannot combine geometry-only decomposition (-noFields)"
+                << " with field decomposition (-noFields or -copyZero)"
+                << exit(FatalError);
+        }
+    }
+
 
     // Set time from database
     #include "createTime.H"
@@ -310,40 +326,7 @@ int main(int argc, char *argv[])
     // Allow override of time
     instantList times = timeSelector::selectIfPresent(runTime, args);
 
-    wordList regionNames;
-    wordList regionDirs;
-    if (allRegions)
-    {
-        Info<< "Decomposing all regions in regionProperties" << nl << endl;
-        regionProperties rp(runTime);
-        forAllConstIter(HashTable<wordList>, rp, iter)
-        {
-            const wordList& regions = iter();
-            forAll(regions, i)
-            {
-                if (findIndex(regionNames, regions[i]) == -1)
-                {
-                    regionNames.append(regions[i]);
-                }
-            }
-        }
-        regionDirs = regionNames;
-    }
-    else
-    {
-        word regionName;
-        if (args.optionReadIfPresent("region", regionName))
-        {
-            regionNames = wordList(1, regionName);
-            regionDirs = regionNames;
-        }
-        else
-        {
-            regionNames = wordList(1, fvMesh::defaultRegion);
-            regionDirs = wordList(1, word::null);
-        }
-    }
-
+    const wordList regionNames(selectRegionNames(args, runTime));
 
     {
         // Determine the existing processor count directly
@@ -367,7 +350,7 @@ int main(int argc, char *argv[])
                 fileHandler().readDir
                 (
                     runTime.path(),
-                    fileName::Type::DIRECTORY
+                    fileType::directory
                 )
             );
             forAllReverse(dirs, diri)
@@ -416,7 +399,7 @@ int main(int argc, char *argv[])
     forAll(regionNames, regioni)
     {
         const word& regionName = regionNames[regioni];
-        const word& regionDir = regionDirs[regioni];
+        const word& regionDir = Foam::regionDir(regionName);
 
         Info<< "\n\nDecomposing mesh " << regionName << nl << endl;
 
@@ -449,7 +432,7 @@ int main(int argc, char *argv[])
         // Get requested numberOfSubdomains. Note: have no mesh yet so
         // cannot use decompositionModel::New
         const label nDomains =
-            readLabel(IOdictionary(dictIO).lookup("numberOfSubdomains"));
+            IOdictionary(dictIO).lookup<label>("numberOfSubdomains");
 
         // Give file handler a chance to determine the output directory
         const_cast<fileOperation&>(fileHandler()).setNProcs(nDomains);
@@ -497,12 +480,6 @@ int main(int argc, char *argv[])
         // Decompose the mesh
         if (!decomposeFieldsOnly)
         {
-            // Disable buffering when writing mesh since we need to read
-            // it later on when decomposing the fields
-            float bufSz =
-                fileOperations::collatedFileOperation::maxThreadFileBufferSize;
-            fileOperations::collatedFileOperation::maxThreadFileBufferSize = 0;
-
             mesh.decomposeMesh(dictIO.objectPath());
 
             mesh.writeDecomposition(decomposeSets);
@@ -529,7 +506,7 @@ int main(int argc, char *argv[])
                 cellDecomposition.write();
 
                 Info<< nl << "Wrote decomposition to "
-                    << cellDecomposition.objectPath()
+                    << cellDecomposition.localObjectPath()
                     << " for use in manual decomposition." << endl;
 
                 // Write as volScalarField for postprocessing.
@@ -544,7 +521,7 @@ int main(int argc, char *argv[])
                         IOobject::AUTO_WRITE
                     ),
                     mesh,
-                    dimensionedScalar("cellDist", dimless, 0)
+                    dimensionedScalar(dimless, 0)
                 );
 
                 forAll(procIds, celli)
@@ -559,8 +536,7 @@ int main(int argc, char *argv[])
                     << endl;
             }
 
-            fileOperations::collatedFileOperation::maxThreadFileBufferSize =
-                bufSz;
+            fileHandler().flush();
         }
 
 
@@ -607,7 +583,7 @@ int main(int argc, char *argv[])
                 }
             }
         }
-        else
+        else if (!decomposeGeomOnly)
         {
             // Decompose the field files
 
@@ -707,7 +683,7 @@ int main(int argc, char *argv[])
                     fileHandler().readDir
                     (
                         runTime.timePath()/cloud::prefix,
-                        fileName::DIRECTORY
+                        fileType::directory
                     )
                 );
 

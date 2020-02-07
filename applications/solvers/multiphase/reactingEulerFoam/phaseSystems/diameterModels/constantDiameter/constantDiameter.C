@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -33,14 +33,21 @@ namespace Foam
 namespace diameterModels
 {
     defineTypeNameAndDebug(constant, 0);
-
-    addToRunTimeSelectionTable
-    (
-        diameterModel,
-        constant,
-        dictionary
-    );
+    addToRunTimeSelectionTable(diameterModel, constant, dictionary);
 }
+}
+
+
+// * * * * * * * * * * * * Protected Member Functions * * * * * * * * * * * //
+
+Foam::tmp<Foam::volScalarField> Foam::diameterModels::constant::calcD() const
+{
+    return volScalarField::New
+    (
+        IOobject::groupName("d", phase().name()),
+        phase().mesh(),
+        d_
+    );
 }
 
 
@@ -52,8 +59,8 @@ Foam::diameterModels::constant::constant
     const phaseModel& phase
 )
 :
-    diameterModel(diameterProperties, phase),
-    d_("d", dimLength, diameterProperties_)
+    spherical(diameterProperties, phase),
+    d_("d", dimLength, diameterProperties)
 {}
 
 
@@ -65,30 +72,11 @@ Foam::diameterModels::constant::~constant()
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-Foam::tmp<Foam::volScalarField> Foam::diameterModels::constant::d() const
-{
-    return tmp<Foam::volScalarField>
-    (
-        new volScalarField
-        (
-            IOobject
-            (
-                "d",
-                phase_.time().timeName(),
-                phase_.mesh()
-            ),
-            phase_.mesh(),
-            d_
-        )
-    );
-}
-
-
 bool Foam::diameterModels::constant::read(const dictionary& phaseProperties)
 {
-    diameterModel::read(phaseProperties);
+    spherical::read(phaseProperties);
 
-    diameterProperties_.lookup("d") >> d_;
+    diameterProperties().lookup("d") >> d_;
 
     return true;
 }

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::RASModels::RNGkEpsilon
-
-Group
-    grpRASTurbulence
 
 Description
     Renormalization group k-epsilon turbulence model for incompressible and
@@ -89,9 +86,7 @@ class RNGkEpsilon
 {
     // Private Member Functions
 
-        // Disallow default bitwise copy construct and assignment
-        RNGkEpsilon(const RNGkEpsilon&);
-        void operator=(const RNGkEpsilon&);
+        using IOobject::modelName;
 
 
 protected:
@@ -149,6 +144,9 @@ public:
             const word& type = typeName
         );
 
+        //- Disallow default bitwise copy construction
+        RNGkEpsilon(const RNGkEpsilon&) = delete;
+
 
     //- Destructor
     virtual ~RNGkEpsilon()
@@ -163,26 +161,20 @@ public:
         //- Return the effective diffusivity for k
         tmp<volScalarField> DkEff() const
         {
-            return tmp<volScalarField>
+            return volScalarField::New
             (
-                new volScalarField
-                (
-                    "DkEff",
-                    (this->nut_/sigmak_ + this->nu())
-                )
+                "DkEff",
+                (this->nut_/sigmak_ + this->nu())
             );
         }
 
         //- Return the effective diffusivity for epsilon
         tmp<volScalarField> DepsilonEff() const
         {
-            return tmp<volScalarField>
+            return volScalarField::New
             (
-                new volScalarField
-                (
-                    "DepsilonEff",
-                    (this->nut_/sigmaEps_ + this->nu())
-                )
+                "DepsilonEff",
+                (this->nut_/sigmaEps_ + this->nu())
             );
         }
 
@@ -200,6 +192,12 @@ public:
 
         //- Solve the turbulence equations and correct the turbulence viscosity
         virtual void correct();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const RNGkEpsilon&) = delete;
 };
 
 

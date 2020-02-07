@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
+   \\    /   O peration     | Website:  https://openfoam.org
     \\  /    A nd           | Copyright (C) 2013-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
             IOobject::AUTO_WRITE
         ),
         mesh,
-        dimensionedScalar("one", dimless, 1.0),
+        dimensionedScalar(dimless, 1.0),
         zeroGradientFvPatchScalarField::typeName
     );
     Info<< "Writing one field "
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
             IOobject::AUTO_WRITE
         ),
         mesh,
-        dimensionedScalar("one", dimless, 1.0),
+        dimensionedScalar(dimless, 1.0),
         calculatedFvsPatchScalarField::typeName
     );
     Info<< "Writing surface one field "
@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
         }
 
         // Remove face
-        label candidateFacei = rndGen.integer(0, mesh.nInternalFaces()-1);
+        label candidateFacei = rndGen.sampleAB<label>(0, mesh.nInternalFaces());
         Info<< "Wanting to delete face " << mesh.faceCentres()[candidateFacei]
             << nl << endl;
 

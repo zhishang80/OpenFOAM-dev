@@ -1,11 +1,10 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
-
 License
     This file is part of OpenFOAM.
 
@@ -30,10 +29,10 @@ Description
 
     Reference:
     \verbatim
-        "Drag Coefficient and relative velocity in bubbly, droplet and
-         particulate flows",
-        Ishii, M., Zuber, N.,
-        AIChE Journal 5, Vol. 25, 1979, pp. 843-855.
+        Ishii, M., & Zuber, N. (1979).
+        Drag coefficient and relative velocity in bubbly, droplet or particulate
+        flows.
+        AIChE Journal, 25(5), 843-855.
     \endverbatim
 
 SourceFiles
@@ -50,9 +49,6 @@ SourceFiles
 
 namespace Foam
 {
-
-class phasePair;
-
 namespace dragModels
 {
 

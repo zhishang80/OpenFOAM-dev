@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -63,7 +63,7 @@ class referredWallFace
 :
     public face
 {
-    // Private data
+    // Private Data
 
         //- Points of face
         pointField pts_;
@@ -86,9 +86,6 @@ public:
             const pointField& pts,
             label patchi
         );
-
-        //- Construct as copy
-        referredWallFace(const referredWallFace&);
 
 
     //- Destructor

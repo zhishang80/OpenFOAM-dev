@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -104,7 +104,7 @@ class indexedVertex
     public Foam::indexedVertexEnum,
     public Vb
 {
-    // Private data
+    // Private Data
 
         //- Type of pair-point
         vertexType type_;
@@ -170,6 +170,8 @@ public:
         inline indexedVertex(const Point& p, Cell_handle f);
 
         inline indexedVertex(Cell_handle f);
+
+        indexedVertex(const indexedVertex& p) = default;
 
 
     // Member Functions
@@ -274,7 +276,7 @@ public:
         {
             return
             (
-                //this->point() == rhs.point()
+                // this->point() == rhs.point()
                 this->type_ == rhs.type()
              && this->index_ == rhs.index()
              && this->processor_ == rhs.procIndex()

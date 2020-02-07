@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -349,16 +349,16 @@ bool Foam::KinematicParcel<ParcelType>::move
 
         p.age() += dt;
 
-        if (p.onFace())
+        if (p.active() && p.onFace())
         {
             cloud.functions().postFace(p, ttd.keepParticle);
         }
 
         cloud.functions().postMove(p, dt, start, ttd.keepParticle);
 
-        if (p.onFace() && ttd.keepParticle)
+        if (p.active() && p.onFace() && ttd.keepParticle)
         {
-            p.hitFace(s, cloud, ttd);
+            p.hitFace(f*s - d, f, cloud, ttd);
         }
     }
 
@@ -426,21 +426,13 @@ void Foam::KinematicParcel<ParcelType>::hitWallPatch
 
 
 template<class ParcelType>
-void Foam::KinematicParcel<ParcelType>::transformProperties(const tensor& T)
-{
-    ParcelType::transformProperties(T);
-
-    U_ = transform(T, U_);
-}
-
-
-template<class ParcelType>
 void Foam::KinematicParcel<ParcelType>::transformProperties
 (
-    const vector& separation
+    const transformer& transform
 )
 {
-    ParcelType::transformProperties(separation);
+    ParcelType::transformProperties(transform);
+    U_ = transform.transform(U_);
 }
 
 

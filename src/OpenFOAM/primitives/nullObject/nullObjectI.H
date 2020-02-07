@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -27,6 +27,12 @@ template<class T>
 inline const T& Foam::NullObjectRef()
 {
     return *reinterpret_cast<const T*>(nullObjectPtr);
+}
+
+template<class T>
+inline T&& Foam::NullObjectMove()
+{
+    return move(const_cast<T&>(*reinterpret_cast<const T*>(nullObjectPtr)));
 }
 
 template<class T>

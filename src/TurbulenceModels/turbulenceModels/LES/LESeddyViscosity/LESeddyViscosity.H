@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::LESModels::LESeddyViscosity
-
-Group
-    grpLESTurbulence
 
 Description
     Eddy viscosity LES SGS model base class
@@ -57,13 +54,6 @@ class LESeddyViscosity
 :
     public eddyViscosity<LESModel<BasicTurbulenceModel>>
 {
-    // Private Member Functions
-
-        // Disallow default bitwise copy construct and assignment
-        LESeddyViscosity(const LESeddyViscosity&);
-        void operator=(const LESeddyViscosity&);
-
-
 protected:
 
     // Protected data
@@ -93,6 +83,9 @@ public:
             const word& propertiesName = turbulenceModel::propertiesName
         );
 
+        //- Disallow default bitwise copy construction
+        LESeddyViscosity(const LESeddyViscosity&) = delete;
+
 
     //- Destructor
     virtual ~LESeddyViscosity()
@@ -106,6 +99,12 @@ public:
 
         //- Return sub-grid disipation rate
         virtual tmp<volScalarField> epsilon() const;
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const LESeddyViscosity&) = delete;
 };
 
 

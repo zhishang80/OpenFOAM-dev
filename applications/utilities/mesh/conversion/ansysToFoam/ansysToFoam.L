@@ -1,8 +1,8 @@
 /*--------------------------------*- C++ -*----------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -20,13 +20,6 @@ License
 
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
-
-Application
-    ansysToFoam
-
-Description
-    Converts an ANSYS input mesh file, exported from I-DEAS,
-    to OpenFOAM format.
 
 \*---------------------------------------------------------------------------*/
 
@@ -455,7 +448,7 @@ int main(int argc, char *argv[])
                 runTime.constant(),
                 runTime
             ),
-            xferCopy(points),
+            clone(points),
             cellShapes,
             faceListList(0),
             wordList(0),
@@ -602,7 +595,7 @@ int main(int argc, char *argv[])
             runTime.constant(),
             runTime
         ),
-        xferMove(points),
+        move(points),
         cellShapes,
         patchFaces,
         patchNames,

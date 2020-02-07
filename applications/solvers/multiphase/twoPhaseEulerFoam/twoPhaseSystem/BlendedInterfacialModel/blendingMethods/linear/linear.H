@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::linear
+    Foam::blendingMethods::linear
 
 Description
 
@@ -51,7 +51,7 @@ class linear
 :
     public blendingMethod
 {
-    // Private data
+    // Private Data
 
         //- Maximum fraction of phases which can be considered fully dispersed
         HashTable<dimensionedScalar, word, word::hash>

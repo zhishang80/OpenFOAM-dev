@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -114,8 +114,6 @@ Foam::tmp<Foam::Field<Type>> Foam::levelSetAverage
     const Field<Type>& negativeP
 )
 {
-    typedef typename outerProduct<Type, vector>::type sumType;
-
     tmp<Field<Type>> tResult(new Field<Type>(patch.size(), Zero));
     Field<Type>& result = tResult.ref();
 
@@ -123,8 +121,8 @@ Foam::tmp<Foam::Field<Type>> Foam::levelSetAverage
     {
         const face& f = patch.patch().localFaces()[fI];
 
-        vector a = vector::zero;
-        sumType r = Zero;
+        scalar a = 0;
+        Type r = Zero;
 
         for(label eI = 0; eI < f.size(); ++ eI)
         {
@@ -144,14 +142,14 @@ Foam::tmp<Foam::Field<Type>> Foam::levelSetAverage
                     levelP[e[0]],
                     levelP[e[1]]
                 };
-            const cut::areaIntegrateOp<Type>
+            const cut::areaMagIntegrateOp<Type>
                 positive = FixedList<Type, 3>
                 ({
                     positiveF[fI],
                     positiveP[e[0]],
                     positiveP[e[1]]
                 });
-            const cut::areaIntegrateOp<Type>
+            const cut::areaMagIntegrateOp<Type>
                 negative = FixedList<Type, 3>
                 ({
                     negativeF[fI],
@@ -159,12 +157,12 @@ Foam::tmp<Foam::Field<Type>> Foam::levelSetAverage
                     negativeP[e[1]]
                 });
 
-            a += cut::areaOp()(tri);
+            a += cut::areaMagOp()(tri);
 
             r += triCut(tri, level, positive, negative);
         }
 
-        result[fI] = a/magSqr(a) & r;
+        result[fI] = r/a;
     }
 
     return tResult;
@@ -187,14 +185,9 @@ Foam::levelSetAverage
 
     tmp<GeometricField<Type, fvPatchField, volMesh>> tResult
     (
-        new GeometricField<Type, fvPatchField, volMesh>
+        GeometricField<Type, fvPatchField, volMesh>::New
         (
-            IOobject
-            (
-                positiveC.name() + ":levelSetAverage",
-                mesh.time().timeName(),
-                mesh
-            ),
+            positiveC.name() + ":levelSetAverage",
             mesh,
             dimensioned<Type>("0", positiveC.dimensions(), Zero)
         )
@@ -222,8 +215,8 @@ Foam::levelSetAverage
                 levelC.boundaryField()[patchi],
                 levelP.boundaryField()[patchi].patchInternalField()(),
                 positiveC.boundaryField()[patchi],
-                negativeP.boundaryField()[patchi].patchInternalField()(),
-                positiveC.boundaryField()[patchi],
+                positiveP.boundaryField()[patchi].patchInternalField()(),
+                negativeC.boundaryField()[patchi],
                 negativeP.boundaryField()[patchi].patchInternalField()()
             );
     }

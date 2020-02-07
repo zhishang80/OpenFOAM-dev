@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -48,11 +48,11 @@ inline Foam::LandauTellerReactionRate::LandauTellerReactionRate
     const dictionary& dict
 )
 :
-    A_(readScalar(dict.lookup("A"))),
-    beta_(readScalar(dict.lookup("beta"))),
-    Ta_(readScalar(dict.lookup("Ta"))),
-    B_(readScalar(dict.lookup("B"))),
-    C_(readScalar(dict.lookup("C")))
+    A_(dict.lookup<scalar>("A")),
+    beta_(dict.lookup<scalar>("beta")),
+    Ta_(dict.lookup<scalar>("Ta")),
+    B_(dict.lookup<scalar>("B")),
+    C_(dict.lookup<scalar>("C"))
 {}
 
 
@@ -62,7 +62,8 @@ inline Foam::scalar Foam::LandauTellerReactionRate::operator()
 (
     const scalar p,
     const scalar T,
-    const scalarField&
+    const scalarField&,
+    const label
 ) const
 {
     scalar lta = A_;
@@ -72,7 +73,7 @@ inline Foam::scalar Foam::LandauTellerReactionRate::operator()
         lta *= pow(T, beta_);
     }
 
-    scalar expArg = 0.0;
+    scalar expArg = 0;
 
     if (mag(Ta_) > vSmall)
     {
@@ -98,13 +99,91 @@ inline Foam::scalar Foam::LandauTellerReactionRate::operator()
 }
 
 
+inline Foam::scalar Foam::LandauTellerReactionRate::ddT
+(
+    const scalar p,
+    const scalar T,
+    const scalarField&,
+    const label
+) const
+{
+    scalar lta = A_;
+
+    if (mag(beta_) > vSmall)
+    {
+        lta *= pow(T, beta_);
+    }
+
+    scalar expArg = 0;
+    scalar deriv = 0;
+
+    if (mag(Ta_) > vSmall)
+    {
+        scalar TaT = Ta_/T;
+        expArg -= TaT;
+        deriv += TaT;
+    }
+
+    if (mag(B_) > vSmall)
+    {
+        scalar BT = B_/cbrt(T);
+        expArg += BT;
+        deriv -= BT/3;
+    }
+
+    if (mag(C_) > vSmall)
+    {
+        scalar CT = C_/pow(T, 2.0/3.0);
+        expArg += CT;
+        deriv -= 2*CT/3;
+    }
+
+    if (mag(expArg) > vSmall)
+    {
+        lta *= exp(expArg);
+    }
+
+    return lta*(beta_+deriv)/T;
+}
+
+
+inline const Foam::List<Foam::Tuple2<Foam::label, Foam::scalar>>&
+Foam::LandauTellerReactionRate::beta() const
+{
+    return NullObjectRef<List<Tuple2<label, scalar>>>();
+}
+
+
+inline void Foam::LandauTellerReactionRate::dcidc
+(
+    const scalar p,
+    const scalar T,
+    const scalarField& c,
+    const label li,
+    scalarField& dcidc
+) const
+{}
+
+
+inline Foam::scalar Foam::LandauTellerReactionRate::dcidT
+(
+    const scalar p,
+    const scalar T,
+    const scalarField& c,
+    const label li
+) const
+{
+    return 0;
+}
+
+
 inline void Foam::LandauTellerReactionRate::write(Ostream& os) const
 {
-    os.writeKeyword("A") << A_ << token::END_STATEMENT << nl;
-    os.writeKeyword("beta") << beta_ << token::END_STATEMENT << nl;
-    os.writeKeyword("Ta") << Ta_ << token::END_STATEMENT << nl;
-    os.writeKeyword("B") << B_ << token::END_STATEMENT << nl;
-    os.writeKeyword("C") << C_ << token::END_STATEMENT << nl;
+    writeEntry(os, "A", A_);
+    writeEntry(os, "beta", beta_);
+    writeEntry(os, "Ta", Ta_);
+    writeEntry(os, "B", B_);
+    writeEntry(os, "C", C_);
 }
 
 

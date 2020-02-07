@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -60,12 +60,12 @@ linearDistance::linearDistance
     ),
     distanceCellSize_
     (
-        readScalar(coeffsDict().lookup("distanceCellSizeCoeff"))
+        coeffsDict().lookup<scalar>("distanceCellSizeCoeff")
        *defaultCellSize
     ),
     distance_
     (
-        readScalar(coeffsDict().lookup("distanceCoeff"))*defaultCellSize
+        coeffsDict().lookup<scalar>("distanceCoeff")*defaultCellSize
     ),
     distanceSqr_(sqr(distance_))
 {}
@@ -186,7 +186,7 @@ bool linearDistance::cellSize(const point& pt, scalar& size) const
         if
         (
             sideMode_ == smInside
-         && vTL[0] == volumeType::INSIDE
+         && vTL[0] == volumeType::inside
         )
         {
             size = sizeFunction(hitPt, dist, hitIndex);
@@ -196,7 +196,7 @@ bool linearDistance::cellSize(const point& pt, scalar& size) const
         else if
         (
             sideMode_ == smOutside
-         && vTL[0] == volumeType::OUTSIDE
+         && vTL[0] == volumeType::outside
         )
         {
             size = sizeFunction(hitPt, dist, hitIndex);

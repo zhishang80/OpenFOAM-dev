@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -168,16 +168,11 @@ Foam::tmp<Foam::volVectorField> Foam::MRFZoneList::DDt
 {
     tmp<volVectorField> tacceleration
     (
-        new volVectorField
+        volVectorField::New
         (
-            IOobject
-            (
-                "MRFZoneList:acceleration",
-                U.mesh().time().timeName(),
-                U.mesh()
-            ),
+            "MRFZoneList:acceleration",
             U.mesh(),
-            dimensionedVector("0", U.dimensions()/dimTime, Zero)
+            dimensionedVector(U.dimensions()/dimTime, Zero)
         )
     );
     volVectorField& acceleration = tacceleration.ref();

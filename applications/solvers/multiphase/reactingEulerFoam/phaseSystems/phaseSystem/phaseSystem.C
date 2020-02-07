@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -52,7 +52,7 @@ Foam::tmp<Foam::surfaceScalarField> Foam::phaseSystem::calcPhi
 {
     tmp<surfaceScalarField> tmpPhi
     (
-        new surfaceScalarField
+        surfaceScalarField::New
         (
             "phi",
             fvc::interpolate(phaseModels[0])*phaseModels[0].phi()
@@ -153,7 +153,7 @@ Foam::phaseSystem::phaseSystem
             mesh
         ),
         mesh,
-        dimensionedScalar("dpdt", dimPressure/dimTime, 0)
+        dimensionedScalar(dimPressure/dimTime, 0)
     ),
 
     MRF_(mesh_)
@@ -185,19 +185,19 @@ Foam::phaseSystem::phaseSystem
         phaseModel& phase = phaseModels_[phasei];
         if (!phase.stationary())
         {
-            movingPhaseModels_.set(movingPhasei ++, &phase);
+            movingPhaseModels_.set(movingPhasei++, &phase);
         }
         if (phase.stationary())
         {
-            stationaryPhaseModels_.set(stationaryPhasei ++, &phase);
+            stationaryPhaseModels_.set(stationaryPhasei++, &phase);
         }
         if (!phase.isothermal())
         {
-            anisothermalPhaseModels_.set(anisothermalPhasei ++, &phase);
+            anisothermalPhaseModels_.set(anisothermalPhasei++, &phase);
         }
         if (!phase.pure())
         {
-            multiComponentPhaseModels_.set(multiComponentPhasei ++, &phase);
+            multiComponentPhaseModels_.set(multiComponentPhasei++, &phase);
         }
     }
 
@@ -238,10 +238,14 @@ Foam::phaseSystem::~phaseSystem()
 
 Foam::tmp<Foam::volScalarField> Foam::phaseSystem::rho() const
 {
-    const label nMovingPhases = movingPhaseModels_.size();
-
     tmp<volScalarField> rho(movingPhaseModels_[0]*movingPhaseModels_[0].rho());
-    for (label movingPhasei = 1; movingPhasei < nMovingPhases; ++ movingPhasei)
+
+    for
+    (
+        label movingPhasei=1;
+        movingPhasei<movingPhaseModels_.size();
+        movingPhasei++
+    )
     {
         rho.ref() +=
             movingPhaseModels_[movingPhasei]
@@ -253,22 +257,40 @@ Foam::tmp<Foam::volScalarField> Foam::phaseSystem::rho() const
         return rho;
     }
 
-    volScalarField alpha(movingPhaseModels_[0]);
-    for (label movingPhasei = 1; movingPhasei < nMovingPhases; ++ movingPhasei)
+    volScalarField sumAlphaMoving
+    (
+        volScalarField::New
+        (
+            "sumAlphaMoving",
+            movingPhaseModels_[0],
+            calculatedFvPatchScalarField::typeName
+        )
+    );
+
+    for
+    (
+        label movingPhasei=1;
+        movingPhasei<movingPhaseModels_.size();
+        movingPhasei++
+    )
     {
-        alpha += movingPhaseModels_[movingPhasei];
+        sumAlphaMoving += movingPhaseModels_[movingPhasei];
     }
 
-    return rho/alpha;
+    return rho/sumAlphaMoving;
 }
 
 
 Foam::tmp<Foam::volVectorField> Foam::phaseSystem::U() const
 {
-    const label nMovingPhases = movingPhaseModels_.size();
-
     tmp<volVectorField> U(movingPhaseModels_[0]*movingPhaseModels_[0].U());
-    for (label movingPhasei = 1; movingPhasei < nMovingPhases; ++ movingPhasei)
+
+    for
+    (
+        label movingPhasei=1;
+        movingPhasei<movingPhaseModels_.size();
+        movingPhasei++
+    )
     {
         U.ref() +=
             movingPhaseModels_[movingPhasei]
@@ -280,13 +302,27 @@ Foam::tmp<Foam::volVectorField> Foam::phaseSystem::U() const
         return U;
     }
 
-    volScalarField alpha(movingPhaseModels_[0]);
-    for (label movingPhasei = 1; movingPhasei < nMovingPhases; ++ movingPhasei)
+    volScalarField sumAlphaMoving
+    (
+        volScalarField::New
+        (
+            "sumAlphaMoving",
+            movingPhaseModels_[0],
+            calculatedFvPatchScalarField::typeName
+        )
+    );
+
+    for
+    (
+        label movingPhasei=1;
+        movingPhasei<movingPhaseModels_.size();
+        movingPhasei++
+    )
     {
-        alpha += movingPhaseModels_[movingPhasei];
+        sumAlphaMoving += movingPhaseModels_[movingPhasei];
     }
 
-    return U/alpha;
+    return U/sumAlphaMoving;
 }
 
 
@@ -299,22 +335,11 @@ Foam::phaseSystem::E(const phasePairKey& key) const
     }
     else
     {
-        return tmp<volScalarField>
+        return volScalarField::New
         (
-            new volScalarField
-            (
-                IOobject
-                (
-                    aspectRatioModel::typeName + ":E",
-                    this->mesh_.time().timeName(),
-                    this->mesh_,
-                    IOobject::NO_READ,
-                    IOobject::NO_WRITE,
-                    false
-                ),
-                this->mesh_,
-                dimensionedScalar("zero", dimless, 1)
-            )
+            aspectRatioModel::typeName + ":E",
+            mesh_,
+            dimensionedScalar(dimless, 1)
         );
     }
 }
@@ -329,58 +354,76 @@ Foam::phaseSystem::sigma(const phasePairKey& key) const
     }
     else
     {
-        return tmp<volScalarField>
+        return volScalarField::New
         (
-            new volScalarField
-            (
-                IOobject
-                (
-                    surfaceTensionModel::typeName + ":sigma",
-                    this->mesh_.time().timeName(),
-                    this->mesh_,
-                    IOobject::NO_READ,
-                    IOobject::NO_WRITE,
-                    false
-                ),
-                this->mesh_,
-                dimensionedScalar("zero", surfaceTensionModel::dimSigma, 0)
-            )
+            surfaceTensionModel::typeName + ":sigma",
+            mesh_,
+            dimensionedScalar(surfaceTensionModel::dimSigma, 0)
         );
     }
 }
 
 
-Foam::tmp<Foam::volScalarField> Foam::phaseSystem::dmdt
+Foam::tmp<Foam::scalarField>
+Foam::phaseSystem::sigma(const phasePairKey& key, label patchi) const
+{
+    if (surfaceTensionModels_.found(key))
+    {
+        return surfaceTensionModels_[key]->sigma(patchi);
+    }
+    else
+    {
+        return tmp<scalarField>
+        (
+            new scalarField(mesh_.boundary()[patchi].size(), 0)
+        );
+    }
+}
+
+
+Foam::tmp<Foam::volScalarField> Foam::phaseSystem::dmdtf
 (
     const phasePairKey& key
 ) const
 {
-    return tmp<volScalarField>
+    const phasePair pair
     (
-        new volScalarField
-        (
-            IOobject
-            (
-                IOobject::groupName("dmdt", phasePairs_[key]->name()),
-                this->mesh_.time().timeName(),
-                this->mesh_
-            ),
-            this->mesh_,
-            dimensionedScalar("zero", dimDensity/dimTime, 0)
-        )
+        phaseModels_[key.first()],
+        phaseModels_[key.second()]
+    );
+
+    return volScalarField::New
+    (
+        IOobject::groupName("dmdtf", pair.name()),
+        mesh(),
+        dimensionedScalar(dimDensity/dimTime, 0)
     );
 }
 
 
-Foam::Xfer<Foam::PtrList<Foam::volScalarField>> Foam::phaseSystem::dmdts() const
+Foam::PtrList<Foam::volScalarField> Foam::phaseSystem::dmdts() const
 {
-    PtrList<volScalarField> dmdts(this->phaseModels_.size());
-
-    return dmdts.xfer();
+    return PtrList<volScalarField>(phaseModels_.size());
 }
 
 
-void Foam::phaseSystem::solve()
+bool Foam::phaseSystem::implicitPhasePressure(const phaseModel& phase) const
+{
+    return false;
+}
+
+
+bool Foam::phaseSystem::implicitPhasePressure() const
+{
+    return false;
+}
+
+
+void Foam::phaseSystem::solve
+(
+    const PtrList<volScalarField>& rAUs,
+    const PtrList<surfaceScalarField>& rAUfs
+)
 {}
 
 
@@ -417,6 +460,24 @@ void Foam::phaseSystem::correctThermo()
     forAll(phaseModels_, phasei)
     {
         phaseModels_[phasei].correctThermo();
+    }
+}
+
+
+void Foam::phaseSystem::correctReactions()
+{
+    forAll(phaseModels_, phasei)
+    {
+        phaseModels_[phasei].correctReactions();
+    }
+}
+
+
+void Foam::phaseSystem::correctSpecies()
+{
+    forAll(phaseModels_, phasei)
+    {
+        phaseModels_[phasei].correctSpecies();
     }
 }
 

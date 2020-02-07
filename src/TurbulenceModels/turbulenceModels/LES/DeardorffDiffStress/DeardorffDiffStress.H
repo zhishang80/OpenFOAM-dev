@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::LESModels::DeardorffDiffStress
-
-Group
-    grpLESTurbulence
 
 Description
     Differential SGS Stress Equation Model for incompressible and
@@ -84,13 +81,6 @@ class DeardorffDiffStress
 :
     public ReynoldsStress<LESModel<BasicTurbulenceModel>>
 {
-    // Private Member Functions
-
-        // Disallow default bitwise copy construct and assignment
-        DeardorffDiffStress(const DeardorffDiffStress&);
-        void operator=(const DeardorffDiffStress&);
-
-
 protected:
 
     // Protected data
@@ -135,6 +125,9 @@ public:
             const word& type = typeName
         );
 
+        //- Disallow default bitwise copy construction
+        DeardorffDiffStress(const DeardorffDiffStress&) = delete;
+
 
     //- Destructor
     virtual ~DeardorffDiffStress()
@@ -151,6 +144,12 @@ public:
 
         //- Correct sub-grid stress, eddy-Viscosity and related properties
         virtual void correct();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const DeardorffDiffStress&) = delete;
 };
 
 

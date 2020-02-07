@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -60,7 +60,7 @@ class distribution
 :
     public Map<label>
 {
-    // Private data
+    // Private Data
 
         scalar binWidth_;
 
@@ -90,7 +90,7 @@ public:
         //- Construct from binWidth
         distribution(const scalar binWidth);
 
-        //- Construct as copy
+        //- Copy constructor
         distribution(const distribution&);
 
 

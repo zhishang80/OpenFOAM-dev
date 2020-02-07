@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -96,14 +96,11 @@ Foam::domainDecomposition::domainDecomposition
     ),
     nProcs_
     (
-        readInt
+        decompositionModel::New
         (
-            decompositionModel::New
-            (
-                *this,
-                dictFile
-            ).lookup("numberOfSubdomains")
-        )
+            *this,
+            dictFile
+        ).lookup<int>("numberOfSubdomains")
     ),
     distributed_(false),
     cellToProc_(nCells()),
@@ -357,9 +354,9 @@ bool Foam::domainDecomposition::writeDecomposition(const bool decomposeSets)
                         facesInstance(),
                         processorDb
                     ),
-                    xferMove(facesInstancePoints),
-                    xferMove(procFaces),
-                    xferMove(procCells)
+                    move(facesInstancePoints),
+                    move(procFaces),
+                    move(procCells)
                 )
             );
         }
@@ -375,9 +372,9 @@ bool Foam::domainDecomposition::writeDecomposition(const bool decomposeSets)
                         facesInstance(),
                         processorDb
                     ),
-                    xferMove(procPoints),
-                    xferMove(procFaces),
-                    xferMove(procCells)
+                    move(procPoints),
+                    move(procFaces),
+                    move(procCells)
                 )
             );
         }
@@ -444,7 +441,7 @@ bool Foam::domainDecomposition::writeDecomposition(const bool decomposeSets)
             (
                 procMesh.boundaryMesh(),
                 nPatches,
-                patchMapper.directAddressing(),
+                patchMapper.addressing(),
                 curPatchStarts[patchi]
             ).ptr();
 
@@ -498,8 +495,7 @@ bool Foam::domainDecomposition::writeDecomposition(const bool decomposeSets)
                             procMesh.boundaryMesh(),
                             proci,
                             curNeighbourProcessors[procPatchi],
-                            pcPatch.name(),
-                            pcPatch.transform()
+                            pcPatch.name()
                         );
                 }
 
@@ -758,7 +754,7 @@ bool Foam::domainDecomposition::writeDecomposition(const bool decomposeSets)
                     IOobject::NO_WRITE,
                     false
                 ),
-                xferMove(procPoints)
+                move(procPoints)
             );
             pointsInstancePoints.write();
         }

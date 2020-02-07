@@ -10,9 +10,9 @@
         )
     );
 
-    const label nIntervals(readLabel(pdfDictionary.lookup("nIntervals")));
+    const label nIntervals(pdfDictionary.lookup<label>("nIntervals"));
 
-    const label nSamples(readLabel(pdfDictionary.lookup("nSamples")));
+    const label nSamples(pdfDictionary.lookup<label>("nSamples"));
 
     const bool writeData(readBool(pdfDictionary.lookup("writeData")));
 
@@ -20,7 +20,7 @@
     const fileName pdfPath = runTime.path()/"pdf";
     mkDir(pdfPath);
 
-    cachedRandom rndGen(label(0), -1);
+    Random rndGen(label(0));
 
     autoPtr<distributionModel> p
     (

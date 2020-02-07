@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::transferModelList
+    Foam::regionModels::surfaceFilmModels::transferModelList
 
 Description
     List container for film transfer models
@@ -57,19 +57,10 @@ class transferModelList
     public PtrList<transferModel>,
     public filmSubModelBase
 {
-    // Private data
+    // Private Data
 
         //- List of mass transferred per patch
         scalarField massTransferred_;
-
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        transferModelList(const transferModelList&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const transferModelList&);
 
 
 public:
@@ -85,6 +76,9 @@ public:
             surfaceFilmRegionModel& film,
             const dictionary& dict
         );
+
+        //- Disallow default bitwise copy construction
+        transferModelList(const transferModelList&) = delete;
 
 
     //- Destructor
@@ -110,6 +104,12 @@ public:
 
         //- Provide some info
         virtual void info(Ostream& os);
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const transferModelList&) = delete;
 };
 
 

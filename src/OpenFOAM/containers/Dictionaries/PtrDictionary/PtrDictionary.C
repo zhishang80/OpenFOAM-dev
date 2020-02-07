@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2013 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -38,6 +38,13 @@ template<class T>
 Foam::PtrDictionary<T>::PtrDictionary(const PtrDictionary& dict)
 :
     DictionaryBase<DLPtrList<T>, T>(dict)
+{}
+
+
+template<class T>
+Foam::PtrDictionary<T>::PtrDictionary(PtrDictionary&& dict)
+:
+    DictionaryBase<DLPtrList<T>, T>(move(dict))
 {}
 
 

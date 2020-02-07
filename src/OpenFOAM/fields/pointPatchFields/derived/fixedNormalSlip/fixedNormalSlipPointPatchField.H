@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -64,7 +64,7 @@ class fixedNormalSlipPointPatchField
 :
     public slipPointPatchField<Type>
 {
-    // Private data
+    // Private Data
 
         //- User specified normal
         vector n_;
@@ -137,7 +137,7 @@ public:
             );
         }
 
-    // Member functions
+    // Member Functions
 
         //- Update the patch field
         virtual void evaluate

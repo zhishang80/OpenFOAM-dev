@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -111,7 +111,7 @@ void PDRkEpsilon::correct()
 
         // Re-calculate thermal diffusivity
         //***HGWalphat_ = mut_/Prt_;
-        //alphat_.correctBoundaryConditions();
+        // alphat_.correctBoundaryConditions();
 
         return;
     }
@@ -129,7 +129,7 @@ void PDRkEpsilon::correct()
     volScalarField G(GName(), rho_*nut_*(tgradU() && dev(twoSymm(tgradU()))));
     tgradU.clear();
 
-    // Update espsilon and G at the wall
+    // Update epsilon and G at the wall
     epsilon_.boundaryFieldRef().updateCoeffs();
 
     // Add the blockage generation term so that it is included consistently
@@ -146,7 +146,7 @@ void PDRkEpsilon::correct()
     volScalarField GR(drag.Gk());
 
     volScalarField LI
-        (C4_*(Lobs + dimensionedScalar("minLength", dimLength, vSmall)));
+        (C4_*(Lobs + dimensionedScalar(dimLength, rootVSmall)));
 
     // Dissipation equation
     tmp<fvScalarMatrix> epsEqn
@@ -192,7 +192,7 @@ void PDRkEpsilon::correct()
 
     // Re-calculate thermal diffusivity
     //***HGWalphat_ = mut_/Prt_;
-    //alphat_.correctBoundaryConditions();
+    // alphat_.correctBoundaryConditions();
 }
 
 

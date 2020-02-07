@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,6 +24,7 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "transferModel.H"
+#include "thermoSingleLayer.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -94,10 +95,12 @@ void transferModel::correct
     scalarField& energyToTransfer
 )
 {
+    const thermoSingleLayer& film = filmType<thermoSingleLayer>();
+
     scalarField massToTransfer0(massToTransfer.size(), scalar(0));
     correct(availableMass, massToTransfer0);
     massToTransfer += massToTransfer0;
-    energyToTransfer += massToTransfer0*film().hs();
+    energyToTransfer += massToTransfer0*film.h();
 }
 
 scalar transferModel::transferredMassTotal() const

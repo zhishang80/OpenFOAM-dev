@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -87,11 +87,11 @@ Foam::correlationFunction<Type>::correlationFunction
     bufferedAccumulator<scalar>(),
     mesh_(mesh)
 {
-    duration_ = readScalar(cfDict.lookup("duration"));
+    duration_ = cfDict.template lookup<scalar>("duration");
 
-    sampleInterval_ = readScalar(cfDict.lookup("sampleInterval"));
+    sampleInterval_ = cfDict.template lookup<scalar>("sampleInterval");
 
-    averagingInterval_ = readScalar(cfDict.lookup("averagingInterval"));
+    averagingInterval_ = cfDict.template lookup<scalar>("averagingInterval");
 
     setTimesAndSizes(tZeroBufferSize);
 }

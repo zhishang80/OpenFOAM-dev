@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -57,7 +57,7 @@ class processorPolyPatch
 :
     public coupledPolyPatch
 {
-    // Private data
+    // Private Data
 
         int myProcNo_;
         int neighbProcNo_;
@@ -72,12 +72,12 @@ class processorPolyPatch
         vectorField neighbFaceCellCentres_;
 
         //- Corresponding neighbouring local point label for every local point
-        //  (so localPoints()[i] == neighb.localPoints()[neighbPoints_[i]])
-        mutable autoPtr<labelList> neighbPointsPtr_;
+        //  (so localPoints()[i] == neighb.localPoints()[nbrPoints_[i]])
+        mutable autoPtr<labelList> nbrPointsPtr_;
 
         //- Corresponding neighbouring local edge label for every local edge
-        //  (so edges()[i] == neighb.edges()[neighbEdges_[i]])
-        mutable autoPtr<labelList> neighbEdgesPtr_;
+        //  (so edges()[i] == neighb.edges()[nbrEdges_[i]])
+        mutable autoPtr<labelList> nbrEdgesPtr_;
 
 protected:
 
@@ -93,7 +93,6 @@ protected:
             const polyBoundaryMesh& bm,
             const int myProcNo,
             const int neighbProcNo,
-            const transformType transform = UNKNOWN,  // transformation type
             const word& patchType = typeName
         );
 
@@ -152,7 +151,6 @@ public:
             const polyBoundaryMesh& bm,
             const int myProcNo,
             const int neighbProcNo,
-            const transformType transform = UNKNOWN,  // transformation type
             const word& patchType = typeName
         );
 
@@ -247,7 +245,7 @@ public:
     virtual ~processorPolyPatch();
 
 
-    // Member functions
+    // Member Functions
 
         //- Return true only if this is a parallel run
         virtual bool coupled() const
@@ -313,10 +311,10 @@ public:
         }
 
         //- Return neighbour point labels. WIP.
-        const labelList& neighbPoints() const;
+        const labelList& nbrPoints() const;
 
         //- Return neighbour edge labels. WIP.
-        const labelList& neighbEdges() const;
+        const labelList& nbrEdges() const;
 
         //- Return message tag to use for communication
         virtual int tag() const
@@ -330,32 +328,15 @@ public:
             return boundaryMesh().mesh().comm();
         }
 
-        //- Transform a patch-based position from other side to this side
-        virtual void transformPosition(pointField& l) const
-        {}
-
-        //- Transform a patch-based position from other side to this side
-        virtual void transformPosition(point&, const label facei) const
-        {}
+        //- Return null transform between processor patches
+        virtual const transformer& transform() const
+        {
+            return transformer::null;
+        }
 
         //- Initialize ordering for primitivePatch. Does not
         //  refer to *this (except for name() and type() etc.)
         virtual void initOrder(PstreamBuffers&, const primitivePatch&) const;
-
-        //- Returns rotation.
-        //    -1 : no match
-        //     0 : match
-        //    >0 : match if rotated clockwise by this amount
-        static label matchFace
-        (
-            const face& localFace,
-            const pointField& localPts,
-            const face& masterFace,
-            const pointField& masterPts,
-            const bool sameOrientation,
-            const scalar absTolSqr,
-            scalar& matchDistSqr
-        );
 
         //- Return new ordering for primitivePatch.
         //  Ordering is -faceMap: for every face

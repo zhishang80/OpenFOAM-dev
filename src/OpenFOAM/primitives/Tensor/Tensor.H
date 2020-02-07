@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -54,6 +54,9 @@ namespace Foam
 template<class Cmpt>
 class SymmTensor;
 
+template<class Cmpt>
+class DiagTensor;
+
 /*---------------------------------------------------------------------------*\
                            Class Tensor Declaration
 \*---------------------------------------------------------------------------*/
@@ -76,7 +79,7 @@ public:
         static const direction rank = 2;
 
 
-    // Static data members
+    // Static Data Members
 
         static const Tensor I;
 
@@ -106,6 +109,9 @@ public:
 
         //- Construct given SymmTensor
         inline Tensor(const SymmTensor<Cmpt>&);
+
+        //- Construct given DiagTensor
+        inline Tensor(const DiagTensor<Cmpt>&);
 
         //- Construct given triad
         inline Tensor(const Vector<Vector<Cmpt>>&);
@@ -197,6 +203,9 @@ public:
 
         //- Assign to a SymmTensor
         inline void operator=(const SymmTensor<Cmpt>&);
+
+        //- Assign to a DiagTensor
+        inline void operator=(const DiagTensor<Cmpt>&);
 
         //- Assign to a triad
         inline void operator=(const Vector<Vector<Cmpt>>&);

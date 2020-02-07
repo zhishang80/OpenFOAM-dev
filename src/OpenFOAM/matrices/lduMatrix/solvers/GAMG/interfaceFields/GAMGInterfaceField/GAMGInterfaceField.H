@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2013 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -53,19 +53,10 @@ class GAMGInterfaceField
 :
     public lduInterfaceField
 {
-    // Private data
+    // Private Data
 
         //- Local reference cast into the interface
         const GAMGInterface& interface_;
-
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        GAMGInterfaceField(const GAMGInterfaceField&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const GAMGInterfaceField&);
 
 
 public:
@@ -95,10 +86,9 @@ public:
             lduInterface,
             (
                 const GAMGInterface& GAMGCp,
-                const bool doTransform,
                 const int rank
             ),
-            (GAMGCp, doTransform, rank)
+            (GAMGCp, rank)
         );
 
 
@@ -117,7 +107,6 @@ public:
         static autoPtr<GAMGInterfaceField> New
         (
             const GAMGInterface& GAMGCp,
-            const bool doTransform,
             const int rank
         );
 
@@ -139,13 +128,15 @@ public:
         GAMGInterfaceField
         (
             const GAMGInterface& GAMGCp,
-            const bool doTransform,
             const int rank
         )
         :
             lduInterfaceField(GAMGCp),
             interface_(GAMGCp)
         {}
+
+        //- Disallow default bitwise copy construction
+        GAMGInterfaceField(const GAMGInterfaceField&) = delete;
 
 
     // Member Functions
@@ -158,6 +149,11 @@ public:
                 return interface_;
             }
 
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const GAMGInterfaceField&) = delete;
 };
 
 

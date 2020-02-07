@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::filmRadiationModel
+    Foam::regionModels::surfaceFilmModels::filmRadiationModel
 
 Description
     Base class for film radiation models
@@ -56,17 +56,6 @@ class filmRadiationModel
 :
     public filmSubModelBase
 {
-private:
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        filmRadiationModel(const filmRadiationModel&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const filmRadiationModel&);
-
-
 public:
 
     //- Runtime type information
@@ -100,6 +89,9 @@ public:
             const dictionary& dict
         );
 
+        //- Disallow default bitwise copy construction
+        filmRadiationModel(const filmRadiationModel&) = delete;
+
 
     // Selectors
 
@@ -123,7 +115,13 @@ public:
             virtual void correct() = 0;
 
             //- Return the radiation sensible enthalpy source
-            virtual tmp<volScalarField> Shs() = 0;
+            virtual tmp<volScalarField::Internal> Shs() = 0;
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const filmRadiationModel&) = delete;
 };
 
 

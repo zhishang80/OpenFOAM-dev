@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -36,7 +36,7 @@ Foam::geomDecomp::geomDecomp
     decompositionMethod(decompositionDict),
     geomDecomDict_(decompositionDict.optionalSubDict(derivedType + "Coeffs")),
     n_(geomDecomDict_.lookup("n")),
-    delta_(readScalar(geomDecomDict_.lookup("delta"))),
+    delta_(geomDecomDict_.lookup<scalar>("delta")),
     rotDelta_(I)
 {
     // check that the case makes sense :

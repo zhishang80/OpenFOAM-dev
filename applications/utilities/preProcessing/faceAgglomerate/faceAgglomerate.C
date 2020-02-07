@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
     }
 
 
-    // - All patches which are not agglomarated are identity for finalAgglom
+    // - All patches which are not agglomerated are identity for finalAgglom
     forAll(boundary, patchid)
     {
         if (finalAgglom[patchid].size() == 0)
@@ -166,7 +166,7 @@ int main(int argc, char *argv[])
                 IOobject::NO_WRITE
             ),
             mesh,
-            dimensionedScalar("facesAgglomeration", dimless, 0)
+            dimensionedScalar(dimless, 0)
         );
 
         volScalarField::Boundary& facesAgglomerationBf =

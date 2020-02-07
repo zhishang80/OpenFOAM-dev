@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -36,7 +36,8 @@ Description
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
-#include "Switch.H"
+#include "solidDisplacementThermo.H"
+#include "fvOptions.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -44,11 +45,12 @@ int main(int argc, char *argv[])
 {
     #include "postProcess.H"
 
-    #include "setRootCase.H"
+    #include "setRootCaseLists.H"
     #include "createTime.H"
     #include "createMesh.H"
     #include "createControls.H"
     #include "createFields.H"
+    #include "createFieldRefs.H"
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -65,32 +67,39 @@ int main(int argc, char *argv[])
 
         do
         {
-            if (thermalStress)
+            if (thermo.thermalStress())
             {
-                volScalarField& T = Tptr();
-                solve
+                volScalarField& T = thermo.T();
+                fvScalarMatrix TEqn
                 (
-                    fvm::ddt(T) == fvm::laplacian(DT, T)
+                    fvm::ddt(rho, Cp, T)
+                 == fvm::laplacian(kappa, T)
+                  + fvOptions(rho*Cp, T)
                 );
+
+                fvOptions.constrain(TEqn);
+
+                TEqn.solve();
+
+                fvOptions.correct(T);
             }
 
             {
                 fvVectorMatrix DEqn
                 (
-                    fvm::d2dt2(D)
+                    fvm::d2dt2(rho, D)
                  ==
                     fvm::laplacian(2*mu + lambda, D, "laplacian(DD,D)")
                   + divSigmaExp
+                  + rho*fvOptions.d2dt2(D)
                 );
 
-                if (thermalStress)
+                if (thermo.thermalStress())
                 {
-                    const volScalarField& T = Tptr();
-                    DEqn += fvc::grad(threeKalpha*T);
+                    DEqn += fvc::grad(threeKalpha*thermo.T());
                 }
 
-                //DEqn.setComponentReference(1, 0, vector::X, 0);
-                //DEqn.setComponentReference(1, 0, vector::Z, 0);
+                fvOptions.constrain(DEqn);
 
                 initialResidual = DEqn.solve().max().initialResidual();
 

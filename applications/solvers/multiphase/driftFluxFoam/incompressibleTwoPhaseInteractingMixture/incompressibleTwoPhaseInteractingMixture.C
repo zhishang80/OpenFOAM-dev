@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -102,7 +102,7 @@ incompressibleTwoPhaseInteractingMixture
             U_.db()
         ),
         U_.mesh(),
-        dimensionedScalar("mu", dimensionSet(1, -1, -1, 0, 0), 0),
+        dimensionedScalar(dimensionSet(1, -1, -1, 0, 0), 0),
         calculatedFvPatchScalarField::typeName
     )
 {

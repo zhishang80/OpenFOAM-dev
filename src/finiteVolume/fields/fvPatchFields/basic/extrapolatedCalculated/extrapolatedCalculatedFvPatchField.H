@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::extrapolatedCalculatedFvPatchField
-
-Group
-    grpGenericBoundaryConditions
 
 Description
     This boundary condition applies a zero-gradient condition from the patch
@@ -99,7 +96,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         extrapolatedCalculatedFvPatchField
         (
             const extrapolatedCalculatedFvPatchField<Type>&
@@ -114,7 +111,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         extrapolatedCalculatedFvPatchField
         (
             const extrapolatedCalculatedFvPatchField<Type>&,
@@ -134,7 +131,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         //- Evaluate the patch field
         virtual void evaluate

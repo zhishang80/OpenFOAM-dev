@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::solidification
+    Foam::regionModels::surfaceFilmModels::solidification
 
 Description
     Solidification phase change model where all film mass is converted when the
@@ -56,15 +56,6 @@ class solidification
 :
     public phaseChangeModel
 {
-    // Private member functions
-
-        //- Disallow default bitwise copy construct
-        solidification(const solidification&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const solidification&);
-
-
 protected:
 
     // Protected data
@@ -81,10 +72,10 @@ protected:
         dimensionedScalar maxSolidificationRate_;
 
         //- Accumulated solid mass [kg]
-        volScalarField mass_;
+        volScalarField::Internal mass_;
 
         //- Accumulated solid thickness [m]
-        volScalarField thickness_;
+        volScalarField::Internal thickness_;
 
 
 public:
@@ -97,6 +88,9 @@ public:
 
         //- Construct from surface film model
         solidification(surfaceFilmRegionModel& film, const dictionary& dict);
+
+        //- Disallow default bitwise copy construction
+        solidification(const solidification&) = delete;
 
 
     //- Destructor
@@ -115,6 +109,12 @@ public:
                 scalarField& dMass,
                 scalarField& dEnergy
             );
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const solidification&) = delete;
 };
 
 

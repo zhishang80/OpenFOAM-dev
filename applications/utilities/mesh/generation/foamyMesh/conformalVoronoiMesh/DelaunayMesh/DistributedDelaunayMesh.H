@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -123,12 +123,6 @@ private:
             labelPairHashSet& receivedVertices
         );
 
-        //- Disallow default bitwise copy construct
-        DistributedDelaunayMesh(const DistributedDelaunayMesh<Triangulation>&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const DistributedDelaunayMesh<Triangulation>&);
-
 
 public:
 
@@ -142,6 +136,12 @@ public:
             const Time& runTime,
             const word& meshName
         );
+
+        //- Disallow default bitwise copy construction
+        DistributedDelaunayMesh
+        (
+            const DistributedDelaunayMesh<Triangulation>&
+        ) = delete;
 
 
     //- Destructor
@@ -193,22 +193,17 @@ public:
             bool printErrors = true
         );
 
-//        distributeField();
 
+    // Member Operators
 
-    // Queries
-
-
+        //- Disallow default bitwise assignment
+        void operator=(const DistributedDelaunayMesh<Triangulation>&) = delete;
 };
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 } // End namespace Foam
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
-//#include "DistributedDelaunayMeshI.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

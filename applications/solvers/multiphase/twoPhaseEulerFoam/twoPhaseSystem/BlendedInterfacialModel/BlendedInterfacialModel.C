@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -139,19 +139,11 @@ Foam::BlendedInterfacialModel<modelType>::K() const
 
     tmp<volScalarField> x
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                modelType::typeName + ":K",
-                pair_.phase1().mesh().time().timeName(),
-                pair_.phase1().mesh(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
+            modelType::typeName + ":K",
             pair_.phase1().mesh(),
-            dimensionedScalar("zero", modelType::dimK, 0)
+            dimensionedScalar(modelType::dimK, 0)
         )
     );
 
@@ -207,19 +199,11 @@ Foam::BlendedInterfacialModel<modelType>::Kf() const
 
     tmp<surfaceScalarField> x
     (
-        new surfaceScalarField
+        surfaceScalarField::New
         (
-            IOobject
-            (
-                modelType::typeName + ":Kf",
-                pair_.phase1().mesh().time().timeName(),
-                pair_.phase1().mesh(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
+            modelType::typeName + ":Kf",
             pair_.phase1().mesh(),
-            dimensionedScalar("zero", modelType::dimK, 0)
+            dimensionedScalar(modelType::dimK, 0)
         )
     );
 
@@ -270,17 +254,9 @@ Foam::BlendedInterfacialModel<modelType>::F() const
 
     tmp<GeometricField<Type, fvPatchField, volMesh>> x
     (
-        new GeometricField<Type, fvPatchField, volMesh>
+        GeometricField<Type, fvPatchField, volMesh>::New
         (
-            IOobject
-            (
-                modelType::typeName + ":F",
-                pair_.phase1().mesh().time().timeName(),
-                pair_.phase1().mesh(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
+            modelType::typeName + ":F",
             pair_.phase1().mesh(),
             dimensioned<Type>("zero", modelType::dimF, Zero)
         )
@@ -338,19 +314,11 @@ Foam::BlendedInterfacialModel<modelType>::Ff() const
 
     tmp<surfaceScalarField> x
     (
-        new surfaceScalarField
+        surfaceScalarField::New
         (
-            IOobject
-            (
-                modelType::typeName + ":Ff",
-                pair_.phase1().mesh().time().timeName(),
-                pair_.phase1().mesh(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
+            modelType::typeName + ":Ff",
             pair_.phase1().mesh(),
-            dimensionedScalar("zero", modelType::dimF*dimArea, 0)
+            dimensionedScalar(modelType::dimF*dimArea, 0)
         )
     );
 
@@ -400,19 +368,11 @@ Foam::BlendedInterfacialModel<modelType>::D() const
 
     tmp<volScalarField> x
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                modelType::typeName + ":D",
-                pair_.phase1().mesh().time().timeName(),
-                pair_.phase1().mesh(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
+            modelType::typeName + ":D",
             pair_.phase1().mesh(),
-            dimensionedScalar("zero", modelType::dimD, 0)
+            dimensionedScalar(modelType::dimD, 0)
         )
     );
 

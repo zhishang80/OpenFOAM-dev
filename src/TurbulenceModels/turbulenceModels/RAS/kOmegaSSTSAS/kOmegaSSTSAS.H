@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::RASModels::kOmegaSSTSAS
-
-Group
-    grpLESTurbulence
 
 Description
     Scale-adaptive URAS model based on the k-omega-SST RAS model.
@@ -100,13 +97,6 @@ class kOmegaSSTSAS
 :
     public kOmegaSST<BasicTurbulenceModel>
 {
-    // Private Member Functions
-
-        // Disallow default bitwise copy construct and assignment
-        kOmegaSSTSAS(const kOmegaSSTSAS&);
-        void operator=(const kOmegaSSTSAS&);
-
-
 protected:
 
     // Protected data
@@ -163,6 +153,9 @@ public:
             const word& type = typeName
         );
 
+        //- Disallow default bitwise copy construction
+        kOmegaSSTSAS(const kOmegaSSTSAS&) = delete;
+
 
     //- Destructor
     virtual ~kOmegaSSTSAS()
@@ -179,6 +172,12 @@ public:
         {
             return delta_();
         }
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const kOmegaSSTSAS&) = delete;
 };
 
 

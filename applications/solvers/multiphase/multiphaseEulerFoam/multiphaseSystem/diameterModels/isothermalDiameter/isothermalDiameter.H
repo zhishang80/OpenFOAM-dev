@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::isothermal
+    Foam::diameterModels::isothermal
 
 Description
     Isothermal dispersed-phase particle diameter model.
@@ -52,7 +52,7 @@ class isothermal
 :
     public diameterModel
 {
-    // Private data
+    // Private Data
 
         //- Reference diameter for the isothermal expansion
         dimensionedScalar d0_;

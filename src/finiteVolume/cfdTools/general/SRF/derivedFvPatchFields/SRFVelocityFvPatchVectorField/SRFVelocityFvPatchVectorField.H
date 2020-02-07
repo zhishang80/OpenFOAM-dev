@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::SRFVelocityFvPatchVectorField
-
-Group
-    grpInletBoundaryConditions grpWallBoundaryConditions
 
 Description
     Velocity condition to be used in conjunction with the single
@@ -104,7 +101,7 @@ class SRFVelocityFvPatchVectorField
 :
     public fixedValueFvPatchVectorField
 {
-    // Private data
+    // Private Data
 
         //- Is the supplied inlet value relative to the SRF
         Switch relative_;
@@ -146,7 +143,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         SRFVelocityFvPatchVectorField
         (
             const SRFVelocityFvPatchVectorField&
@@ -161,7 +158,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         SRFVelocityFvPatchVectorField
         (
             const SRFVelocityFvPatchVectorField&,
@@ -181,7 +178,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Access
 
@@ -195,18 +192,12 @@ public:
         // Mapping functions
 
             //- Map (and resize as needed) from self given a mapping object
-            virtual void autoMap
-            (
-                const fvPatchFieldMapper&
-            );
+            //  Used to update fields following mesh topology change
+            virtual void autoMap(const fvPatchFieldMapper&);
 
             //- Reverse map the given fvPatchField onto this fvPatchField
-            virtual void rmap
-            (
-                const fvPatchVectorField&,
-                const labelList&
-            );
-
+            //  Used to reconstruct fields
+            virtual void rmap(const fvPatchVectorField&, const labelList&);
 
         // Evaluation functions
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -244,15 +244,13 @@ void Foam::matchedFlowRateOutletVelocityFvPatchVectorField::write
 ) const
 {
     fvPatchField<vector>::write(os);
-    os.writeKeyword("inletPatch")
-        << inletPatchName_ << token::END_STATEMENT << nl;
+    writeEntry(os, "inletPatch", inletPatchName_);
     if (!volumetric_)
     {
-        os.writeKeyword("volumetric")
-            << volumetric_ << token::END_STATEMENT << nl;
+        writeEntry(os, "volumetric", volumetric_);
         writeEntryIfDifferent<word>(os, "rho", "rho", rhoName_);
     }
-    writeEntry("value", os);
+    writeEntry(os, "value", *this);
 }
 
 

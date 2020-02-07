@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::fixedJumpAMIFvPatchField
-
-Group
-    grpCoupledBoundaryConditions
 
 Description
     This boundary condition provides a jump condition, across non-conformal
@@ -125,7 +122,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         fixedJumpAMIFvPatchField
         (
             const fixedJumpAMIFvPatchField<Type>&
@@ -140,7 +137,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         fixedJumpAMIFvPatchField
         (
             const fixedJumpAMIFvPatchField<Type>&,
@@ -160,7 +157,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Access
 

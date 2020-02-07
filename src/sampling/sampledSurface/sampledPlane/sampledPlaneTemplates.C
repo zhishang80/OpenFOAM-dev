@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -29,7 +29,7 @@ License
 
 template<class Type>
 Foam::tmp<Foam::Field<Type>>
-Foam::sampledPlane::sampleField
+Foam::sampledSurfaces::plane::sampleField
 (
     const GeometricField<Type, fvPatchField, volMesh>& vField
 ) const
@@ -40,7 +40,7 @@ Foam::sampledPlane::sampleField
 
 template<class Type>
 Foam::tmp<Foam::Field<Type>>
-Foam::sampledPlane::interpolateField
+Foam::sampledSurfaces::plane::interpolateField
 (
     const interpolation<Type>& interpolator
 ) const

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -26,6 +26,7 @@ License
 #include "functionEntry.H"
 #include "IOstreams.H"
 #include "ISstream.H"
+#include "Pstream.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -49,12 +50,43 @@ namespace Foam
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
-Foam::token Foam::functionEntry::readLine(const word& key, Istream& is)
+Foam::token Foam::functionEntry::readLine(Istream& is)
 {
-    string s;
-    dynamic_cast<ISstream&>(is).getLine(s);
+    if (isA<Pstream>(is))
+    {
+        return token(is);
+    }
+    else
+    {
+        word s;
+        dynamic_cast<ISstream&>(is).getLine(s);
+        return token(s, is.lineNumber());
+    }
+}
 
-    return token(string(key+s), is.lineNumber());
+
+// * * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * //
+
+bool Foam::functionEntry::insert
+(
+    dictionary& parentDict,
+    const string& str
+)
+{
+    parentDict.read(IStringStream(str)());
+    return true;
+}
+
+
+bool Foam::functionEntry::insert
+(
+    const dictionary& parentDict,
+    primitiveEntry& thisEntry,
+    const string& str
+)
+{
+    thisEntry.read(parentDict, IStringStream(str)());
+    return true;
 }
 
 
@@ -67,11 +99,7 @@ Foam::functionEntry::functionEntry
     Istream& is
 )
 :
-    primitiveEntry
-    (
-        word(key+dict.name()+Foam::name(is.lineNumber())),
-        readLine(key, is)
-    )
+    primitiveEntry(key, readLine(is))
 {}
 
 
@@ -164,16 +192,21 @@ bool Foam::functionEntry::execute
 
 void Foam::functionEntry::write(Ostream& os) const
 {
-    // Contents should be single string token
-    const token& t = operator[](0);
-    const string& s = t.stringToken();
+    os.indent();
 
-    for (size_t i = 0; i < s.size(); i++)
+    writeKeyword(os, keyword());
+
+    if (size() == 1)
     {
-        os.write(s[i]);
+        os << operator[](0) << endl;
     }
-
-    os << endl;
+    else
+    {
+        FatalIOErrorInFunction(os)
+            << "Incorrect number of tokens in functionEntry, "
+               "should be a single word."
+            << exit(FatalIOError);
+    }
 }
 
 

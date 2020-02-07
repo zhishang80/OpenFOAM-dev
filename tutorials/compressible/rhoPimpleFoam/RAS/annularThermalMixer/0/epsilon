@@ -1,9 +1,9 @@
 /*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  dev                                   |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
-|    \\/     M anipulation  |                                                 |
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  dev
+     \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
@@ -19,25 +19,36 @@ FoamFile
 
 dimensions      [0 2 -3 0 0 0 0];
 
-internalField   uniform $:innerInlet.epsilon;
+internalField   uniform $!innerInlet/epsilon;
 
 boundaryField
 {
     innerInlet
     {
         type            fixedValue;
-        value           uniform $:innerInlet.epsilon;
+        value           uniform $!innerInlet/epsilon;
     }
 
     outerInlet
     {
         type            fixedValue;
-        value           uniform $:outerInlet.epsilon;
+        value           uniform $!outerInlet/epsilon;
     }
 
-    outlet      { $:outlet.epsilon; }
-    staticWalls { $:wall.epsilon; }
-    movingWalls { $staticWalls; }
+    outlet
+    {
+        $!outlet/epsilon;
+    }
+
+    staticWalls
+    {
+        $!wall/epsilon;
+    }
+
+    movingWalls
+    {
+        $staticWalls;
+    }
 
     #includeEtc "caseDicts/setConstraintTypes"
 }

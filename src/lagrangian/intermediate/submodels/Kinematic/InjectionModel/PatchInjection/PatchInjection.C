@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -39,10 +39,10 @@ Foam::PatchInjection<CloudType>::PatchInjection
 :
     InjectionModel<CloudType>(dict, owner, modelName, typeName),
     patchInjectionBase(owner.mesh(), this->coeffDict().lookup("patchName")),
-    duration_(readScalar(this->coeffDict().lookup("duration"))),
+    duration_(this->coeffDict().template lookup<scalar>("duration")),
     parcelsPerSecond_
     (
-        readScalar(this->coeffDict().lookup("parcelsPerSecond"))
+        this->coeffDict().template lookup<scalar>("parcelsPerSecond")
     ),
     U0_(this->coeffDict().lookup("U0")),
     flowRateProfile_
@@ -122,7 +122,7 @@ Foam::label Foam::PatchInjection<CloudType>::parcelsToInject
     {
         scalar nParcels = (time1 - time0)*parcelsPerSecond_;
 
-        cachedRandom& rnd = this->owner().rndGen();
+        Random& rnd = this->owner().rndGen();
 
         label nParcelsToInject = floor(nParcels);
 
@@ -131,10 +131,7 @@ Foam::label Foam::PatchInjection<CloudType>::parcelsToInject
         if
         (
             nParcelsToInject > 0
-         && (
-               nParcels - scalar(nParcelsToInject)
-             > rnd.globalPosition(scalar(0), scalar(1))
-            )
+         && (nParcels - scalar(nParcelsToInject) > rnd.globalScalar01())
         )
         {
             ++nParcelsToInject;

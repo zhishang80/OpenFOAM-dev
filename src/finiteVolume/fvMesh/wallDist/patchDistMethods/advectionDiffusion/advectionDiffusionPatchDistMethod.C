@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
+   \\    /   O peration     | Website:  https://openfoam.org
     \\  /    A nd           | Copyright (C) 2015-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
@@ -105,7 +105,7 @@ bool Foam::patchDistMethods::advectionDiffusion::correct
             false
         ),
         mesh_,
-        dimensionedVector("ny", dimless, Zero),
+        dimensionedVector(dimless, Zero),
         patchTypes<vector>(mesh_, patchIDs_)
     );
 
@@ -137,7 +137,7 @@ bool Foam::patchDistMethods::advectionDiffusion::correct
           - fvm::Sp(fvc::div(yPhi), y)
           - epsilon_*y*fvm::laplacian(y)
          ==
-            dimensionedScalar("1", dimless, 1.0)
+            dimensionedScalar(dimless, 1.0)
         );
 
         yEqn.relax();

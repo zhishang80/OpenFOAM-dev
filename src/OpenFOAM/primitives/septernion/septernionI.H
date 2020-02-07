@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -92,12 +92,6 @@ inline Foam::vector Foam::septernion::invTransformPoint(const vector& v) const
 
 
 // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //
-
-inline void Foam::septernion::operator=(const septernion& tr)
-{
-    t_ = tr.t_;
-    r_ = tr.r_;
-}
 
 inline void Foam::septernion::operator*=(const septernion& tr)
 {

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -107,7 +107,7 @@ Foam::twoPhaseSystem::twoPhaseSystem
             IOobject::AUTO_WRITE
         ),
         mesh,
-        dimensionedScalar("dgdt", dimless/dimTime, 0)
+        dimensionedScalar(dimless/dimTime, 0)
     )
 {
     phase2_.volScalarField::operator=(scalar(1) - phase1_);
@@ -361,8 +361,8 @@ void Foam::twoPhaseSystem::solve()
         alpha1.name()
     );
 
-    label nAlphaSubCycles(readLabel(alphaControls.lookup("nAlphaSubCycles")));
-    label nAlphaCorr(readLabel(alphaControls.lookup("nAlphaCorr")));
+    label nAlphaSubCycles(alphaControls.lookup<label>("nAlphaSubCycles"));
+    label nAlphaCorr(alphaControls.lookup<label>("nAlphaCorr"));
 
     word alphaScheme("div(phi," + alpha1.name() + ')');
     word alpharScheme("div(phir," + alpha1.name() + ')');
@@ -400,7 +400,7 @@ void Foam::twoPhaseSystem::solve()
                 mesh_
             ),
             mesh_,
-            dimensionedScalar("Sp", dgdt_.dimensions(), 0.0)
+            dimensionedScalar(dgdt_.dimensions(), 0)
         );
 
         volScalarField::Internal Su

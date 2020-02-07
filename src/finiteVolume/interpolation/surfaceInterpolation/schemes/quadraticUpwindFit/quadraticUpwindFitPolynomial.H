@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -50,7 +50,7 @@ class quadraticUpwindFitPolynomial
 {
 public:
 
-    // Member functions
+    // Member Functions
 
         static label nTerms(const direction dim)
         {
@@ -80,7 +80,7 @@ public:
             {
                 coeffs[curIdx++] = weight*d.y();
                 coeffs[curIdx++] = weight*d.x()*d.y();
-                //coeffs[curIdx++] = weight*d.x()*sqr(d.y());
+                // coeffs[curIdx++] = weight*d.x()*sqr(d.y());
                 coeffs[curIdx++] = weight*sqr(d.y());
             }
             if (dim == 3)

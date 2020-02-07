@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -142,7 +142,7 @@ void Foam::motionSmootherAlgo::minSmooth
     tmp<pointScalarField> tavgFld = avg
     (
         fld,
-        edgeWeights //scalarField(mesh_.nEdges(), 1.0)    // uniform weighting
+        edgeWeights // scalarField(mesh_.nEdges(), 1.0)    // uniform weighting
     );
     const pointScalarField& avgFld = tavgFld();
 
@@ -176,7 +176,7 @@ void Foam::motionSmootherAlgo::minSmooth
     tmp<pointScalarField> tavgFld = avg
     (
         fld,
-        edgeWeights //scalarField(mesh_.nEdges(), 1.0)    // uniform weighting
+        edgeWeights // scalarField(mesh_.nEdges(), 1.0)    // uniform weighting
     );
     const pointScalarField& avgFld = tavgFld();
 
@@ -551,7 +551,7 @@ void Foam::motionSmootherAlgo::setDisplacement
 
                 meshTools::writeOBJ(str, pt);
                 nVerts++;
-                //Pout<< "Point:" << pt
+                // Pout<< "Point:" << pt
                 //    << " oldDisp:" << patchDisp[patchPointi]
                 //    << " newDisp:" << newDisp << endl;
             }
@@ -707,7 +707,7 @@ Foam::scalar Foam::motionSmootherAlgo::setErrorReduction
     const scalar errorReduction
 )
 {
-    scalar oldErrorReduction = readScalar(paramDict_.lookup("errorReduction"));
+    scalar oldErrorReduction = paramDict_.lookup<scalar>("errorReduction");
 
     paramDict_.remove("errorReduction");
     paramDict_.add("errorReduction", errorReduction);
@@ -861,18 +861,17 @@ bool Foam::motionSmootherAlgo::scaleMesh
                     refCast<const coupledPolyPatch>(patches[patchi]);
 
                 Pout<< '\t' << patchi << '\t' << pp.name()
-                    << " parallel:" << pp.parallel()
-                    << " separated:" << pp.separated()
-                    << " forwardT:" << pp.forwardT().size()
+                    << " transform:" << pp.transform()
                     << endl;
             }
         }
     }
 
     const scalar errorReduction =
-        readScalar(paramDict.lookup("errorReduction"));
+        paramDict.lookup<scalar>("errorReduction");
+
     const label nSmoothScale =
-        readLabel(paramDict.lookup("nSmoothScale"));
+        paramDict.lookup<label>("nSmoothScale");
 
 
     // Note: displacement_ should already be synced already from setDisplacement
@@ -975,13 +974,13 @@ bool Foam::motionSmootherAlgo::scaleMesh
         {
             // Scale conflicting patch points
             scaleField(pp_.meshPoints(), usedPoints, errorReduction, scale_);
-            //subtractField(pp_.meshPoints(), usedPoints, 0.1, scale_);
+            // subtractField(pp_.meshPoints(), usedPoints, 0.1, scale_);
         }
         if (smoothMesh)
         {
             // Scale conflicting internal points
             scaleField(usedPoints, errorReduction, scale_);
-            //subtractField(usedPoints, 0.1, scale_);
+            // subtractField(usedPoints, 0.1, scale_);
         }
 
         scalarField eWeights(calcEdgeWeights(oldPoints_));

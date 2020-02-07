@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -342,6 +342,12 @@ Foam::polyMesh* Foam::blockMesh::createTopology
     const word& regionName
 )
 {
+    checkBlockFaceOrientation = meshDescription.lookupOrDefault<Switch>
+    (
+        "checkBlockFaceOrientation",
+        true
+    );
+
     blockList& blocks = *this;
 
     word defaultPatchName = "defaultFaces";
@@ -516,7 +522,7 @@ Foam::polyMesh* Foam::blockMesh::createTopology
                 IOobject::NO_WRITE,
                 false
             ),
-            xferCopy(vertices_),   // Copy these points, do NOT move
+            clone(vertices_),   // Copy these points, do NOT move
             tmpBlockCells,
             tmpBlocksPatches,
             patchNames,
@@ -555,7 +561,7 @@ Foam::polyMesh* Foam::blockMesh::createTopology
                 IOobject::NO_WRITE,
                 false
             ),
-            xferCopy(vertices_),   // Copy these points, do NOT move
+            clone(vertices_),   // Copy these points, do NOT move
             tmpBlockCells,
             tmpBlocksPatches,
             patchNames,

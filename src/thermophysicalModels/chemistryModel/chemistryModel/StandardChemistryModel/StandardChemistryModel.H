@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -39,10 +39,9 @@ SourceFiles
 #define StandardChemistryModel_H
 
 #include "BasicChemistryModel.H"
-#include "Reaction.H"
+#include "ReactionList.H"
 #include "ODESystem.H"
 #include "volFields.H"
-#include "simpleMatrix.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -69,12 +68,6 @@ class StandardChemistryModel
         template<class DeltaTType>
         scalar solve(const DeltaTType& deltaT);
 
-        //- Disallow copy constructor
-        StandardChemistryModel(const StandardChemistryModel&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const StandardChemistryModel&);
-
 
 protected:
 
@@ -84,13 +77,13 @@ protected:
     // Protected data
 
         //- Reference to the field of specie mass fractions
-        PtrList<volScalarField>& Y_;
-
-        //- Reactions
-        const PtrList<Reaction<ThermoType>>& reactions_;
+        const PtrList<volScalarField>& Y_;
 
         //- Thermodynamic data of the species
         const PtrList<ThermoType>& specieThermo_;
+
+        //- Reactions
+        const ReactionList<ThermoType> reactions_;
 
         //- Number of species
         label nSpecie_;
@@ -101,7 +94,7 @@ protected:
         //- Temperature below which the reaction rates are assumed 0
         scalar Treact_;
 
-        //- List of reaction rate per specie [kg/m3/s]
+        //- List of reaction rate per specie [kg/m^3/s]
         PtrList<volScalarField::Internal> RR_;
 
         //- Temporary concentration field
@@ -127,7 +120,10 @@ public:
     // Constructors
 
         //- Construct from thermo
-        StandardChemistryModel(ReactionThermo& thermo);
+        StandardChemistryModel(const ReactionThermo& thermo);
+
+        //- Disallow default bitwise copy construction
+        StandardChemistryModel(const StandardChemistryModel&);
 
 
     //- Destructor
@@ -157,37 +153,23 @@ public:
         //- dc/dt = omega, rate of change in concentration, for each species
         virtual void omega
         (
-            const scalarField& c,
-            const scalar T,
             const scalar p,
+            const scalar T,
+            const scalarField& c,
+            const label li,
             scalarField& dcdt
-        ) const;
-
-        //- Return the reaction rate for reaction r and the reference
-        //  species and charateristic times
-        virtual scalar omega
-        (
-            const Reaction<ThermoType>& r,
-            const scalarField& c,
-            const scalar T,
-            const scalar p,
-            scalar& pf,
-            scalar& cf,
-            label& lRef,
-            scalar& pr,
-            scalar& cr,
-            label& rRef
         ) const;
 
 
         //- Return the reaction rate for iReaction and the reference
-        //  species and charateristic times
+        //  species and characteristic times
         virtual scalar omegaI
         (
             label iReaction,
-            const scalarField& c,
-            const scalar T,
             const scalar p,
+            const scalar T,
+            const scalarField& c,
+            const label li,
             scalar& pf,
             scalar& cf,
             label& lRef,
@@ -209,7 +191,7 @@ public:
                 const label i
             ) const;
 
-            //- Return non const access to chemical source terms [kg/m3/s]
+            //- Return non const access to chemical source terms [kg/m^3/s]
             virtual volScalarField::Internal& RR
             (
                 const label i
@@ -233,7 +215,7 @@ public:
             //- Return the chemical time scale
             virtual tmp<volScalarField> tc() const;
 
-            //- Return the heat release rate [kg/m/s3]
+            //- Return the heat release rate [kg/m/s^3]
             virtual tmp<volScalarField> Qdot() const;
 
 
@@ -246,6 +228,7 @@ public:
             (
                 const scalar t,
                 const scalarField& c,
+                const label li,
                 scalarField& dcdt
             ) const;
 
@@ -253,18 +236,26 @@ public:
             (
                 const scalar t,
                 const scalarField& c,
+                const label li,
                 scalarField& dcdt,
-                scalarSquareMatrix& dfdc
+                scalarSquareMatrix& J
             ) const;
 
             virtual void solve
             (
-                scalarField &c,
-                scalar& T,
                 scalar& p,
+                scalar& T,
+                scalarField& c,
+                const label li,
                 scalar& deltaT,
                 scalar& subDeltaT
             ) const = 0;
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const StandardChemistryModel&) = delete;
 };
 
 

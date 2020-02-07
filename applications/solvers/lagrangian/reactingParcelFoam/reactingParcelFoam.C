@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 {
     #include "postProcess.H"
 
-    #include "setRootCase.H"
+    #include "setRootCaseLists.H"
     #include "createTime.H"
     #include "createMesh.H"
     #include "createControl.H"
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 
     Info<< "\nStarting time loop\n" << endl;
 
-    while (runTime.run())
+    while (pimple.run(runTime))
     {
         #include "readTimeControls.H"
 
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 
         if (solvePrimaryRegion)
         {
-            if (pimple.nCorrPimple() <= 1)
+            if (pimple.firstPimpleIter() && !pimple.simpleRho())
             {
                 #include "rhoEqn.H"
             }
@@ -117,9 +117,9 @@ int main(int argc, char *argv[])
                     turbulence->correct();
                 }
             }
-
-            rho = thermo.rho();
         }
+
+        rho = thermo.rho();
 
         runTime.write();
 

@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
+   \\    /   O peration     | Website:  https://openfoam.org
     \\  /    A nd           | Copyright (C) YEAR OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
@@ -32,8 +32,8 @@ SourceFiles
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef fixedValueFvPatchTemplate${FieldType}_H
-#define fixedValueFvPatchTemplate${FieldType}_H
+#ifndef fixedValueFvPatchFieldTemplate_H
+#define fixedValueFvPatchFieldTemplate_H
 
 #include "fixedValueFvPatchFields.H"
 
@@ -85,7 +85,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         ${typeName}FixedValueFvPatch${FieldType}
         (
             const ${typeName}FixedValueFvPatch${FieldType}&
@@ -100,7 +100,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         ${typeName}FixedValueFvPatch${FieldType}
         (
             const ${typeName}FixedValueFvPatch${FieldType}&,
@@ -124,7 +124,7 @@ public:
     virtual ~${typeName}FixedValueFvPatch${FieldType}();
 
 
-    // Member functions
+    // Member Functions
 
         //- Update the coefficients associated with the patch field
         virtual void updateCoeffs();

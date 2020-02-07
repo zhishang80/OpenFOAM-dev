@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -32,6 +32,20 @@ namespace Foam
 {
 
 // * * * * * * * * * * * * * * * global functions  * * * * * * * * * * * * * //
+
+template<class Type>
+List<Type> transform(const tensor& t, const UList<Type>& list)
+{
+    List<Type> newList(list.size());
+
+    forAll(list, i)
+    {
+        newList[i] = transform(t, list[i]);
+    }
+
+    return newList;
+}
+
 
 template<class Type>
 void transform

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,9 +24,6 @@ License
 Class
     Foam::nutUTabulatedWallFunctionFvPatchScalarField
 
-Group
-    grpWallFunctions
-
 Description
     This boundary condition provides a turbulent kinematic viscosity condition
     when using wall functions.  As input, the user specifies a look-up table
@@ -45,6 +42,7 @@ Usage
     {
         type            nutTabulatedWallFunction;
         uPlusTable      myUPlusTable;
+        value           uniform 0;
     }
     \endverbatim
 
@@ -93,7 +91,7 @@ protected:
     // Protected Member Functions
 
         //- Calculate the turbulence viscosity
-        virtual tmp<scalarField> calcNut() const;
+        virtual tmp<scalarField> nut() const;
 
         //- Calculate wall u+ from table
         virtual tmp<scalarField> calcUPlus(const scalarField& Rey) const;
@@ -133,7 +131,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         nutUTabulatedWallFunctionFvPatchScalarField
         (
             const nutUTabulatedWallFunctionFvPatchScalarField&
@@ -148,7 +146,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         nutUTabulatedWallFunctionFvPatchScalarField
         (
             const nutUTabulatedWallFunctionFvPatchScalarField&,
@@ -168,7 +166,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Evaluation functions
 

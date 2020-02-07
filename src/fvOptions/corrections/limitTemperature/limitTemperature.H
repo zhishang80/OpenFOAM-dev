@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -39,7 +39,7 @@ Usage
         selectionMode   all;
         min             200;
         max             500;
-        phase           gas; //optional
+        phase           gas; // optional
     }
     \endverbatim
 
@@ -68,7 +68,6 @@ class limitTemperature
 :
     public cellSetOption
 {
-
 protected:
 
     // Protected data
@@ -79,19 +78,8 @@ protected:
         //- Maximum temperature limit [K]
         scalar Tmax_;
 
-        //- Optional phase name [K]
+        //- Optional phase name
         word phase_;
-
-
-private:
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        limitTemperature(const limitTemperature&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const limitTemperature&);
 
 
 public:
@@ -111,6 +99,9 @@ public:
             const fvMesh& mesh
         );
 
+        //- Disallow default bitwise copy construction
+        limitTemperature(const limitTemperature&) = delete;
+
 
     //- Destructor
     virtual ~limitTemperature()
@@ -124,6 +115,12 @@ public:
 
         //- Correct the energy field
         virtual void correct(volScalarField& he);
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const limitTemperature&) = delete;
 };
 
 

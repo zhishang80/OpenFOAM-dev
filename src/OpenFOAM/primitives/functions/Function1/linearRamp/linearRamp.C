@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -29,7 +29,7 @@ License
 
 namespace Foam
 {
-namespace Function1Types
+namespace Function1s
 {
     makeScalarFunction1(linearRamp);
 }
@@ -38,19 +38,19 @@ namespace Function1Types
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::Function1Types::linearRamp::linearRamp
+Foam::Function1s::linearRamp::linearRamp
 (
     const word& entryName,
     const dictionary& dict
 )
 :
-    ramp(entryName, dict)
+    Ramp<linearRamp>(entryName, dict)
 {}
 
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
-Foam::Function1Types::linearRamp::~linearRamp()
+Foam::Function1s::linearRamp::~linearRamp()
 {}
 
 

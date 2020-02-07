@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::subBody
+    Foam::RBD::subBody
 
 Description
     This specialized rigidBody holds the original body after it has been merged
@@ -52,7 +52,7 @@ namespace RBD
 
 class subBody
 {
-    // Private data
+    // Private Data
 
         //- Original body from which this sub-body was constructed
         autoPtr<rigidBody> body_;

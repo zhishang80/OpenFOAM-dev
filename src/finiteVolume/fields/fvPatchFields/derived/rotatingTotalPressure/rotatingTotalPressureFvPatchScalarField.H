@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,9 +24,6 @@ License
 Class
     Foam::rotatingTotalPressureFvPatchScalarField
 
-Group
-    grpInletBoundaryConditions grpOutletBoundaryConditions
-
 Description
     This boundary condition provides a total pressure condition for patches
     in a rotating frame.
@@ -40,7 +37,7 @@ Usage
         psi          | compressibility field name | no       | none
         gamma        | ratio of specific heats (Cp/Cv) | yes |
         p0           | static pressure reference | yes       |
-        omega        | angular velocty of the frame [rad/s] | yes    |
+        omega        | angular velocity of the frame [rad/s] | yes    |
     \endtable
 
     Example of the boundary condition specification:
@@ -63,7 +60,7 @@ Usage
 
 See also
     Foam::totalPressureFvPatchScalarField
-    Foam::Function1Types
+    Foam::Function1s
 
 SourceFiles
     rotatingTotalPressureFvPatchScalarField.C
@@ -89,7 +86,7 @@ class rotatingTotalPressureFvPatchScalarField
 :
     public totalPressureFvPatchScalarField
 {
-    // Private data
+    // Private Data
 
         //- Angular velocity of the frame
         autoPtr<Function1<vector>> omega_;
@@ -128,7 +125,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         rotatingTotalPressureFvPatchScalarField
         (
             const rotatingTotalPressureFvPatchScalarField&
@@ -143,7 +140,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         rotatingTotalPressureFvPatchScalarField
         (
             const rotatingTotalPressureFvPatchScalarField&,
@@ -163,7 +160,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Evaluation functions
 

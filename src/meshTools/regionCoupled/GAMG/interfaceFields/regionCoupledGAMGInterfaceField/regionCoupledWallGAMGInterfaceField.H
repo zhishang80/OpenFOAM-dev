@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2013 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -52,22 +52,10 @@ class regionCoupledWallGAMGInterfaceField
 :
     public GAMGInterfaceField
 {
-    // Private data
+    // Private Data
 
         //- Local reference cast into the region coupled interface
         const regionCoupledWallGAMGInterface& regionCoupledGAMGInterface_;
-
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        regionCoupledWallGAMGInterfaceField
-        (
-            const regionCoupledWallGAMGInterfaceField&
-        );
-
-        //- Disallow default bitwise assignment
-        void operator=(const regionCoupledWallGAMGInterfaceField&);
 
 
 public:
@@ -89,8 +77,13 @@ public:
         regionCoupledWallGAMGInterfaceField
         (
             const GAMGInterface& GAMGCp,
-            const bool doTransform,
             const int rank
+        );
+
+        //- Disallow default bitwise copy construction
+        regionCoupledWallGAMGInterfaceField
+        (
+            const regionCoupledWallGAMGInterfaceField&
         );
 
 
@@ -120,6 +113,11 @@ public:
             ) const
             {}
 
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const regionCoupledWallGAMGInterfaceField&) = delete;
 };
 
 

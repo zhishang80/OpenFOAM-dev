@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,9 +24,6 @@ License
 Class
     Foam::freestreamPressureFvPatchScalarField
 
-Group
-    grpInletBoundaryConditions grpOutletBoundaryConditions
-
 Description
     This boundary condition provides a free-stream condition for pressure.
 
@@ -36,9 +33,10 @@ Description
 
 Usage
     \table
-        Property        | Description             | Required    | Default value
-        U               | velocity field name     | no          | U
-        freestreamValue | freestream pressure     | yes         |
+        Property        | Description                | Required | Default value
+        U               | velocity field name        | no       | U
+        freestreamValue | freestream pressure        | yes      |
+        supersonic      | Switch for supersonic flow | no       | false
     \endtable
 
     Example of the boundary condition specification:
@@ -81,10 +79,13 @@ class freestreamPressureFvPatchScalarField
 :
     public mixedFvPatchScalarField
 {
-    // Private data
+    // Private Data
 
         //- Name of the velocity field
         word UName_;
+
+        //- Set true for supersonic freestream
+        Switch supersonic_;
 
 
 public:
@@ -120,7 +121,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         freestreamPressureFvPatchScalarField
         (
             const freestreamPressureFvPatchScalarField&
@@ -135,7 +136,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         freestreamPressureFvPatchScalarField
         (
             const freestreamPressureFvPatchScalarField&,
@@ -155,7 +156,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
             const scalarField& freestreamValue() const
             {

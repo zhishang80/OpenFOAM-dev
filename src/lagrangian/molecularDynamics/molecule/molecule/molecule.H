@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -66,7 +66,7 @@ class molecule
 :
     public particle
 {
-    // Private data
+    // Private Data
 
         //- Size in bytes of the fields
         static const std::size_t sizeofFields_;
@@ -89,7 +89,7 @@ public:
     //- Class to hold molecule constant properties
     class constantProperties
     {
-        // Private data
+        // Private Data
 
             Field<vector> siteReferencePositions_;
 
@@ -112,7 +112,7 @@ public:
 
             void checkSiteListSizes() const;
 
-            void setInteracionSiteBools
+            void setInteractionSiteBools
             (
                 const List<word>& siteIds,
                 const List<word>& pairPotSiteIds
@@ -128,7 +128,7 @@ public:
         //- Construct from dictionary
         inline constantProperties(const dictionary& dict);
 
-        // Member functions
+        // Member Functions
 
         inline const Field<vector>& siteReferencePositions() const;
 
@@ -181,7 +181,7 @@ public:
                 part_(part)
             {}
 
-        // Member functions
+        // Member Functions
 
             inline label part() const
             {
@@ -192,7 +192,7 @@ public:
 
 private:
 
-    // Private data
+    // Private Data
 
         tensor Q_;
 
@@ -312,9 +312,7 @@ public:
 
             bool move(moleculeCloud&, trackingData&, const scalar trackTime);
 
-            virtual void transformProperties(const tensor& T);
-
-            virtual void transformProperties(const vector& separation);
+            virtual void transformProperties(const transformer&);
 
             void setSitePositions(const constantProperties& constProps);
 

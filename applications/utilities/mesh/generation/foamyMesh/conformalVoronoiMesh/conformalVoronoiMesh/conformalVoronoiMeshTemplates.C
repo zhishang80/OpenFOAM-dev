@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -77,7 +77,7 @@ bool Foam::conformalVoronoiMesh::distributeBackground(const Triangulation& mesh)
                 IOobject::NO_WRITE
             ),
             bMesh,
-            dimensionedScalar("weight", dimless, 1e-2),
+            dimensionedScalar(dimless, 1e-2),
             zeroGradientFvPatchScalarField::typeName
         );
 

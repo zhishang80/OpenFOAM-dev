@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -32,7 +32,7 @@ template<class ReactionThermo>
 Foam::combustionModels::noCombustion<ReactionThermo>::noCombustion
 (
     const word& modelType,
-    ReactionThermo& thermo,
+    const ReactionThermo& thermo,
     const compressibleTurbulenceModel& turb,
     const word& combustionProperties
 )
@@ -75,25 +75,12 @@ template<class ReactionThermo>
 Foam::tmp<Foam::volScalarField>
 Foam::combustionModels::noCombustion<ReactionThermo>::Qdot() const
 {
-    tmp<volScalarField> tQdot
+    return volScalarField::New
     (
-        new volScalarField
-        (
-            IOobject
-            (
-                this->thermo().phasePropertyName(typeName + ":Qdot"),
-                this->mesh().time().timeName(),
-                this->mesh(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
-            this->mesh(),
-            dimensionedScalar("Qdot", dimEnergy/dimVolume/dimTime, 0.0)
-        )
+        this->thermo().phasePropertyName(typeName + ":Qdot"),
+        this->mesh(),
+        dimensionedScalar(dimEnergy/dimVolume/dimTime, 0)
     );
-
-    return tQdot;
 }
 
 

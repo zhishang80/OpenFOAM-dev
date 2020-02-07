@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -66,7 +66,7 @@ Ostream& operator<<(Ostream&, const instant&);
 
 class instant
 {
-    // Private data
+    // Private Data
 
         scalar value_;
         word name_;
@@ -87,7 +87,7 @@ public:
         };
 
 
-    // Static data members
+    // Static Data Members
 
         static const char* const typeName;
 

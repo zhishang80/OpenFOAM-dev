@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -74,6 +74,9 @@ makeLaminarModel(Stokes);
 
 #include "Maxwell.H"
 makeLaminarModel(Maxwell);
+
+#include "Giesekus.H"
+makeLaminarModel(Giesekus);
 
 #include "kEpsilon.H"
 makeRASModel(kEpsilon);

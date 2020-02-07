@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,13 +24,9 @@ License
 Class
     Foam::nutkWallFunctionFvPatchScalarField
 
-Group
-    grpWallFunctions
-
 Description
-    This boundary condition provides a turbulent kinematic viscosity condition
-    when using wall functions, based on turbulence kinetic energy.
-    - replicates OpenFOAM v1.5 (and earlier) behaviour
+    Turbulent viscosity wall-function boundary condition
+    for high Reynolds number flows based on near-wall turbulence kinetic energy.
 
 Usage
     Example of the boundary condition specification:
@@ -38,6 +34,7 @@ Usage
     <patchName>
     {
         type            nutkWallFunction;
+        value           uniform 0;
     }
     \endverbatim
 
@@ -72,7 +69,7 @@ protected:
     // Protected Member Functions
 
         //- Calculate the turbulence viscosity
-        virtual tmp<scalarField> calcNut() const;
+        virtual tmp<scalarField> nut() const;
 
 
 public:
@@ -109,7 +106,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         nutkWallFunctionFvPatchScalarField
         (
             const nutkWallFunctionFvPatchScalarField&
@@ -124,7 +121,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         nutkWallFunctionFvPatchScalarField
         (
             const nutkWallFunctionFvPatchScalarField&,
@@ -144,7 +141,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         //- Calculate and return the yPlus at the boundary
         virtual tmp<scalarField> yPlus() const;

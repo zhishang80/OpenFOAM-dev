@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::RASModels::kOmegaSSTSato
-
-Group
-    grpRASTurbulence
 
 Description
     Implementation of the k-omega-SST turbulence model for dispersed bubbly
@@ -57,7 +54,7 @@ Description
 
     Note that this implementation is written in terms of alpha diffusion
     coefficients rather than the more traditional sigma (alpha = 1/sigma) so
-    that the blending can be applied to all coefficuients in a consistent
+    that the blending can be applied to all coefficients in a consistent
     manner.  The paper suggests that sigma is blended but this would not be
     consistent with the blending of the k-epsilon and k-omega models.
 
@@ -94,9 +91,6 @@ Description
     \endverbatim
 
 SourceFiles
-    kOmegaSST.C
-
-SourceFiles
     kOmegaSSTSato.C
 
 \*---------------------------------------------------------------------------*/
@@ -105,6 +99,8 @@ SourceFiles
 #define kOmegaSSTSato_H
 
 #include "kOmegaSST.H"
+#include "phaseSystem.H"
+#include "hashedWordList.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -122,27 +118,21 @@ class kOmegaSSTSato
 :
     public kOmegaSST<BasicTurbulenceModel>
 {
-    // Private data
+    // Private Data
 
-        mutable const PhaseCompressibleTurbulenceModel
-        <
-            typename BasicTurbulenceModel::transportModel
-        > *gasTurbulencePtr_;
+        //- The phase to which the turbulent model is applied to
+        const phaseModel& phase_;
 
+        //- True if a list of dispersed phases is specified in the dictionary
+        bool hasDispersedPhaseNames_;
+
+        //- Optional list of names of dispersed phases
+        hashedWordList dispersedPhaseNames_;
 
     // Private Member Functions
 
-        //- Return the turbulence model for the gas phase
-        const PhaseCompressibleTurbulenceModel
-        <
-            typename BasicTurbulenceModel::transportModel
-        >&
-        gasTurbulence() const;
-
-
-        // Disallow default bitwise copy construct and assignment
-        kOmegaSSTSato(const kOmegaSSTSato&);
-        void operator=(const kOmegaSSTSato&);
+        //- Return the dispersed phase models
+        UPtrList<const phaseModel> getDispersedPhases() const;
 
 
 protected:
@@ -189,6 +179,9 @@ public:
             const word& type = typeName
         );
 
+        //- Disallow default bitwise copy construction
+        kOmegaSSTSato(const kOmegaSSTSato&) = delete;
+
 
     //- Destructor
     virtual ~kOmegaSSTSato()
@@ -202,6 +195,12 @@ public:
 
         //- Solve the turbulence equations and correct the turbulence viscosity
         virtual void correct();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const kOmegaSSTSato&) = delete;
 };
 
 

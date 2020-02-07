@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -55,20 +55,12 @@ tmp<volScalarField> reconstructMag(const surfaceScalarField& ssf)
 
     tmp<volScalarField> treconField
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                "reconstruct("+ssf.name()+')',
-                ssf.instance(),
-                mesh,
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
+            "reconstruct("+ssf.name()+')',
             mesh,
             dimensionedScalar
             (
-                "0",
                 ssf.dimensions()/dimArea,
                 scalar(0)
             ),

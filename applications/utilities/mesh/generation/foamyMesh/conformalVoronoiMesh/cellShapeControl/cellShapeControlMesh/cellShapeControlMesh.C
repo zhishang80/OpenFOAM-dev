@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -142,7 +142,7 @@ word cellShapeControlMesh::meshSubDir = "cellShapeControlMesh";
 //            }
 //        }
 //
-//        //external spoke
+//        // external spoke
 //
 //        Foam::point mirrorPt = pt + 2*d;
 //
@@ -364,8 +364,7 @@ Foam::cellShapeControlMesh::cellShapeControlMesh(const Time& runTime)
         runTime,
         meshSubDir
     ),
-    runTime_(runTime),
-    defaultCellSize_(0.0)
+    runTime_(runTime)
 {
     if (this->vertexCount())
     {
@@ -769,17 +768,17 @@ Foam::label Foam::cellShapeControlMesh::estimateCellCount
             scalar volume = CGAL::to_double(tet.volume());
 
             scalar averagedPointCellSize = 0;
-            //scalar averagedPointCellSize = 1;
+            // scalar averagedPointCellSize = 1;
 
             // Get an average volume by averaging the cell size of the vertices
             for (label vI = 0; vI < 4; ++vI)
             {
                 averagedPointCellSize += cit->vertex(vI)->targetCellSize();
-                //averagedPointCellSize *= cit->vertex(vI)->targetCellSize();
+                // averagedPointCellSize *= cit->vertex(vI)->targetCellSize();
             }
 
             averagedPointCellSize /= 4;
-            //averagedPointCellSize = ::sqrt(averagedPointCellSize);
+            // averagedPointCellSize = ::sqrt(averagedPointCellSize);
 
 //            if (averagedPointCellSize < small)
 //            {

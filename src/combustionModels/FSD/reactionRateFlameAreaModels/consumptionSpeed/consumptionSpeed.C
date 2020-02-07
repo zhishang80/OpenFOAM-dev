@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -39,10 +39,10 @@ Foam::consumptionSpeed::consumptionSpeed
 (
     const dictionary& dict
 )
-:   omega0_(readScalar(dict.lookup("omega0"))),
-    eta_(readScalar(dict.lookup("eta"))),
-    sigmaExt_(readScalar(dict.lookup("sigmaExt"))),
-    omegaMin_(readScalar(dict.lookup("omegaMin")))
+:   omega0_(dict.lookup<scalar>("omega0")),
+    eta_(dict.lookup<scalar>("eta")),
+    sigmaExt_(dict.lookup<scalar>("sigmaExt")),
+    omegaMin_(dict.lookup<scalar>("omegaMin"))
 {}
 
 
@@ -82,20 +82,12 @@ Foam::tmp<Foam::volScalarField> Foam::consumptionSpeed::omega0Sigma
 {
     tmp<volScalarField> tomega0
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                "omega0",
-                sigma.time().timeName(),
-                sigma.db(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
+            "omega0",
             sigma.mesh(),
             dimensionedScalar
             (
-                "omega0",
                 dimensionSet(1, -2, -1, 0, 0, 0, 0),
                 0
             )

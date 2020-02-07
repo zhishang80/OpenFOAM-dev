@@ -35,6 +35,8 @@ grad/grad.C
 ddt/ddt.C
 mag/mag.C
 magSqr/magSqr.C
+scale/scale.C
+log/log.C
 vorticity/vorticity.C
 enstrophy/enstrophy.C
 Q/Q.C
@@ -64,5 +66,9 @@ add/add.C
 subtract/subtract.C
 
 interfaceHeight/interfaceHeight.C
+
+age/age.C
+
+comfort/comfort.C
 
 LIB = $(FOAM_LIBBIN)/libfieldFunctionObjects

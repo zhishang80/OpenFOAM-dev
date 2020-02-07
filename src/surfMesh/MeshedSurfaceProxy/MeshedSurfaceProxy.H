@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -65,7 +65,7 @@ class MeshedSurfaceProxy
 :
     public fileFormats::surfaceFormatsCore
 {
-    //- Private data
+    // Private Data
 
         const pointField& points_;
 
@@ -78,7 +78,7 @@ class MeshedSurfaceProxy
 
 public:
 
-    // Public typedefs
+    // Public Typedefs
 
         //- Face type used
         typedef Face FaceType;

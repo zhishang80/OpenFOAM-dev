@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -53,13 +53,10 @@ class processorGAMGInterfaceField
     public GAMGInterfaceField,
     public processorLduInterfaceField
 {
-    // Private data
+    // Private Data
 
         //- Local reference cast into the processor interface
         const processorGAMGInterface& procInterface_;
-
-        //- Is the transform required
-        bool doTransform_;
 
         //- Rank of component for transformation
         int rank_;
@@ -78,16 +75,6 @@ class processorGAMGInterfaceField
 
             //- Scalar receive buffer
             mutable Field<scalar> scalarReceiveBuf_;
-
-
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        processorGAMGInterfaceField(const processorGAMGInterfaceField&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const processorGAMGInterfaceField&);
 
 
 public:
@@ -109,9 +96,14 @@ public:
         processorGAMGInterfaceField
         (
             const GAMGInterface& GAMGCp,
-            const bool doTransform,
             const int rank
         );
+
+        //- Disallow default bitwise copy construction
+        processorGAMGInterfaceField
+        (
+            const processorGAMGInterfaceField&
+        ) = delete;
 
 
     //- Destructor
@@ -172,16 +164,10 @@ public:
                 return procInterface_.neighbProcNo();
             }
 
-            //- Does the interface field perform the transformation
-            virtual bool doTransform() const
+            //- Return transformation between the coupled patches
+            virtual const transformer& transform() const
             {
-                return doTransform_;
-            }
-
-            //- Return face transformation tensor
-            virtual const tensorField& forwardT() const
-            {
-                return procInterface_.forwardT();
+                return procInterface_.transform();
             }
 
             //- Return rank of component for transform
@@ -189,6 +175,12 @@ public:
             {
                 return rank_;
             }
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const processorGAMGInterfaceField&) = delete;
 };
 
 

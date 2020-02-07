@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -47,10 +47,52 @@ inline Foam::scalar Foam::infiniteReactionRate::operator()
 (
     const scalar p,
     const scalar,
-    const scalarField&
+    const scalarField&,
+    const label
 ) const
 {
     return (1);
+}
+
+inline Foam::scalar Foam::infiniteReactionRate::ddT
+(
+    const scalar p,
+    const scalar,
+    const scalarField&,
+    const label
+) const
+{
+    return (0);
+}
+
+
+inline const Foam::List<Foam::Tuple2<Foam::label, Foam::scalar>>&
+Foam::infiniteReactionRate::beta() const
+{
+    return NullObjectRef<List<Tuple2<label, scalar>>>();
+}
+
+
+inline void Foam::infiniteReactionRate::dcidc
+(
+    const scalar p,
+    const scalar T,
+    const scalarField& c,
+    const label li,
+    scalarField& dcidc
+) const
+{}
+
+
+inline Foam::scalar Foam::infiniteReactionRate::dcidT
+(
+    const scalar p,
+    const scalar T,
+    const scalarField& c,
+    const label li
+) const
+{
+    return 0;
 }
 
 

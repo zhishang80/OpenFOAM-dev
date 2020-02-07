@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,13 +24,11 @@ License
 Class
     Foam::waveAlphaFvPatchScalarField
 
-Group
-    grpGenericBoundaryConditions
-
 Description
     This boundary condition provides a waveAlpha condition. This sets the phase
     fraction to that specified by a superposition of wave models. All the
-    parameters are looked up from the corresponding velocity condition.
+    wave modelling parameters are obtained from a centrally registered
+    waveSuperposition class.
 
     Flow reversal will occur in the event that the amplitude of the velocity
     oscillation is greater than the mean flow. This triggers special handling,
@@ -61,9 +59,13 @@ Usage
     {
         type        waveAlpha;
         U           U;
+        liquid      true;
         inletOutlet true;
     }
     \endverbatim
+
+See also
+    Foam::waveSuperposition
 
 SourceFiles
     waveAlphaFvPatchScalarField.C
@@ -88,7 +90,7 @@ class waveAlphaFvPatchScalarField
 :
     public mixedFvPatchScalarField
 {
-    // Private data
+    // Private Data
 
         //- Name of the velocity field
         const word UName_;
@@ -132,7 +134,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         waveAlphaFvPatchScalarField
         (
             const waveAlphaFvPatchScalarField&
@@ -147,7 +149,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         waveAlphaFvPatchScalarField
         (
             const waveAlphaFvPatchScalarField&,
@@ -167,7 +169,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Access
 

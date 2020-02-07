@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::Raoult
+    Foam::interfaceCompositionModels::Raoult
 
 Description
     Raoult's law of ideal mixing. A separate composition model is given for
@@ -37,7 +37,7 @@ SourceFiles
 #ifndef Raoult_H
 #define Raoult_H
 
-#include "InterfaceCompositionModel.H"
+#include "interfaceCompositionModel.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -53,12 +53,11 @@ namespace interfaceCompositionModels
                          Class Raoult Declaration
 \*---------------------------------------------------------------------------*/
 
-template<class Thermo, class OtherThermo>
 class Raoult
 :
-    public InterfaceCompositionModel<Thermo, OtherThermo>
+    public interfaceCompositionModel
 {
-    // Private data
+    // Private Data
 
         //- Non-vapour species fraction
         volScalarField YNonVapour_;
@@ -114,12 +113,6 @@ public:
 
 } // End namespace interfaceCompositionModels
 } // End namespace Foam
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
-#ifdef NoRepository
-    #include "Raoult.C"
-#endif
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

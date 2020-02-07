@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::energyJumpAMIFvPatchScalarField
-
-Group
-    grpThermoBoundaryConditions grpCoupledBoundaryConditions
 
 Description
     This boundary condition provides an energy jump condition across a pair
@@ -92,7 +89,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         energyJumpAMIFvPatchScalarField
         (
             const energyJumpAMIFvPatchScalarField&
@@ -107,7 +104,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         energyJumpAMIFvPatchScalarField
         (
             const energyJumpAMIFvPatchScalarField&,
@@ -127,7 +124,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Evaluation functions
 

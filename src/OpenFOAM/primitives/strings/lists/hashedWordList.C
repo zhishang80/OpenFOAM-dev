@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -61,9 +61,16 @@ Foam::hashedWordList::hashedWordList(const hashedWordList& names)
 }
 
 
-Foam::hashedWordList::hashedWordList(const Xfer<List<word>>& names)
+Foam::hashedWordList::hashedWordList(hashedWordList&& names)
 :
-    List<word>(names)
+    List<word>(move(names)),
+    indices_(move(names.indices_))
+{}
+
+
+Foam::hashedWordList::hashedWordList(List<word>&& names)
+:
+    List<word>(move(names))
 {
     rehash();
 }

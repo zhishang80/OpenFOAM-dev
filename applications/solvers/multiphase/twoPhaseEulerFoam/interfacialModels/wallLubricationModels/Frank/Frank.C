@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -55,7 +55,7 @@ Foam::wallLubricationModels::Frank::Frank
     wallLubricationModel(dict, pair),
     Cwd_("Cwd", dimless, dict),
     Cwc_("Cwc", dimless, dict),
-    p_(readScalar(dict.lookup("p")))
+    p_(dict.lookup<scalar>("p"))
 {}
 
 
@@ -85,7 +85,7 @@ Foam::tmp<Foam::volVectorField> Foam::wallLubricationModels::Frank::Fi() const
         )
        *max
         (
-            dimensionedScalar("zero", dimless/dimLength, 0.0),
+            dimensionedScalar(dimless/dimLength, 0),
             (1.0 - yTilde)/(Cwd_*y*pow(yTilde, p_ - 1.0))
         )
        *pair_.continuous().rho()

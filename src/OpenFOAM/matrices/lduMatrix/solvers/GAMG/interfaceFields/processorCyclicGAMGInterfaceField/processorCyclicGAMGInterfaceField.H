@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2013 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -52,14 +52,14 @@ class processorCyclicGAMGInterfaceField
 {
     // Private Member Functions
 
-        //- Disallow default bitwise copy construct
+        //- Disallow default bitwise copy construction
         processorCyclicGAMGInterfaceField
         (
             const processorCyclicGAMGInterfaceField&
         );
 
         //- Disallow default bitwise assignment
-        void operator=(const processorCyclicGAMGInterfaceField&);
+        void operator=(const processorCyclicGAMGInterfaceField&) = delete;
 
 
 public:
@@ -81,7 +81,6 @@ public:
         processorCyclicGAMGInterfaceField
         (
             const GAMGInterface& GAMGCp,
-            const bool doTransform,
             const int rank
         );
 

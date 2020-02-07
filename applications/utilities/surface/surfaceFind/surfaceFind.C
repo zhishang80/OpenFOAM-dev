@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -36,12 +36,12 @@ Description
 
 using namespace Foam;
 
-
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 int main(int argc, char *argv[])
 {
-    argList::noParallel();
+    #include "removeCaseOptions.H"
+
     argList::validArgs.append("surface file");
     argList::addOption("x", "X", "The point x-coordinate (if non-zero)");
     argList::addOption("y", "Y", "The point y-coordinate (if non-zero)");
@@ -98,19 +98,19 @@ int main(int argc, char *argv[])
 
     forAll(surf1, facei)
     {
-        const point centre = surf1[facei].centre(points);
+        const pointHit hit =
+            surf1[facei].nearestPoint(samplePt, points);
 
-        const scalar dist = mag(centre - samplePt);
-        if (dist < minDist)
+        if (hit.distance() < minDist)
         {
-            minDist = dist;
+            minDist = hit.distance();;
             minIndex = facei;
         }
     }
 
     const face& f = surf1[minIndex];
 
-    Info<< "Face with nearest centre:" << nl
+    Info<< "Nearest face:" << nl
         << "    index        : " << minIndex << nl
         << "    centre       : " << f.centre(points) << nl
         << "    face         : " << f << nl

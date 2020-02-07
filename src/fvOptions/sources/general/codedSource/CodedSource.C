@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -29,6 +29,19 @@ License
 #include "dynamicCode.H"
 #include "dynamicCodeContext.H"
 
+// * * * * * * * * * * * Protected Static Data Members * * * * * * * * * * * //
+
+template<class Type>
+const Foam::wordList Foam::fv::CodedSource<Type>::codeKeys_ =
+{
+    "codeAddSup",
+    "codeCorrect",
+    "codeInclude",
+    "codeSetValue",
+    "localCode"
+};
+
+
 // * * * * * * * * * * * * Protected Member Functions  * * * * * * * * * * * //
 
 template<class Type>
@@ -44,11 +57,6 @@ void Foam::fv::CodedSource<Type>::prepare
     dynCode.setFilterVariable("typeName", name_);
     dynCode.setFilterVariable("TemplateType", sourceType);
     dynCode.setFilterVariable("SourceType", sourceType + "Source");
-
-    //dynCode.removeFilterVariable("code");
-    dynCode.setFilterVariable("codeCorrect", codeCorrect_);
-    dynCode.setFilterVariable("codeAddSup", codeAddSup_);
-    dynCode.setFilterVariable("codeSetValue", codeSetValue_);
 
     // compile filtered C template
     dynCode.addCompileFile("codedFvOptionTemplate.C");
@@ -81,13 +89,6 @@ void Foam::fv::CodedSource<Type>::prepare
 
 
 template<class Type>
-Foam::dlLibraryTable& Foam::fv::CodedSource<Type>::libs() const
-{
-    return const_cast<Time&>(mesh_.time()).libs();
-}
-
-
-template<class Type>
 Foam::string Foam::fv::CodedSource<Type>::description() const
 {
     return "fvOption:: " + name_;
@@ -105,6 +106,13 @@ template<class Type>
 const Foam::dictionary& Foam::fv::CodedSource<Type>::codeDict() const
 {
     return coeffs_;
+}
+
+
+template<class Type>
+const Foam::wordList& Foam::fv::CodedSource<Type>::codeKeys() const
+{
+    return codeKeys_;
 }
 
 
@@ -158,7 +166,7 @@ void Foam::fv::CodedSource<Type>::correct
             << ">::correct for source " << name_ << endl;
     }
 
-    updateLibrary(name_);
+    updateLibrary();
     redirectFvOption().correct(field);
 }
 
@@ -176,7 +184,7 @@ void Foam::fv::CodedSource<Type>::addSup
             << ">::addSup for source " << name_ << endl;
     }
 
-    updateLibrary(name_);
+    updateLibrary();
     redirectFvOption().addSup(eqn, fieldi);
 }
 
@@ -195,7 +203,7 @@ void Foam::fv::CodedSource<Type>::addSup
             << ">::addSup for source " << name_ << endl;
     }
 
-    updateLibrary(name_);
+    updateLibrary();
     redirectFvOption().addSup(rho, eqn, fieldi);
 }
 
@@ -213,7 +221,7 @@ void Foam::fv::CodedSource<Type>::constrain
             << ">::constrain for source " << name_ << endl;
     }
 
-    updateLibrary(name_);
+    updateLibrary();
     redirectFvOption().constrain(eqn, fieldi);
 }
 

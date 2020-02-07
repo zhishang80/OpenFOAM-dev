@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::turbulenceModel
-
-Group
-    grpTurbulence
 
 Description
     Abstract base class for turbulence models (RAS, LES and laminar).
@@ -62,7 +59,6 @@ class turbulenceModel
 :
     public IOdictionary
 {
-
 protected:
 
     // Protected data
@@ -76,17 +72,6 @@ protected:
 
         //- Near wall distance boundary field
         nearWallDist y_;
-
-
-private:
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        turbulenceModel(const turbulenceModel&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const turbulenceModel&);
 
 
 public:
@@ -108,6 +93,9 @@ public:
             const surfaceScalarField& phi,
             const word& propertiesName
         );
+
+        //- Disallow default bitwise copy construction
+        turbulenceModel(const turbulenceModel&) = delete;
 
 
     //- Destructor
@@ -136,7 +124,7 @@ public:
         //- Helper function to return the name of the turbulence G field
         inline word GName() const
         {
-            return word(type() + ":G");
+            return modelName("G");
         }
 
         //- Access function to velocity field
@@ -211,6 +199,12 @@ public:
 
         //- Solve the turbulence equations and correct the turbulence viscosity
         virtual void correct() = 0;
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const turbulenceModel&) = delete;
 };
 
 

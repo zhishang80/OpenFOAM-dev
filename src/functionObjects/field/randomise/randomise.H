@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::functionObjects::randomise
-
-Group
-    grpFieldFunctionObjects
 
 Description
     Adds a random component to a field, with a specified perturbation magnitude.
@@ -62,13 +59,13 @@ class randomise
 {
     // Private member data
 
-        //- The magnitude of the purturbation
+        //- The magnitude of the perturbation
         scalar magPerturbation_;
 
 
     // Private Member Functions
 
-        //- Calculate the randomisenitude of the field and register the result
+        //- Add random component to the field and register the result
         template<class Type>
         bool calcRandomised();
 

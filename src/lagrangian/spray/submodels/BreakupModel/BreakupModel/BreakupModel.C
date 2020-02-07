@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -81,7 +81,7 @@ Foam::BreakupModel<CloudType>::BreakupModel
         const dictionary coeffs(dict.subDict("TABCoeffs"));
         coeffs.lookup("Comega") >> TABComega_;
         coeffs.lookup("Cmu") >> TABCmu_;
-        scalar WeCrit(readScalar(coeffs.lookup("WeCrit")));
+        scalar WeCrit(coeffs.template lookup<scalar>("WeCrit"));
         TABtwoWeCrit_ = 2*WeCrit;
     }
 }

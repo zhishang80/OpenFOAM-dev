@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -186,38 +186,30 @@ bool Foam::molecule::move
 }
 
 
-void Foam::molecule::transformProperties(const tensor& T)
+void Foam::molecule::transformProperties(const transformer& transform)
 {
-    particle::transformProperties(T);
+    particle::transformProperties(transform);
 
-    Q_ = T & Q_;
+    Q_ = transform.T() & Q_;
 
-    v_ = transform(T, v_);
+    v_ = transform.transform(v_);
 
-    a_ = transform(T, a_);
+    a_ = transform.transform(a_);
 
-    pi_ = Q_.T() & transform(T, Q_ & pi_);
+    pi_ = Q_.T() & transform.transform(Q_ & pi_);
 
-    tau_ = Q_.T() & transform(T, Q_ & tau_);
+    tau_ = Q_.T() & transform.transform(Q_ & tau_);
 
-    rf_ = transform(T, rf_);
+    rf_ = transform.transform(rf_);
 
-    sitePositions_ = position() + (T & (sitePositions_ - position()));
+    transform.transformList(siteForces_);
 
-    siteForces_ = T & siteForces_;
-}
-
-
-void Foam::molecule::transformProperties(const vector& separation)
-{
-    particle::transformProperties(separation);
+    sitePositions_ = transform.transformPosition(vectorField(sitePositions_));
 
     if (special_ == SPECIAL_TETHERED)
     {
-        specialPosition_ += separation;
+        specialPosition_ = transform.transformPosition(specialPosition_);
     }
-
-    sitePositions_ = sitePositions_ + separation;
 }
 
 

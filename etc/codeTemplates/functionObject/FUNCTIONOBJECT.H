@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
+   \\    /   O peration     | Website:  https://openfoam.org
     \\  /    A nd           | Copyright (C) YEAR OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
@@ -23,8 +23,6 @@ License
 
 Class
     Foam::functionObjects::FUNCTIONOBJECT
-
-Group
 
 Description
     This function object...
@@ -76,7 +74,7 @@ class FUNCTIONOBJECT
 :
     public fvMeshFunctionObject
 {
-    // Private data
+    // Private Data
 
         //- word
         word wordData_;
@@ -89,13 +87,6 @@ class FUNCTIONOBJECT
 
 
     // Private Member Functions
-
-
-        //- Disallow default bitwise copy construct
-        FUNCTIONOBJECT(const FUNCTIONOBJECT&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const FUNCTIONOBJECT&);
 
 
 public:
@@ -113,6 +104,9 @@ public:
             const Time& runTime,
             const dictionary& dict
         );
+
+        //- Disallow default bitwise copy construction
+        FUNCTIONOBJECT(const FUNCTIONOBJECT&) = delete;
 
 
     //- Destructor
@@ -132,6 +126,12 @@ public:
 
         //- Write the FUNCTIONOBJECT
         virtual bool write();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const FUNCTIONOBJECT&) = delete;
 };
 
 

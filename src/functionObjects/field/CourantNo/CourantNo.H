@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::functionObjects::CourantNo
-
-Group
-    grpFieldFunctionObjects
 
 Description
     Calculates and outputs the Courant number as a volScalarField.  The field is
@@ -62,7 +59,7 @@ class CourantNo
 :
     public fieldExpression
 {
-    // Private data
+    // Private Data
 
         //- Name of flux field, default is "phi"
         word phiName_;

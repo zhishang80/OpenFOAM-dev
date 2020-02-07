@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2013 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::thermalBaffleModel
+    Foam::regionModels::thermalBaffleModels::thermalBaffleModel
 
 Description
 
@@ -60,15 +60,7 @@ class thermalBaffleModel
 :
     public regionModel1D
 {
-private:
-
     // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        thermalBaffleModel(const thermalBaffleModel&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const thermalBaffleModel&);
 
         //- Initialize thermal Baffle
         void init();
@@ -150,6 +142,9 @@ public:
             const dictionary& dict
         );
 
+        //- Disallow default bitwise copy construction
+        thermalBaffleModel(const thermalBaffleModel&) = delete;
+
 
     // Selectors
 
@@ -202,7 +197,7 @@ public:
 
             // Fields
 
-                //- Return density [kg/m3]
+                //- Return density [kg/m^3]
                 virtual const volScalarField& rho() const = 0;
 
                 //- Return const temperature [K]
@@ -222,6 +217,12 @@ public:
 
             //- Pre-evolve region
             virtual void preEvolveRegion();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const thermalBaffleModel&) = delete;
 };
 
 

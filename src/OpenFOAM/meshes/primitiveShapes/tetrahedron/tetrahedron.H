@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -42,7 +42,6 @@ SourceFiles
 #include "point.H"
 #include "primitiveFieldsFwd.H"
 #include "pointHit.H"
-#include "cachedRandom.H"
 #include "Random.H"
 #include "FixedList.H"
 #include "UList.H"
@@ -83,9 +82,7 @@ inline Ostream& operator<<
 template<class Point, class PointRef>
 class tetrahedron
 {
-private:
-
-    // Private data
+    // Private Data
 
         PointRef a_, b_, c_, d_;
 
@@ -171,10 +168,6 @@ public:
             //  uniform distribution
             inline Point randomPoint(Random& rndGen) const;
 
-            //- Return a random point in the tetrahedron from a
-            //  uniform distribution
-            inline Point randomPoint(cachedRandom& rndGen) const;
-
             //- Calculate the point from the given barycentric coordinates.
             inline Point barycentricToPoint(const barycentric& bary) const;
 
@@ -220,7 +213,7 @@ public:
             boundBox bounds() const;
 
 
-    // IOstream operators
+    // IOstream Operators
 
         friend Istream& operator>> <Point, PointRef>
         (

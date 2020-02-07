@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -72,26 +72,12 @@ Foam::tmp<Foam::volScalarField> Foam::blendingMethods::noBlending::f1
 {
     const fvMesh& mesh(phase1.mesh());
 
-    return
-        tmp<volScalarField>
-        (
-            new volScalarField
-            (
-                IOobject
-                (
-                    "f",
-                    mesh.time().timeName(),
-                    mesh
-                ),
-                mesh,
-                dimensionedScalar
-                (
-                    "f",
-                    dimless,
-                    phase2.name() == continuousPhase_
-                )
-            )
-        );
+    return volScalarField::New
+    (
+        "f",
+        mesh,
+        dimensionedScalar(dimless, phase2.name() == continuousPhase_)
+    );
 }
 
 
@@ -103,26 +89,12 @@ Foam::tmp<Foam::volScalarField> Foam::blendingMethods::noBlending::f2
 {
     const fvMesh& mesh(phase1.mesh());
 
-    return
-        tmp<volScalarField>
-        (
-            new volScalarField
-            (
-                IOobject
-                (
-                    "f",
-                    mesh.time().timeName(),
-                    mesh
-                ),
-                mesh,
-                dimensionedScalar
-                (
-                    "f",
-                    dimless,
-                    phase1.name() == continuousPhase_
-                )
-            )
-        );
+    return volScalarField::New
+    (
+        "f",
+        mesh,
+        dimensionedScalar(dimless, phase1.name() == continuousPhase_)
+    );
 }
 
 

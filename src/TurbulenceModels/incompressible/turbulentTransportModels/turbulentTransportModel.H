@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -61,12 +61,12 @@ namespace Foam
         typedef RASModel<turbulenceModel> RASModel;
         typedef LESModel<turbulenceModel> LESModel;
 
-        template<class BasicCompressibleTurbulenceModel>
-        autoPtr<BasicCompressibleTurbulenceModel> New
+        template<class BasicIncompressibleTurbulenceModel>
+        autoPtr<BasicIncompressibleTurbulenceModel> New
         (
             const volVectorField& U,
             const surfaceScalarField& phi,
-            const typename BasicCompressibleTurbulenceModel::transportModel&
+            const typename BasicIncompressibleTurbulenceModel::transportModel&
                 transport,
             const word& propertiesName = turbulenceModel::propertiesName
         );

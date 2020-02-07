@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -64,32 +64,21 @@ void Foam::cyclicACMIPolyPatch::resetAMI() const
                     << endl;
             }
 
-            //WarningInFunction
-            //    << "The mesh already has cellCentres calculated when"
-            //    << " resetting ACMI " << name() << "." << endl
-            //    << "This is a problem since ACMI adapts the face areas"
-            //    << " (to close cells) so this has" << endl
-            //    << "to be done before cell centre calculation." << endl
-            //    << "This can happen if e.g. the cyclicACMI is after"
-            //    << " any processor patches in the boundary." << endl;
             const_cast<polyMesh&>
             (
                 boundaryMesh().mesh()
             ).primitiveMesh::clearGeom();
         }
 
-
         // Trigger re-building of faceAreas
         (void)boundaryMesh().mesh().faceAreas();
-
 
         // Calculate the AMI using partial face-area-weighted. This leaves
         // the weights as fractions of local areas (sum(weights) = 1 means
         // face is fully covered)
         cyclicAMIPolyPatch::resetAMI();
 
-        AMIPatchToPatchInterpolation& AMI =
-            const_cast<AMIPatchToPatchInterpolation&>(this->AMI());
+        AMIInterpolation& AMI = this->AMIs_[0];
 
         srcMask_ =
             min(scalar(1) - tolerance_, max(tolerance_, AMI.srcWeightsSum()));
@@ -115,7 +104,7 @@ void Foam::cyclicACMIPolyPatch::resetAMI() const
         if (tgtMask_.size())
         {
             const cyclicACMIPolyPatch& cp =
-                refCast<const cyclicACMIPolyPatch>(this->neighbPatch());
+                refCast<const cyclicACMIPolyPatch>(this->nbrPatch());
             const polyPatch& pp = cp.nonOverlapPatch();
 
             vectorField::subField Sf = cp.faceAreas();
@@ -174,25 +163,10 @@ void Foam::cyclicACMIPolyPatch::resetAMI() const
 
 void Foam::cyclicACMIPolyPatch::initGeometry(PstreamBuffers& pBufs)
 {
-    if (debug)
-    {
-        Pout<< "cyclicACMIPolyPatch::initGeometry : " << name() << endl;
-    }
-
     cyclicAMIPolyPatch::initGeometry(pBufs);
 
     // Initialise the AMI
     resetAMI();
-}
-
-
-void Foam::cyclicACMIPolyPatch::calcGeometry(PstreamBuffers& pBufs)
-{
-    if (debug)
-    {
-        Pout<< "cyclicACMIPolyPatch::calcGeometry : " << name() << endl;
-    }
-    cyclicAMIPolyPatch::calcGeometry(pBufs);
 }
 
 
@@ -202,58 +176,10 @@ void Foam::cyclicACMIPolyPatch::initMovePoints
     const pointField& p
 )
 {
-    if (debug)
-    {
-        Pout<< "cyclicACMIPolyPatch::initMovePoints : " << name() << endl;
-    }
     cyclicAMIPolyPatch::initMovePoints(pBufs, p);
 
     // Initialise the AMI
     resetAMI();
-}
-
-
-void Foam::cyclicACMIPolyPatch::movePoints
-(
-    PstreamBuffers& pBufs,
-    const pointField& p
-)
-{
-    if (debug)
-    {
-        Pout<< "cyclicACMIPolyPatch::movePoints : " << name() << endl;
-    }
-    cyclicAMIPolyPatch::movePoints(pBufs, p);
-}
-
-
-void Foam::cyclicACMIPolyPatch::initUpdateMesh(PstreamBuffers& pBufs)
-{
-    if (debug)
-    {
-        Pout<< "cyclicACMIPolyPatch::initUpdateMesh : " << name() << endl;
-    }
-    cyclicAMIPolyPatch::initUpdateMesh(pBufs);
-}
-
-
-void Foam::cyclicACMIPolyPatch::updateMesh(PstreamBuffers& pBufs)
-{
-    if (debug)
-    {
-        Pout<< "cyclicACMIPolyPatch::updateMesh : " << name() << endl;
-    }
-    cyclicAMIPolyPatch::updateMesh(pBufs);
-}
-
-
-void Foam::cyclicACMIPolyPatch::clearGeom()
-{
-    if (debug)
-    {
-        Pout<< "cyclicACMIPolyPatch::clearGeom : " << name() << endl;
-    }
-    cyclicAMIPolyPatch::clearGeom();
 }
 
 
@@ -278,8 +204,7 @@ Foam::cyclicACMIPolyPatch::cyclicACMIPolyPatch
     const label start,
     const label index,
     const polyBoundaryMesh& bm,
-    const word& patchType,
-    const transformType transform
+    const word& patchType
 )
 :
     cyclicAMIPolyPatch
@@ -290,9 +215,8 @@ Foam::cyclicACMIPolyPatch::cyclicACMIPolyPatch
         index,
         bm,
         patchType,
-        transform,
         false,
-        AMIPatchToPatchInterpolation::imPartialFaceAreaWeight
+        AMIInterpolation::imPartialFaceAreaWeight
     ),
     nonOverlapPatchName_(word::null),
     nonOverlapPatchID_(-1),
@@ -322,7 +246,7 @@ Foam::cyclicACMIPolyPatch::cyclicACMIPolyPatch
         bm,
         patchType,
         false,
-        AMIPatchToPatchInterpolation::imPartialFaceAreaWeight
+        AMIInterpolation::imPartialFaceAreaWeight
     ),
     nonOverlapPatchName_(dict.lookup("nonOverlapPatch")),
     nonOverlapPatchID_(-1),
@@ -423,9 +347,9 @@ Foam::cyclicACMIPolyPatch::~cyclicACMIPolyPatch()
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-const Foam::cyclicACMIPolyPatch& Foam::cyclicACMIPolyPatch::neighbPatch() const
+const Foam::cyclicACMIPolyPatch& Foam::cyclicACMIPolyPatch::nbrPatch() const
 {
-    const polyPatch& pp = this->boundaryMesh()[neighbPatchID()];
+    const polyPatch& pp = this->boundaryMesh()[nbrPatchID()];
     return refCast<const cyclicACMIPolyPatch>(pp);
 }
 
@@ -507,16 +431,16 @@ void Foam::cyclicACMIPolyPatch::calcGeometry
     const pointField& nbrCc
 )
 {
-    cyclicAMIPolyPatch::calcGeometry
-    (
-        referPatch,
-        thisCtrs,
-        thisAreas,
-        thisCc,
-        nbrCtrs,
-        nbrAreas,
-        nbrCc
-    );
+    static_cast<cyclicTransform&>(*this) =
+        cyclicTransform
+        (
+            name(),
+            thisAreas,
+            *this,
+            nbrPatchName(),
+            nbrPatch(),
+            matchTolerance()
+        );
 }
 
 
@@ -545,9 +469,7 @@ bool Foam::cyclicACMIPolyPatch::order
 void Foam::cyclicACMIPolyPatch::write(Ostream& os) const
 {
     cyclicAMIPolyPatch::write(os);
-
-    os.writeKeyword("nonOverlapPatch") << nonOverlapPatchName_
-        << token::END_STATEMENT << nl;
+    writeEntry(os, "nonOverlapPatch", nonOverlapPatchName_);
 }
 
 

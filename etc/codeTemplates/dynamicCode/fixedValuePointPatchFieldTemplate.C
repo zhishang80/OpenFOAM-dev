@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
+   \\    /   O peration     | Website:  https://openfoam.org
     \\  /    A nd           | Copyright (C) YEAR OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
@@ -123,11 +123,10 @@ ${typeName}FixedValuePointPatch${FieldType}
 (
     const pointPatch& p,
     const DimensionedField<${TemplateType}, pointMesh>& iF,
-    const dictionary& dict,
-    const bool valueRequired
+    const dictionary& dict
 )
 :
-    fixedValuePointPatchField<${TemplateType}>(p, iF, dict, valueRequired)
+    fixedValuePointPatchField<${TemplateType}>(p, iF, dict)
 {
     if (${verbose:-false})
     {

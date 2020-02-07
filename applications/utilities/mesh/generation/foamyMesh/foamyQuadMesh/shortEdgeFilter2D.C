@@ -1,15 +1,15 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
 
     OpenFOAM is free software: you can redistribute it and/or modify it
-    under the terms_ of the GNU General Public License as published by
+    under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
@@ -151,8 +151,7 @@ Foam::shortEdgeFilter2D::shortEdgeFilter2D
     const dictionary& dict
 )
 :
-    cv2Dmesh_(cv2Dmesh),
-    shortEdgeFilterFactor_(readScalar(dict.lookup("shortEdgeFilterFactor"))),
+    shortEdgeFilterFactor_(dict.lookup<scalar>("shortEdgeFilterFactor")),
     edgeAttachedToBoundaryFactor_
     (
         dict.lookupOrDefault<scalar>("edgeAttachedToBoundaryFactor", 2.0)
@@ -204,7 +203,7 @@ Foam::shortEdgeFilter2D::shortEdgeFilter2D
 
     points2D.clear();
 
-    ms_ = MeshedSurface<face>(xferMove(points), xferMove(faces));
+    ms_ = MeshedSurface<face>(move(points), move(faces));
 
     Info<< "Meshed surface stats before edge filtering :" << endl;
     ms_.writeStats(Info);
@@ -535,9 +534,9 @@ Foam::shortEdgeFilter2D::filter()
 
     MeshedSurface<face> fMesh
     (
-        xferMove(newPoints),
-        xferMove(newFaces),
-        xferCopy(List<surfZone>())
+        move(newPoints),
+        move(newFaces),
+        List<surfZone>()
     );
 
     updateEdgeRegionMap

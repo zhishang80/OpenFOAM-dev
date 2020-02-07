@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::curvatureSeparation
+    Foam::regionModels::surfaceFilmModels::curvatureSeparation
 
 Description
     Curvature film separation model
@@ -68,17 +68,6 @@ class curvatureSeparation
 :
     public injectionModel
 {
-private:
-
-    // Private member functions
-
-        //- Disallow default bitwise copy construct
-        curvatureSeparation(const curvatureSeparation&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const curvatureSeparation&);
-
-
 protected:
 
     // Protected data
@@ -125,6 +114,9 @@ public:
             const dictionary& dict
         );
 
+        //- Disallow default bitwise copy construction
+        curvatureSeparation(const curvatureSeparation&) = delete;
+
 
     //- Destructor
     virtual ~curvatureSeparation();
@@ -141,6 +133,12 @@ public:
                 scalarField& massToInject,
                 scalarField& diameterToInject
             );
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const curvatureSeparation&) = delete;
 };
 
 

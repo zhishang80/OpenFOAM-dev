@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -57,7 +57,6 @@ Usage
 #include "polyTopoChange.H"
 #include "emptyPolyPatch.H"
 #include "cyclicPolyPatch.H"
-#include "cellSet.H"
 
 #include "argList.H"
 #include "OSspecific.H"
@@ -202,13 +201,13 @@ int main(int argc, char *argv[])
     if (!meshDictIO.typeHeaderOk<IOdictionary>(true))
     {
         FatalErrorInFunction
-            << meshDictIO.objectPath()
+            << meshDictIO.localObjectPath()
             << nl
             << exit(FatalError);
     }
 
     Info<< "Creating block mesh from\n    "
-        << meshDictIO.objectPath() << endl;
+        << meshDictIO.localObjectPath() << endl;
 
     IOdictionary meshDict(meshDictIO);
     blockMesh blocks(meshDict, regionName);
@@ -243,7 +242,7 @@ int main(int argc, char *argv[])
 
             forAll(cellCentres, celli)
             {
-                //point cc = b.blockShape().centre(b.points());
+                // point cc = b.blockShape().centre(b.points());
                 const point& cc = cellCentres[celli];
 
                 str << "v " << cc.x() << ' ' << cc.y() << ' ' << cc.z() << nl;
@@ -268,7 +267,7 @@ int main(int argc, char *argv[])
             runTime.constant(),
             runTime
         ),
-        xferCopy(blocks.points()),           // could we re-use space?
+        clone(blocks.points()),           // could we re-use space?
         blocks.cells(),
         blocks.patches(),
         blocks.patchNames(),
@@ -354,8 +353,6 @@ int main(int argc, char *argv[])
 
         List<cellZone*> cz(zoneMap.size());
 
-        Info<< nl << "Writing cell zones as cellSets" << endl;
-
         forAllConstIter(HashTable<label>, zoneMap, iter)
         {
             label zoneI = iter();
@@ -367,10 +364,6 @@ int main(int argc, char *argv[])
                 zoneI,
                 mesh.cellZones()
             );
-
-            // Write as cellSet for ease of processing
-            cellSet cset(mesh, iter.key(), zoneCells[zoneI].shrink());
-            cset.write();
         }
 
         mesh.pointZones().setSize(0);

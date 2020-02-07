@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,9 +24,6 @@ License
 Class
     Foam::functionObjects::fieldMinMax
 
-Group
-    grpFieldFunctionObjects
-
 Description
     Calculates the value and location of scalar minimum and maximum for a list
     of user-specified fields.
@@ -42,7 +39,6 @@ Description
         type        fieldMinMax;
         libs        ("libfieldFunctionObjects.so");
         ...
-        write       yes;
         log         yes;
         location    yes;
         mode        magnitude;
@@ -58,7 +54,6 @@ Usage
     \table
         Property     | Description             | Required    | Default value
         type         | type name: fieldMinMax  | yes         |
-        write        | write min/max data to file |  no      | yes
         log          | write min/max data to standard output | no | no
         location     | write location of the min/max value | no | yes
         mode         | calculation mode: magnitude or component | no | magnitude
@@ -100,10 +95,10 @@ class fieldMinMax
 {
 public:
 
-    enum modeType
+    enum class modeType
     {
-        mdMag,
-        mdCmpt
+        mag,
+        cmpt
     };
 
 protected:
@@ -141,12 +136,6 @@ protected:
             const Type& maxValue
         );
 
-        //- Disallow default bitwise copy construct
-        fieldMinMax(const fieldMinMax&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const fieldMinMax&);
-
         //- Calculate the field min/max
         template<class Type>
         void calcMinMaxFields
@@ -175,6 +164,9 @@ public:
             const dictionary& dict
         );
 
+        //- Disallow default bitwise copy construction
+        fieldMinMax(const fieldMinMax&) = delete;
+
 
     //- Destructor
     virtual ~fieldMinMax();
@@ -190,6 +182,12 @@ public:
 
         //- Write the fieldMinMax
         virtual bool write();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const fieldMinMax&) = delete;
 };
 
 

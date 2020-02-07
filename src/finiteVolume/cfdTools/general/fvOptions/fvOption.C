@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -75,7 +75,7 @@ Foam::autoPtr<Foam::fv::option> Foam::fv::option::New
     Info<< indent
         << "Selecting finite volume options model type " << modelType << endl;
 
-    const_cast<Time&>(mesh.time()).libs().open
+    libs.open
     (
         coeffs,
         "libs",

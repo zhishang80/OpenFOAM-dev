@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -136,9 +136,8 @@ Foam::fv::interRegionHeatTransferModel::interRegionHeatTransferModel
         mesh,
         dimensionedScalar
         (
-            "htc",
             dimEnergy/dimTime/dimTemperature/dimVolume,
-            0.0
+            0
         ),
         zeroGradientFvPatchScalarField::typeName
     ),
@@ -180,18 +179,7 @@ void Foam::fv::interRegionHeatTransferModel::addSup
 
     tmp<volScalarField> tTmapped
     (
-        new volScalarField
-        (
-            IOobject
-            (
-                type() + ":Tmapped",
-                mesh_.time().timeName(),
-                mesh_,
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
-            T
-        )
+        volScalarField::New(type() + ":Tmapped", T)
     );
 
     volScalarField& Tmapped = tTmapped.ref();

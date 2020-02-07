@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -57,7 +57,7 @@ class regionCoupledFvPatch
     public fvPatch,
     public regionCoupledBaseFvPatch
 {
-    // Private data
+    // Private Data
 
         const regionCoupledPolyPatch& regionCoupledPolyPatch_;
 
@@ -70,7 +70,7 @@ class regionCoupledFvPatch
             (
                 nbrFvMesh().boundary()
                 [
-                    neighbPatchID()
+                    nbrPatchID()
                 ]
             );
         }

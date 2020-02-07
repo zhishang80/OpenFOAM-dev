@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,9 +24,6 @@ License
 Class
     Foam::waveSurfacePressureFvPatchScalarField
 
-Group
-    grpInletBoundaryConditions
-
 Description
     This is a pressure boundary condition, whose value is calculated as
     the hydrostatic pressure based on a given displacement:
@@ -36,8 +33,8 @@ Description
         \f]
 
     \vartable
-        \rho  | density [kg/m3]
-        g     | acceleration due to gravity [m/s2]
+        \rho  | density [kg/m^3]
+        g     | acceleration due to gravity [m/s^2]
         \zeta | wave amplitude [m]
     \endvartable
 
@@ -109,7 +106,7 @@ public:
 
 private:
 
-    // Private data
+    // Private Data
 
         //- Flux field name
         word phiName_;
@@ -157,7 +154,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         waveSurfacePressureFvPatchScalarField
         (
             const waveSurfacePressureFvPatchScalarField&
@@ -172,7 +169,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         waveSurfacePressureFvPatchScalarField
         (
             const waveSurfacePressureFvPatchScalarField&,
@@ -192,7 +189,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Evaluation functions
 

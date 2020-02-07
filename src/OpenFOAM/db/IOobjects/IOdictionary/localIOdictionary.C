@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -91,10 +91,27 @@ Foam::localIOdictionary::localIOdictionary
 }
 
 
+Foam::localIOdictionary::localIOdictionary
+(
+    localIOdictionary&& dict
+)
+:
+    baseIOdictionary(move(dict))
+{}
+
+
 // * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * * //
 
 Foam::localIOdictionary::~localIOdictionary()
 {}
+
+
+// * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //
+
+void Foam::localIOdictionary::operator=(localIOdictionary&& rhs)
+{
+    baseIOdictionary::operator=(move(rhs));
+}
 
 
 // ************************************************************************* //

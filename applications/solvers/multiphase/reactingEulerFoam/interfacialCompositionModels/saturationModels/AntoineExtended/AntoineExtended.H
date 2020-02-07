@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -60,7 +60,7 @@ class AntoineExtended
 :
     public Antoine
 {
-    // Private data
+    // Private Data
 
         //- Constant D
         dimensionedScalar D_;
@@ -81,7 +81,7 @@ public:
     // Constructors
 
         //- Construct from a dictionary
-        AntoineExtended(const dictionary& dict, const objectRegistry& db);
+        AntoineExtended(const dictionary& dict, const phasePair& pair);
 
 
     //- Destructor
@@ -93,7 +93,7 @@ public:
         //- Saturation pressure
         virtual tmp<volScalarField> pSat(const volScalarField& T) const;
 
-        //- Saturation pressure derivetive w.r.t. temperature
+        //- Saturation pressure derivative w.r.t. temperature
         virtual tmp<volScalarField> pSatPrime(const volScalarField& T) const;
 
         //- Natural log of the saturation pressure

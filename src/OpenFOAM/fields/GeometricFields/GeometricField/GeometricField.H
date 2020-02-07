@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -93,7 +93,7 @@ class GeometricField
 
 public:
 
-    // Public typedefs
+    // Public Typedefs
 
         //- Type of mesh on which this GeometricField is instantiated
         typedef typename GeoMesh::Mesh Mesh;
@@ -114,7 +114,7 @@ public:
     :
         public FieldField<PatchField, Type>
     {
-        // Private data
+        // Private Data
 
             //- Reference to BoundaryMesh for which this field is defined
             const BoundaryMesh& bmesh_;
@@ -129,7 +129,7 @@ public:
 
             //- Construct from a BoundaryMesh,
             //  reference to the internal field
-            //  and a patch type
+            //  and a patch field type
             Boundary
             (
                 const BoundaryMesh&,
@@ -139,8 +139,8 @@ public:
 
             //- Construct from a BoundaryMesh,
             //  reference to the internal field
-            //  and a wordList of patch types and optional the actual patch
-            //  types (to override constraint patches)
+            //  and a wordList of patch field types and optionally
+            //  the actual patch types (to override constraint patches)
             Boundary
             (
                 const BoundaryMesh&,
@@ -166,7 +166,7 @@ public:
                 const Boundary&
             );
 
-            //- Construct as copy
+            //- Copy constructor
             //  Dangerous because Field may be set to a field which gets deleted
             //  Need new type of BoundaryField, one which is part of a geometric
             //  field for which snGrad etc. may be called and a free standing
@@ -174,6 +174,16 @@ public:
             Boundary
             (
                 const Boundary&
+            );
+
+            //- Move constructor
+            //  Dangerous because Field may be set to a field which gets deleted
+            //  Need new type of BoundaryField, one which is part of a geometric
+            //  field for which snGrad etc. may be called and a free standing
+            //  BoundaryField for which such operations are unavailable.
+            Boundary
+            (
+                Boundary&&
             );
 
             //- Construct from dictionary
@@ -185,7 +195,7 @@ public:
             );
 
 
-        // Member functions
+        // Member Functions
 
             //- Read the boundary field
             void readField
@@ -200,7 +210,7 @@ public:
             //- Evaluate boundary conditions
             void evaluate();
 
-            //- Return a list of the patch types
+            //- Return a list of the patch field types
             wordList types() const;
 
             //- Return BoundaryField of the cell values neighbouring
@@ -219,10 +229,13 @@ public:
             void writeEntry(const word& keyword, Ostream& os) const;
 
 
-        // Member operators
+        // Member Operators
 
-            //- Assignment to BoundaryField<Type, PatchField, BoundaryMesh>
+            //- Assignment operator
             void operator=(const Boundary&);
+
+            //- Move assignment operator
+            void operator=(Boundary&&);
 
             //- Assignment to FieldField<PatchField, Type>
             void operator=(const FieldField<PatchField, Type>&);
@@ -245,7 +258,7 @@ public:
 
 private:
 
-    // Private data
+    // Private Data
 
         //- Current time index.
         //  Used to trigger the storing of the old-time value
@@ -276,7 +289,7 @@ public:
     TypeName("GeometricField");
 
 
-    // Public typedefs
+    // Public Typedefs
 
         typedef typename Field<Type>::cmptType cmptType;
 
@@ -288,7 +301,7 @@ public:
 
     // Constructors
 
-        //- Constructor given IOobject, mesh, dimensions and patch type.
+        //- Constructor given IOobject, mesh, dimensions and patch field type.
         //  This allocates storage for the field but not values.
         //  Used only within this class to create TEMPORARY variables
         GeometricField
@@ -299,7 +312,7 @@ public:
             const word& patchFieldType=PatchField<Type>::calculatedType()
         );
 
-        //- Constructor given IOobject, mesh, dimensions and patch types.
+        //- Constructor given IOobject, mesh, dimensions and patch field types.
         //  This allocates storage for the field but not values.
         //  Used only within this class to create TEMPORARY variables
         GeometricField
@@ -311,7 +324,8 @@ public:
             const wordList& actualPatchTypes = wordList()
         );
 
-        //- Constructor given IOobject, mesh, dimensioned<Type> and patch type.
+        //- Constructor given IOobject, mesh, dimensioned<Type>
+        //  and patch field type.
         GeometricField
         (
             const IOobject&,
@@ -320,7 +334,8 @@ public:
             const word& patchFieldType=PatchField<Type>::calculatedType()
         );
 
-        //- Constructor given IOobject, mesh, dimensioned<Type> and patch types.
+        //- Constructor given IOobject, mesh, dimensioned<Type>
+        //  and patch field types.
         GeometricField
         (
             const IOobject&,
@@ -363,19 +378,23 @@ public:
             const dictionary&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         GeometricField
         (
             const GeometricField<Type, PatchField, GeoMesh>&
         );
 
+        //- Move constructor
+        GeometricField
+        (
+            GeometricField<Type, PatchField, GeoMesh>&&
+        );
+
         //- Construct as copy of tmp<GeometricField> deleting argument
-        #ifndef NoConstructFromTmp
         GeometricField
         (
             const tmp<GeometricField<Type, PatchField, GeoMesh>>&
         );
-        #endif
 
         //- Construct as copy resetting IO parameters
         GeometricField
@@ -385,13 +404,11 @@ public:
         );
 
         //- Construct as copy of tmp<GeometricField> resetting IO parameters
-        #ifndef NoConstructFromTmp
         GeometricField
         (
             const IOobject&,
             const tmp<GeometricField<Type, PatchField, GeoMesh>>&
         );
-        #endif
 
         //- Construct as copy resetting name
         GeometricField
@@ -401,15 +418,13 @@ public:
         );
 
         //- Construct as copy resetting name
-        #ifndef NoConstructFromTmp
         GeometricField
         (
             const word& newName,
             const tmp<GeometricField<Type, PatchField, GeoMesh>>&
         );
-        #endif
 
-        //- Construct as copy resetting IO parameters and patch type
+        //- Construct as copy resetting IO parameters and patch field type
         GeometricField
         (
             const IOobject&,
@@ -427,7 +442,6 @@ public:
         );
 
         //- Construct as copy resetting IO parameters and boundary types
-        #ifndef NoConstructFromTmp
         GeometricField
         (
             const IOobject&,
@@ -435,10 +449,73 @@ public:
             const wordList& patchFieldTypes,
             const wordList& actualPatchTypes = wordList()
         );
-        #endif
 
         //- Clone
         tmp<GeometricField<Type, PatchField, GeoMesh>> clone() const;
+
+        //- Return a temporary field constructed from name,
+        //  internal field and list of patch fields
+        static tmp<GeometricField<Type, PatchField, GeoMesh>> New
+        (
+            const word& name,
+            const Internal&,
+            const PtrList<PatchField<Type>>&
+        );
+
+        //- Return a temporary field constructed from name, mesh, dimensionSet
+        //  and patch field type.
+        static tmp<GeometricField<Type, PatchField, GeoMesh>> New
+        (
+            const word& name,
+            const Mesh&,
+            const dimensionSet&,
+            const word& patchFieldType=PatchField<Type>::calculatedType()
+        );
+
+        //- Return a temporary field constructed from mesh, dimensioned<Type>
+        //  and patch field type.
+        static tmp<GeometricField<Type, PatchField, GeoMesh>> New
+        (
+            const word& name,
+            const Mesh&,
+            const dimensioned<Type>&,
+            const word& patchFieldType=PatchField<Type>::calculatedType()
+        );
+
+        //- Return a temporary field constructed from mesh, dimensioned<Type>
+        //  and patch field types.
+        static tmp<GeometricField<Type, PatchField, GeoMesh>> New
+        (
+            const word& name,
+            const Mesh&,
+            const dimensioned<Type>&,
+            const wordList& patchFieldTypes,
+            const wordList& actualPatchTypes = wordList()
+        );
+
+        //- Rename temporary field and return
+        static tmp<GeometricField<Type, PatchField, GeoMesh>> New
+        (
+            const word& newName,
+            const tmp<GeometricField<Type, PatchField, GeoMesh>>&
+        );
+
+        //- Rename temporary field, reset patch field type and return
+        static tmp<GeometricField<Type, PatchField, GeoMesh>> New
+        (
+            const word& newName,
+            const tmp<GeometricField<Type, PatchField, GeoMesh>>&,
+            const word&
+        );
+
+        //- Rename and reset patch fields types of temporary field and return
+        static tmp<GeometricField<Type, PatchField, GeoMesh>> New
+        (
+            const word& newName,
+            const tmp<GeometricField<Type, PatchField, GeoMesh>>&,
+            const wordList& patchFieldTypes,
+            const wordList& actualPatchTypes = wordList()
+        );
 
 
     //- Destructor
@@ -558,6 +635,7 @@ public:
         );
 
         void max(const dimensioned<Type>&);
+
         void min(const dimensioned<Type>&);
 
         void maxMin
@@ -566,43 +644,22 @@ public:
             const dimensioned<Type>& maxDt
         );
 
-        void max
-        (
-            const GeometricField<Type, PatchField, GeoMesh>&,
-            const dimensioned<Type>&
-        );
 
-        void min
-        (
-            const GeometricField<Type, PatchField, GeoMesh>&,
-            const dimensioned<Type>&
-        );
-
-        void scale
-        (
-            const GeometricField<Type, PatchField, GeoMesh>&,
-            const GeometricField<Type, PatchField, GeoMesh>&
-        );
-
-        void scale
-        (
-            const GeometricField<Type, PatchField, GeoMesh>&,
-            const dimensioned<Type>&
-        );
-
-
-    // Member operators
+    // Member Operators
 
         //- Return a const-reference to the dimensioned internal field
         //  Useful in the formulation of source-terms for FV equations
         inline const Internal& operator()() const;
 
         void operator=(const GeometricField<Type, PatchField, GeoMesh>&);
+        void operator=(GeometricField<Type, PatchField, GeoMesh>&&);
         void operator=(const tmp<GeometricField<Type, PatchField, GeoMesh>>&);
         void operator=(const dimensioned<Type>&);
+        void operator=(const zero&);
 
         void operator==(const tmp<GeometricField<Type, PatchField, GeoMesh>>&);
         void operator==(const dimensioned<Type>&);
+        void operator==(const zero&);
 
         void operator+=(const GeometricField<Type, PatchField, GeoMesh>&);
         void operator+=(const tmp<GeometricField<Type, PatchField, GeoMesh>>&);

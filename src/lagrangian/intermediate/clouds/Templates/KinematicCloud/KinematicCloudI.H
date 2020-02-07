@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
+   \\    /   O peration     | Website:  https://openfoam.org
     \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
@@ -356,7 +356,7 @@ inline Foam::scalar Foam::KinematicCloud<CloudType>::Dmax() const
 
 
 template<class CloudType>
-inline Foam::cachedRandom& Foam::KinematicCloud<CloudType>::rndGen() const
+inline Foam::Random& Foam::KinematicCloud<CloudType>::rndGen() const
 {
     return rndGen_;
 }
@@ -457,19 +457,11 @@ Foam::KinematicCloud<CloudType>::vDotSweep() const
 {
     tmp<volScalarField> tvDotSweep
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                this->name() + ":vDotSweep",
-                this->db().time().timeName(),
-                this->db(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
+            this->name() + ":vDotSweep",
             mesh_,
-            dimensionedScalar("zero", dimless/dimTime, 0.0),
+            dimensionedScalar(dimless/dimTime, 0),
             extrapolatedCalculatedFvPatchScalarField::typeName
         )
     );
@@ -496,19 +488,11 @@ Foam::KinematicCloud<CloudType>::theta() const
 {
     tmp<volScalarField> ttheta
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                this->name() + ":theta",
-                this->db().time().timeName(),
-                this->db(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
+            this->name() + ":theta",
             mesh_,
-            dimensionedScalar("zero", dimless, 0.0),
+            dimensionedScalar(dimless, 0),
             extrapolatedCalculatedFvPatchScalarField::typeName
         )
     );
@@ -535,19 +519,11 @@ Foam::KinematicCloud<CloudType>::alpha() const
 {
     tmp<volScalarField> talpha
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                this->name() + ":alpha",
-                this->db().time().timeName(),
-                this->db(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
+            this->name() + ":alpha",
             mesh_,
-            dimensionedScalar("zero", dimless, 0.0)
+            dimensionedScalar(dimless, 0)
         )
     );
 
@@ -572,19 +548,11 @@ Foam::KinematicCloud<CloudType>::rhoEff() const
 {
     tmp<volScalarField> trhoEff
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                this->name() + ":rhoEff",
-                this->db().time().timeName(),
-                this->db(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
+            this->name() + ":rhoEff",
             mesh_,
-            dimensionedScalar("zero", dimDensity, 0.0)
+            dimensionedScalar(dimDensity, 0)
         )
     );
 

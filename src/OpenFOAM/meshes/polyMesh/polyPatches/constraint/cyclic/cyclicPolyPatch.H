@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -47,6 +47,7 @@ SourceFiles
 #define cyclicPolyPatch_H
 
 #include "coupledPolyPatch.H"
+#include "cyclicTransform.H"
 #include "edgeList.H"
 #include "polyBoundaryMesh.H"
 #include "diagTensorField.H"
@@ -63,86 +64,38 @@ namespace Foam
 
 class cyclicPolyPatch
 :
-    public coupledPolyPatch
+    public coupledPolyPatch,
+    public cyclicTransform
 {
-    // Private data
+    // Private Data
 
-        //- Name of other half
-        mutable word neighbPatchName_;
+        //- Name of cyclic neighbour patch
+        mutable word nbrPatchName_;
 
-        //- Optional patchGroup to find neighbPatch
+        //- Optional patchGroup to find neighbour patch
         const coupleGroupIdentifier coupleGroup_;
 
-        //- Index of other half
-        mutable label neighbPatchID_;
-
-        // For rotation
-
-            //- Axis of rotation for rotational cyclics
-            vector rotationAxis_;
-
-            //- Point on axis of rotation for rotational cyclics
-            point rotationCentre_;
-
-        // For translation
-
-            //- Translation vector
-            vector separationVector_;
-
+        //- Index of cyclic neighbour patch
+        mutable label nbrPatchID_;
 
         //- List of edges formed from connected points. e[0] is the point on
-        //  the first half of the patch, e[1] the corresponding point on the
-        //  second half.
+        //  this patch, e[1] the corresponding point on the cyclic neighbour.
         mutable edgeList* coupledPointsPtr_;
 
-        //- List of connected edges. e[0] is the edge on the first half of the
-        //  patch, e[1] the corresponding edge on the second half.
+        //- List of connected edges. e[0] is the edge on this patch,
+        //  e[1] the corresponding edge on the cyclic neigbour
         mutable edgeList* coupledEdgesPtr_;
 
-        //- Temporary storage of owner side patch during ordering.
-        mutable autoPtr<primitivePatch> ownerPatchPtr_;
+        //- Data to pass from owner.initOrder to nbr.order
+        mutable autoPtr<ownToNbrOrderData> ownToNbrOrderDataPtr_;
 
-
-    // Private Member Functions
-
-        //- Find amongst selected faces the one with the largest area
-        static label findMaxArea(const pointField&, const faceList&);
-
-        void calcTransforms
-        (
-            const primitivePatch& half0,
-            const pointField& half0Ctrs,
-            const vectorField& half0Areas,
-            const pointField& half1Ctrs,
-            const vectorField& half1Areas
-        );
-
-        // Face ordering
-
-            // Given a split of faces into left and right half calculate the
-            // centres and anchor points. Transform the left points so they
-            // align with the right ones
-            void getCentresAndAnchors
-            (
-                const primitivePatch& pp0,
-                const primitivePatch& pp1,
-
-                pointField& half0Ctrs,
-                pointField& half1Ctrs,
-                pointField& anchors0,
-                scalarField& tols
-            ) const;
-
-            //- Return normal of face at max distance from rotation axis
-            vector findFaceMaxRadius(const pointField& faceCentres) const;
+        //- Data to pass from owner.initOrder to nbr.order if debugging
+        mutable autoPtr<ownToNbrDebugOrderData> ownToNbrDebugOrderDataPtr_;
 
 
 protected:
 
     // Protected Member functions
-
-        //- Recalculate the transformation tensors
-        virtual void calcTransforms();
 
         //- Initialise the calculation of the patch geometry
         virtual void initGeometry(PstreamBuffers&);
@@ -203,8 +156,7 @@ public:
             const label start,
             const label index,
             const polyBoundaryMesh& bm,
-            const word& patchType,
-            const transformType transform = UNKNOWN
+            const word& patchType
         );
 
         //- Construct from components
@@ -215,11 +167,8 @@ public:
             const label start,
             const label index,
             const polyBoundaryMesh& bm,
-            const word& neighbPatchName,
-            const transformType transform,  // transformation type
-            const vector& rotationAxis,     // for rotation only
-            const point& rotationCentre,    // for rotation only
-            const vector& separationVector  // for translation only
+            const word& patchType,
+            const word& nbrPatchName
         );
 
         //- Construct from dictionary
@@ -244,7 +193,7 @@ public:
             const label index,
             const label newSize,
             const label newStart,
-            const word& neighbPatchName
+            const word& nbrPatchName
         );
 
         //- Construct given the original patch and a map
@@ -282,7 +231,7 @@ public:
                     index,
                     newSize,
                     newStart,
-                    neighbPatchName_
+                    nbrPatchName_
                 )
             );
         }
@@ -311,14 +260,14 @@ public:
     // Member Functions
 
         //- Neighbour patch name
-        const word& neighbPatchName() const;
+        const word& nbrPatchName() const;
 
         //- Neighbour patchID
-        virtual label neighbPatchID() const;
+        virtual label nbrPatchID() const;
 
         virtual bool owner() const
         {
-            return index() < neighbPatchID();
+            return index() < nbrPatchID();
         }
 
         virtual bool neighbour() const
@@ -326,9 +275,9 @@ public:
             return !owner();
         }
 
-        const cyclicPolyPatch& neighbPatch() const
+        const cyclicPolyPatch& nbrPatch() const
         {
-            const polyPatch& pp = this->boundaryMesh()[neighbPatchID()];
+            const polyPatch& pp = this->boundaryMesh()[nbrPatchID()];
             return refCast<const cyclicPolyPatch>(pp);
         }
 
@@ -342,23 +291,22 @@ public:
         //  calculation!
         const edgeList& coupledEdges() const;
 
-        //- Transform a patch-based position from other side to this side
-        virtual void transformPosition(pointField& l) const;
+        //- Return transformation between the coupled patches
+        virtual const transformer& transform() const
+        {
+            return cyclicTransform::transform();
+        }
 
-        //- Transform a patch-based position from other side to this side
-        virtual void transformPosition(point&, const label facei) const;
-
-
-        // Transformation
-
+        //- For a given patch face index, return the corresponding index of the
+        //  face on the neighbour
         label transformGlobalFace(const label facei) const
         {
-            label offset = facei-start();
-            label neighbStart = neighbPatch().start();
+            label offset = facei - start();
+            label neiStart = nbrPatch().start();
 
             if (offset >= 0 && offset < size())
             {
-                return neighbStart+offset;
+                return neiStart + offset;
             }
             else
             {
@@ -368,25 +316,6 @@ public:
                 return -1;
             }
         }
-
-        //- Axis of rotation for rotational cyclics
-        const vector& rotationAxis() const
-        {
-            return rotationAxis_;
-        }
-
-        //- Point on axis of rotation for rotational cyclics
-        const point& rotationCentre() const
-        {
-            return rotationCentre_;
-        }
-
-        //- Translation vector for translational cyclics
-        const vector& separationVector() const
-        {
-            return separationVector_;
-        }
-
 
         //- Initialize ordering for primitivePatch. Does not
         //  refer to *this (except for name() and type() etc.)
@@ -404,7 +333,6 @@ public:
             labelList& faceMap,
             labelList& rotation
         ) const;
-
 
         //- Write the polyPatch data as a dictionary
         virtual void write(Ostream&) const;

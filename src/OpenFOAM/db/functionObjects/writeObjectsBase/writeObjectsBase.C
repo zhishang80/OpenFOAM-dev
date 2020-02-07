@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -69,7 +69,7 @@ Foam::wordList Foam::functionObjects::writeObjectsBase::objectNames()
         }
     }
 
-    return allNames;
+    return move(allNames);
 }
 
 
@@ -114,7 +114,21 @@ Foam::functionObjects::writeObjectsBase::writeObjectNames() const
 
 bool Foam::functionObjects::writeObjectsBase::read(const dictionary& dict)
 {
-    dict.lookup("objects") >> writeObjectNames_;
+    regExp_ = dict.lookupOrDefault<Switch>("regExp", true);
+
+    if (regExp_)
+    {
+        dict.lookup("objects") >> writeObjectNames_;
+    }
+    else
+    {
+        const wordList objectNames(dict.lookup("objects"));
+        writeObjectNames_.setSize(objectNames.size());
+        forAll(objectNames, i)
+        {
+            writeObjectNames_[i] = objectNames[i];
+        }
+    }
 
     return true;
 }

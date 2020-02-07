@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -42,7 +42,7 @@ Description
         pistonPositionTime  tableFile;
         pistonPositionTimeCoeffs
         {
-            fileName            "data";
+            file                "data";
             outOfBounds         clamp;
             interpolationScheme linear;
         }
@@ -74,18 +74,9 @@ class freePiston
 :
     public engineTime
 {
-    // Private data
+    // Private Data
 
         autoPtr<Function1<scalar>> pistonPositionTime_;
-
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        freePiston(const freePiston&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const freePiston&);
 
 
 public:
@@ -106,6 +97,10 @@ public:
             const fileName& constantName = "constant",
             const fileName& dictName = "engineGeometry"
         );
+
+        //- Disallow default bitwise copy construction
+        freePiston(const freePiston&) = delete;
+
 
     //- Destructor
     virtual ~freePiston()
@@ -131,6 +126,12 @@ public:
 
             //- Return engine time increment
             virtual scalar deltaTheta() const;
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const freePiston&) = delete;
 };
 
 

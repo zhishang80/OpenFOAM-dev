@@ -1,9 +1,9 @@
 /*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  dev                                   |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
-|    \\/     M anipulation  |                                                 |
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  dev
+     \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
@@ -11,7 +11,7 @@ FoamFile
     format      ascii;
     class       dictionary;
     location    "constant";
-    object      turbulenceProperties.water;
+    object      turbulenceProperties.liquid;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -19,7 +19,7 @@ simulationType  RAS;
 
 RAS
 {
-    RASModel LaheyKEpsilon;
+    RASModel kOmegaSSTSato;
 
     turbulence      on;
     printCoeffs     on;

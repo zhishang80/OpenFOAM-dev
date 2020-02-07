@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -47,6 +47,7 @@ Usage
     \table
         Property | Description                       | Required | Default value
         objects  | List of objects to be written     | yes      |
+        regExp   | Switch for regular expression support | no   | true
     \endtable
 
     Note: Regular expressions can also be used in \c objects.
@@ -66,6 +67,7 @@ SourceFiles
 
 #include "wordList.H"
 #include "wordReList.H"
+#include "Switch.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -97,6 +99,10 @@ protected:
         //- Reference to the inheriting function object's log variable
         const Switch& log_;
 
+        //- Optional switch for regular expression support
+        //  Defaults to true
+        Switch regExp_;
+
         //- Object names requested by the user to be written
         wordReList writeObjectNames_;
 
@@ -117,17 +123,6 @@ protected:
         virtual void writeObject(const regIOobject& obj);
 
 
-private:
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        writeObjectsBase(const writeObjectsBase&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const writeObjectsBase&);
-
-
 public:
 
     // Constructors
@@ -138,6 +133,9 @@ public:
             const objectRegistry& obr,
             const Switch& logRef
         );
+
+        //- Disallow default bitwise copy construction
+        writeObjectsBase(const writeObjectsBase&) = delete;
 
 
     //- Destructor
@@ -154,6 +152,12 @@ public:
 
         //- Write function
         virtual bool write();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const writeObjectsBase&) = delete;
 };
 
 

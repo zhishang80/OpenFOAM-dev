@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -31,11 +31,12 @@ License
 #include "incompressiblePerfectGas.H"
 #include "Boussinesq.H"
 #include "rhoConst.H"
-#include "perfectFluid.H"
+#include "rPolynomial.H"
 #include "PengRobinsonGas.H"
 #include "adiabaticPerfectFluid.H"
 
 #include "hConstThermo.H"
+#include "eConstThermo.H"
 #include "janafThermo.H"
 #include "sensibleEnthalpy.H"
 #include "sensibleInternalEnergy.H"
@@ -43,6 +44,7 @@ License
 
 #include "constTransport.H"
 #include "sutherlandTransport.H"
+#include "WLFTransport.H"
 
 #include "icoPolynomial.H"
 #include "hPolynomialThermo.H"
@@ -114,7 +116,7 @@ makeThermos
     constTransport,
     sensibleEnthalpy,
     hConstThermo,
-    perfectFluid,
+    rPolynomial,
     specie
 );
 
@@ -307,8 +309,8 @@ makeThermos
     pureMixture,
     constTransport,
     sensibleInternalEnergy,
-    hConstThermo,
-    perfectFluid,
+    eConstThermo,
+    rhoConst,
     specie
 );
 
@@ -320,6 +322,42 @@ makeThermos
     constTransport,
     sensibleInternalEnergy,
     hConstThermo,
+    rPolynomial,
+    specie
+);
+
+makeThermos
+(
+    rhoThermo,
+    heRhoThermo,
+    pureMixture,
+    constTransport,
+    sensibleInternalEnergy,
+    eConstThermo,
+    rPolynomial,
+    specie
+);
+
+makeThermos
+(
+    rhoThermo,
+    heRhoThermo,
+    pureMixture,
+    constTransport,
+    sensibleInternalEnergy,
+    hConstThermo,
+    adiabaticPerfectFluid,
+    specie
+);
+
+makeThermos
+(
+    rhoThermo,
+    heRhoThermo,
+    pureMixture,
+    constTransport,
+    sensibleInternalEnergy,
+    eConstThermo,
     adiabaticPerfectFluid,
     specie
 );
@@ -379,6 +417,18 @@ makeThermos
     pureMixture,
     constTransport,
     sensibleInternalEnergy,
+    eConstThermo,
+    Boussinesq,
+    specie
+);
+
+makeThermos
+(
+    rhoThermo,
+    heRhoThermo,
+    pureMixture,
+    constTransport,
+    sensibleInternalEnergy,
     hConstThermo,
     Boussinesq,
     specie
@@ -405,6 +455,18 @@ makeThermos
     sensibleInternalEnergy,
     janafThermo,
     Boussinesq,
+    specie
+);
+
+makeThermos
+(
+    rhoThermo,
+    heRhoThermo,
+    pureMixture,
+    WLFTransport,
+    sensibleInternalEnergy,
+    eConstThermo,
+    rhoConst,
     specie
 );
 

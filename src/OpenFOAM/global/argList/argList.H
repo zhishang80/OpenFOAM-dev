@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -102,7 +102,7 @@ namespace Foam
 
 class argList
 {
-    // Private data
+    // Private Data
 
         //- Switch on/off parallel mode. Has to be first to be constructed
         //  so destructor is done last.
@@ -148,7 +148,7 @@ class argList
 
 public:
 
-    // Static data members
+    // Static Data Members
 
         //- A list of valid (mandatory) arguments
         static SLList<string> validArgs;
@@ -174,14 +174,18 @@ public:
         //- Standard name for the post-processing option
         static word postProcessOptionName;
 
-        //! \cond internalClass
+        // Class to initialize options table
+        // with the standard case related options
         class initValidTables
         {
         public:
 
             initValidTables();
+
+            //- Clear the options table
+            //  for utilities which do not operate on files rather than cases
+            static void clear();
         };
-        //! \endcond
 
 
     // Constructors
@@ -212,7 +216,7 @@ public:
     virtual ~argList();
 
 
-    // Member functions
+    // Member Functions
 
         //- Parse
         void parse
@@ -224,6 +228,9 @@ public:
 
 
         // Access
+
+            //- Return the command line string
+            inline const string& commandLine() const;
 
             //- Name of executable without the path
             inline const word& executable() const;

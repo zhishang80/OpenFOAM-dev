@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -42,15 +42,16 @@ namespace distributionModels
 Foam::distributionModels::exponential::exponential
 (
     const dictionary& dict,
-    cachedRandom& rndGen
+    Random& rndGen
 )
 :
     distributionModel(typeName, dict, rndGen),
-    minValue_(readScalar(distributionModelDict_.lookup("minValue"))),
-    maxValue_(readScalar(distributionModelDict_.lookup("maxValue"))),
-    lambda_(readScalar(distributionModelDict_.lookup("lambda")))
+    minValue_(distributionModelDict_.template lookup<scalar>("minValue")),
+    maxValue_(distributionModelDict_.template lookup<scalar>("maxValue")),
+    lambda_(distributionModelDict_.template lookup<scalar>("lambda"))
 {
     check();
+    info();
 }
 
 

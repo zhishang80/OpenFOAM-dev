@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -64,15 +64,6 @@ class UpwindFitScheme
         const scalar centralWeight_;
 
 
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        UpwindFitScheme(const UpwindFitScheme&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const UpwindFitScheme&);
-
-
 public:
 
     //- Runtime type information
@@ -107,6 +98,9 @@ public:
             centralWeight_(1000)
         {}
 
+        //- Disallow default bitwise copy construction
+        UpwindFitScheme(const UpwindFitScheme&) = delete;
+
 
     // Member Functions
 
@@ -128,7 +122,7 @@ public:
             const extendedUpwindCellToFaceStencil& stencil = Stencil::New
             (
                 mesh,
-                false,          //pureUpwind
+                false,          // pureUpwind
                 scalar(0.5)
             );
 
@@ -137,7 +131,7 @@ public:
             (
                 mesh,
                 stencil,
-                true,           //calculate as offset to linear
+                true,           // calculate as offset to linear
                 linearLimitFactor_,
                 centralWeight_
             );
@@ -147,6 +141,12 @@ public:
 
             return stencil.weightedSum(faceFlux_, vf, fo, fn);
         }
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const UpwindFitScheme&) = delete;
 };
 
 

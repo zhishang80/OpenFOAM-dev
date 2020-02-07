@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -68,19 +68,11 @@ class searchableSurface
 :
     public regIOobject
 {
-    // Private data
+    // Private Data
 
         const word name_;
 
         boundBox bounds_;
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        searchableSurface(const searchableSurface&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const searchableSurface&);
 
 
 public:
@@ -133,6 +125,9 @@ public:
     // Constructors
 
         searchableSurface(const IOobject& io);
+
+        //- Disallow default bitwise copy construction
+        searchableSurface(const searchableSurface&) = delete;
 
         //- Clone
         virtual autoPtr<searchableSurface> clone() const
@@ -211,7 +206,7 @@ public:
             ////  - label: relevant index in surface
             ////  - label: region in surface
             ////  - point: actual nearest point found
-            //virtual pointIndexHit findNearest
+            // virtual pointIndexHit findNearest
             //(
             //    const point& sample,
             //    const scalar nearestDistSqr
@@ -222,7 +217,7 @@ public:
             ////  - label: relevant index in surface
             ////  - label: region in surface
             ////  - point: actual nearest point found
-            //virtual pointIndexHit findNearestOnEdge
+            // virtual pointIndexHit findNearestOnEdge
             //(
             //    const point& sample,
             //    const scalar nearestDistSqr
@@ -236,7 +231,7 @@ public:
             ////  sets:
             ////  - tightest  : bounding box
             ////  - linePoint : corresponding nearest point on line
-            //virtual pointIndexHit findNearest
+            // virtual pointIndexHit findNearest
             //(
             //    const linePointRef& ln,
             //    treeBoundBox& tightest,
@@ -244,14 +239,14 @@ public:
             //) const = 0;
             //
             ////- Find nearest intersection of line between start and end.
-            //virtual pointIndexHit findLine
+            // virtual pointIndexHit findLine
             //(
             //    const point& start,
             //    const point& end
             //) const = 0;
             //
             ////- Find any intersection of line between start and end.
-            //virtual pointIndexHit findLineAny
+            // virtual pointIndexHit findLineAny
             //(
             //    const point& start,
             //    const point& end
@@ -368,6 +363,12 @@ public:
             {
                 values.clear();
             }
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const searchableSurface&) = delete;
 };
 
 

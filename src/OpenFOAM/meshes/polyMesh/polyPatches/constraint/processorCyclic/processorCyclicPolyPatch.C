@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -48,7 +48,6 @@ Foam::processorCyclicPolyPatch::processorCyclicPolyPatch
     const int myProcNo,
     const int neighbProcNo,
     const word& referPatchName,
-    const transformType transform,
     const word& patchType
 )
 :
@@ -61,7 +60,6 @@ Foam::processorCyclicPolyPatch::processorCyclicPolyPatch
         bm,
         myProcNo,
         neighbProcNo,
-        transform,
         patchType
     ),
     referPatchName_(referPatchName),
@@ -178,7 +176,7 @@ Foam::labelList Foam::processorCyclicPolyPatch::patchIDs
 {
     return bm.findIndices
     (
-        string("procBoundary.*to.*through" + cyclicPolyPatchName)
+        keyType(string("procBoundary.*to.*through" + cyclicPolyPatchName))
     );
 }
 
@@ -200,7 +198,7 @@ int Foam::processorCyclicPolyPatch::tag() const
         }
         else
         {
-            tag_ = Hash<word>()(cycPatch.neighbPatch().name()) % 32768u;
+            tag_ = Hash<word>()(cycPatch.nbrPatch().name()) % 32768u;
         }
 
         if (tag_ == Pstream::msgType() || tag_ == -1)
@@ -237,16 +235,11 @@ void Foam::processorCyclicPolyPatch::calcGeometry(PstreamBuffers& pBufs)
 
     if (Pstream::parRun())
     {
-
-        // Where do we store the calculated transformation?
-        // - on the processor patch?
-        // - on the underlying cyclic patch?
-        // - or do we not auto-calculate the transformation but
-        //   have option of reading it.
-
         // Update underlying cyclic halves. Need to do both since only one
         // half might be present as a processorCyclic.
-        coupledPolyPatch& pp = const_cast<coupledPolyPatch&>(referPatch());
+
+        cyclicPolyPatch& pp = const_cast<cyclicPolyPatch&>(referPatch());
+
         pp.calcGeometry
         (
             *this,
@@ -258,20 +251,16 @@ void Foam::processorCyclicPolyPatch::calcGeometry(PstreamBuffers& pBufs)
             neighbFaceCellCentres()
         );
 
-        if (isA<cyclicPolyPatch>(pp))
-        {
-            const cyclicPolyPatch& cpp = refCast<const cyclicPolyPatch>(pp);
-            const_cast<cyclicPolyPatch&>(cpp.neighbPatch()).calcGeometry
-            (
-                *this,
-                neighbFaceCentres(),
-                neighbFaceAreas(),
-                neighbFaceCellCentres(),
-                faceCentres(),
-                faceAreas(),
-                faceCellCentres()
-            );
-        }
+        const_cast<cyclicPolyPatch&>(pp.nbrPatch()).calcGeometry
+        (
+            *this,
+            neighbFaceCentres(),
+            neighbFaceAreas(),
+            neighbFaceCellCentres(),
+            faceCentres(),
+            faceAreas(),
+            faceCellCentres()
+        );
     }
 }
 
@@ -316,7 +305,6 @@ void Foam::processorCyclicPolyPatch::initOrder
     const primitivePatch& pp
 ) const
 {
-    // For now use the same algorithm as processorPolyPatch
     processorPolyPatch::initOrder(pBufs, pp);
 }
 
@@ -329,7 +317,6 @@ bool Foam::processorCyclicPolyPatch::order
     labelList& rotation
 ) const
 {
-    // For now use the same algorithm as processorPolyPatch
     return processorPolyPatch::order(pBufs, pp, faceMap, rotation);
 }
 
@@ -337,12 +324,10 @@ bool Foam::processorCyclicPolyPatch::order
 void Foam::processorCyclicPolyPatch::write(Ostream& os) const
 {
     processorPolyPatch::write(os);
-    os.writeKeyword("referPatch") << referPatchName_
-        << token::END_STATEMENT << nl;
+    writeEntry(os, "referPatch", referPatchName_);
     if (tag_ != -1)
     {
-        os.writeKeyword("tag") << tag_
-            << token::END_STATEMENT << nl;
+        writeEntry(os, "tag", tag_);
     }
 }
 

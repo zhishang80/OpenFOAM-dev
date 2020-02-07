@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -226,8 +226,8 @@ void Foam::singleCellFvMesh::agglomerateMesh
         patchSizes[patchi] = coarseI-patchStarts[patchi];
     }
 
-    //Pout<< "patchStarts:" << patchStarts << endl;
-    //Pout<< "patchSizes:" << patchSizes << endl;
+    // Pout<< "patchStarts:" << patchStarts << endl;
+    // Pout<< "patchSizes:" << patchSizes << endl;
 
     // Compact numbering for points
     reversePointMap_.setSize(mesh.nPoints());
@@ -276,13 +276,13 @@ void Foam::singleCellFvMesh::agglomerateMesh
     // actually change the mesh
     resetPrimitives
     (
-        xferMove(boundaryPoints),
-        xferMove(patchFaces),
-        xferMove(owner),
-        xferMove(neighbour),
+        move(boundaryPoints),
+        move(patchFaces),
+        move(owner),
+        move(neighbour),
         patchSizes,
         patchStarts,
-        true                //syncPar
+        true                // syncPar
     );
 
 
@@ -296,10 +296,10 @@ void Foam::singleCellFvMesh::agglomerateMesh
 
             DynamicList<label> newAddressing;
 
-            //Note: uncomment if you think it makes sense. Note that value
+            // Note: uncomment if you think it makes sense. Note that value
             // of cell0 is the average.
             //// Was old cell0 in this cellZone?
-            //if (oldFz.localID(0) != -1)
+            // if (oldFz.localID(0) != -1)
             //{
             //    newAddressing.append(0);
             //}
@@ -397,11 +397,11 @@ Foam::singleCellFvMesh::singleCellFvMesh
     fvMesh
     (
         io,
-        xferCopy(pointField()), //points
-        xferCopy(faceList()),   //faces
-        xferCopy(labelList()),  //allOwner
-        xferCopy(labelList()),  //allNeighbour
-        false                   //syncPar
+        pointField(), // points
+        faceList(),   // faces
+        labelList(),  // allOwner
+        labelList(),  // allNeighbour
+        false         // syncPar
     ),
     patchFaceAgglomeration_
     (
@@ -492,11 +492,11 @@ Foam::singleCellFvMesh::singleCellFvMesh
     fvMesh
     (
         io,
-        xferCopy(pointField()), //points
-        xferCopy(faceList()),   //faces
-        xferCopy(labelList()),  //allOwner
-        xferCopy(labelList()),  //allNeighbour
-        false                   //syncPar
+        pointField(), // points
+        faceList(),   // faces
+        labelList(),  // allOwner
+        labelList(),  // allNeighbour
+        false         // syncPar
     ),
     patchFaceAgglomeration_
     (

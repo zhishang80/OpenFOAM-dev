@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -64,8 +64,8 @@ void Foam::MeshedSurface<Face>::checkZones()
 template<class Face>
 void Foam::MeshedSurface<Face>::sortFacesAndStore
 (
-    const Xfer<List<Face>>& unsortedFaces,
-    const Xfer<List<label>>& zoneIds,
+    List<Face>&& unsortedFaces,
+    List<label>&& zoneIds,
     const bool sorted
 )
 {

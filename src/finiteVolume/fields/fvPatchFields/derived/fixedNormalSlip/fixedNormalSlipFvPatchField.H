@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::fixedNormalSlipFvPatchField
-
-Group
-    grpGenericBoundaryConditions grpWallBoundaryConditions
 
 Description
     This boundary condition sets the patch-normal component to a fixed value.
@@ -72,7 +69,7 @@ class fixedNormalSlipFvPatchField
 :
     public transformFvPatchField<Type>
 {
-    // Private data
+    // Private Data
 
         //- Value the normal component of which the boundary is set to
         Field<Type> fixedValue_;
@@ -111,7 +108,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         fixedNormalSlipFvPatchField
         (
             const fixedNormalSlipFvPatchField<Type>&
@@ -126,7 +123,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         fixedNormalSlipFvPatchField
         (
             const fixedNormalSlipFvPatchField<Type>&,
@@ -146,7 +143,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Access
 
@@ -160,17 +157,12 @@ public:
         // Mapping functions
 
             //- Map (and resize as needed) from self given a mapping object
-            virtual void autoMap
-            (
-                const fvPatchFieldMapper&
-            );
+            //  Used to update fields following mesh topology change
+            virtual void autoMap(const fvPatchFieldMapper&);
 
             //- Reverse map the given fvPatchField onto this fvPatchField
-            virtual void rmap
-            (
-                const fvPatchField<Type>&,
-                const labelList&
-            );
+            //  Used to reconstruct fields
+            virtual void rmap(const fvPatchField<Type>&, const labelList&);
 
 
         // Return defining fields
@@ -206,7 +198,7 @@ public:
         virtual void write(Ostream&) const;
 
 
-    // Member operators
+    // Member Operators
 
         virtual void operator=(const UList<Type>&) {}
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,21 +24,9 @@ License
 Class
     Foam::fixedEnergyFvPatchScalarField
 
-Group
-    grpThermoBoundaryConditions
-
 Description
-    This boundary condition provides a fixed condition for internal energy
-
-Usage
-    Example of the boundary condition specification:
-    \verbatim
-    <patchName>
-    {
-        type            fixedEnergy;
-        value           uniform 100;
-    }
-    \endverbatim
+    This boundary condition provides a fixed condition for energy. This is
+    selected when the corresponding temperature condition is fixedValue.
 
 See also
     Foam::fixedValueFvPatchField
@@ -100,7 +88,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         fixedEnergyFvPatchScalarField
         (
             const fixedEnergyFvPatchScalarField&
@@ -115,7 +103,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         fixedEnergyFvPatchScalarField
         (
             const fixedEnergyFvPatchScalarField&,
@@ -135,7 +123,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Evaluation functions
 

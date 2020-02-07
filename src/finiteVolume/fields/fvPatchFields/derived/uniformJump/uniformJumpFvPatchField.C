@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -131,7 +131,7 @@ void Foam::uniformJumpFvPatchField<Type>::write(Ostream& os) const
     fixedJumpFvPatchField<Type>::write(os);
     if (this->cyclicPatch().owner())
     {
-        jumpTable_->writeData(os);
+        writeEntry(os, jumpTable_());
     }
 }
 

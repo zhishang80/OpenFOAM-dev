@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -62,7 +62,7 @@ protected:
     // Protected data
 
         //- Thermo
-        ReactionThermo& thermo_;
+        const ReactionThermo& thermo_;
 
 
 public:
@@ -81,7 +81,7 @@ public:
         autoPtr,
         BasicChemistryModel,
         thermo,
-        (ReactionThermo& thermo),
+        (const ReactionThermo& thermo),
         (thermo)
     );
 
@@ -89,13 +89,13 @@ public:
     // Constructors
 
         //- Construct from thermo
-        BasicChemistryModel(ReactionThermo& thermo);
+        BasicChemistryModel(const ReactionThermo& thermo);
 
 
     //- Selector
     static autoPtr<BasicChemistryModel<ReactionThermo>> New
     (
-        ReactionThermo& thermo
+        const ReactionThermo& thermo
     );
 
 
@@ -104,9 +104,6 @@ public:
 
 
     // Member Functions
-
-        //- Return access to the thermo package
-        inline ReactionThermo& thermo();
 
         //- Return const access to the thermo package
         inline const ReactionThermo& thermo() const;

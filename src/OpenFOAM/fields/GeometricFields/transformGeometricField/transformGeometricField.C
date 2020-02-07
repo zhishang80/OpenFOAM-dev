@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -69,16 +69,9 @@ tmp<GeometricField<Type, PatchField, GeoMesh>> transform
 {
     tmp<GeometricField<Type, PatchField, GeoMesh>> tranf
     (
-        new GeometricField<Type, PatchField, GeoMesh>
+        GeometricField<Type, PatchField, GeoMesh>::New
         (
-            IOobject
-            (
-                "transform(" + trf.name() + ',' + tf.name() + ')',
-                tf.instance(),
-                tf.db(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
+            "transform(" + trf.name() + ',' + tf.name() + ')',
             tf.mesh(),
             tf.dimensions()
         )
@@ -155,16 +148,9 @@ tmp<GeometricField<Type, PatchField, GeoMesh>> transform
 {
     tmp<GeometricField<Type, PatchField, GeoMesh>> tranf
     (
-        new GeometricField<Type, PatchField, GeoMesh>
+        GeometricField<Type, PatchField, GeoMesh>::New
         (
-            IOobject
-            (
-                "transform(" + t.name() + ',' + tf.name() + ')',
-                tf.instance(),
-                tf.db(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
+            "transform(" + t.name() + ',' + tf.name() + ')',
             tf.mesh(),
             tf.dimensions()
         )

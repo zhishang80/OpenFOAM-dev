@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -35,10 +35,11 @@ Description
 #include "specie.H"
 #include "perfectGas.H"
 #include "incompressiblePerfectGas.H"
-#include "perfectFluid.H"
+#include "rPolynomial.H"
 #include "adiabaticPerfectFluid.H"
 #include "rhoConst.H"
 #include "hConstThermo.H"
+#include "eConstThermo.H"
 #include "janafThermo.H"
 
 #include "sensibleEnthalpy.H"
@@ -130,7 +131,7 @@ namespace Foam
         <
             hConstThermo
             <
-                perfectFluid<specie>
+                rPolynomial<specie>
             >,
             sensibleEnthalpy
         >
@@ -172,7 +173,7 @@ namespace Foam
     <
         species::thermo
         <
-            hConstThermo
+            eConstThermo
             <
                 perfectGas<specie>
             >,
@@ -198,7 +199,7 @@ namespace Foam
     <
         species::thermo
         <
-            hConstThermo
+            eConstThermo
             <
                 incompressiblePerfectGas<specie>
             >,
@@ -239,9 +240,9 @@ namespace Foam
     <
         species::thermo
         <
-            hConstThermo
+            eConstThermo
             <
-                perfectFluid<specie>
+                rPolynomial<specie>
             >,
             sensibleInternalEnergy
         >
@@ -253,7 +254,7 @@ namespace Foam
     <
         species::thermo
         <
-            hConstThermo
+            eConstThermo
             <
                 adiabaticPerfectFluid<specie>
             >,
@@ -267,7 +268,7 @@ namespace Foam
     <
         species::thermo
         <
-            hConstThermo
+            eConstThermo
             <
                 rhoConst<specie>
             >,

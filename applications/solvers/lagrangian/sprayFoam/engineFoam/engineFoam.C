@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -50,17 +50,17 @@ int main(int argc, char *argv[])
     #define CREATE_MESH createEngineMesh.H
     #include "postProcess.H"
 
-    #include "setRootCase.H"
+    #include "setRootCaseLists.H"
     #include "createEngineTime.H"
     #include "createEngineMesh.H"
     #include "createControl.H"
     #include "readEngineTimeControls.H"
     #include "createFields.H"
     #include "createFieldRefs.H"
-    #include "createRhoUf.H"
     #include "compressibleCourantNo.H"
     #include "setInitialDeltaT.H"
     #include "initContinuityErrs.H"
+    #include "createRhoUfIfPresent.H"
     #include "startSummary.H"
 
     turbulence->validate();
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
 
     Info<< "\nStarting time loop\n" << endl;
 
-    while (runTime.run())
+    while (pimple.run(runTime))
     {
         #include "readEngineTimeControls.H"
         #include "compressibleCourantNo.H"
@@ -108,10 +108,7 @@ int main(int argc, char *argv[])
 
         rho = thermo.rho();
 
-        if (runTime.write())
-        {
-            combustion->Qdot()().write();
-        }
+        runTime.write();
 
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
             << "  ClockTime = " << runTime.elapsedClockTime() << " s"

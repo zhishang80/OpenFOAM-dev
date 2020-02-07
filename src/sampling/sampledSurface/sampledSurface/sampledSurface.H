@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::sampledSurface
-
-Group
-    grpUtilitiesFunctionObjects
 
 Description
     An abstract class for surfaces with sampling.
@@ -84,7 +81,7 @@ Ostream& operator<<(Ostream&, const sampledSurface&);
 
 class sampledSurface
 {
-    // Private data
+    // Private Data
 
         //- Name of sample surface
         word name_;

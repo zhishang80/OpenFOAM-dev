@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -56,7 +56,7 @@ SourceFiles
 #include "kinematicCloud.H"
 #include "IOdictionary.H"
 #include "autoPtr.H"
-#include "cachedRandom.H"
+#include "Random.H"
 #include "fvMesh.H"
 #include "volFields.H"
 #include "fvMatrices.H"
@@ -102,7 +102,7 @@ class KinematicCloud
 {
 public:
 
-    // Public typedefs
+    // Public Typedefs
 
         //- Type of cloud this cloud was instantiated for
         typedef CloudType cloudType;
@@ -123,19 +123,10 @@ public:
 
 private:
 
-    // Private data
+    // Private Data
 
         //- Cloud copy pointer
         autoPtr<KinematicCloud<CloudType>> cloudCopyPtr_;
-
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        KinematicCloud(const KinematicCloud&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const KinematicCloud&);
 
 
 protected:
@@ -161,7 +152,7 @@ protected:
         const dictionary subModelProperties_;
 
         //- Random number generator - used by some injection routines
-        mutable cachedRandom rndGen_;
+        mutable Random rndGen_;
 
         //- Cell occupancy information for each parcel, (demand driven)
         autoPtr<List<DynamicList<parcelType*>>> cellOccupancyPtr_;
@@ -172,7 +163,7 @@ protected:
 
         // References to the carrier gas fields
 
-            //- Density [kg/m3]
+            //- Density [kg/m^3]
             const volScalarField& rho_;
 
             //- Velocity [m/s]
@@ -303,6 +294,9 @@ public:
             const KinematicCloud<CloudType>& c
         );
 
+        //- Disallow default bitwise copy construction
+        KinematicCloud(const KinematicCloud&) = delete;
+
         //- Construct and return clone based on (this) with new name
         virtual autoPtr<Cloud<parcelType>> clone(const word& name)
         {
@@ -368,7 +362,7 @@ public:
             // Cloud data
 
                 //- Return reference to the random object
-                inline cachedRandom& rndGen() const;
+                inline Random& rndGen() const;
 
                 //- Return the cell occupancy information for each
                 //  parcel, non-const access, the caller is
@@ -616,6 +610,12 @@ public:
 
             //- Print cloud information
             void info();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const KinematicCloud&) = delete;
 };
 
 

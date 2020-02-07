@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -78,27 +78,17 @@ class fieldAverageItem
 {
 public:
 
-    // Public data
-
-        // File and field name extensions
-
-            //- Mean average
-            static const word EXT_MEAN;
-
-            //- Prime-squared average
-            static const word EXT_PRIME2MEAN;
-
         //- Enumeration defining the averaging base type
-        enum baseType
+        enum class baseType
         {
-            ITER,
-            TIME
+            iter,
+            time
         };
 
 
 private:
 
-    // Private data
+    // Private Data
 
         //- Field name
         word fieldName_;
@@ -130,6 +120,17 @@ private:
 
 public:
 
+    // Static data
+
+        // File and field name extensions
+
+            //- Mean average
+            static const word meanExt;
+
+            //- Prime-squared average
+            static const word prime2MeanExt;
+
+
     // Constructors
 
         //- Construct null
@@ -138,7 +139,7 @@ public:
         //- Construct from Istream
         fieldAverageItem(Istream&);
 
-        //- Construct as copy
+        //- Copy constructor
         fieldAverageItem(const fieldAverageItem&);
 
 
@@ -198,16 +199,16 @@ public:
                 return baseTypeNames_[base_];
             }
 
-            //- Return true if base is ITER
+            //- Return true if base is iter
             Switch iterBase() const
             {
-                return base_ == ITER;
+                return base_ == baseType::iter;
             }
 
             //- Return true if base is time
             Switch timeBase() const
             {
-                return base_ == TIME;
+                return base_ == baseType::time;
             }
 
             scalar window() const

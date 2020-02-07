@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::fixedFluxExtrapolatedPressureFvPatchScalarField
-
-Group
-    grpInletBoundaryConditions grpWallBoundaryConditions
 
 Description
     This boundary condition sets the pressure gradient to the provided value
@@ -100,7 +97,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         fixedFluxExtrapolatedPressureFvPatchScalarField
         (
             const fixedFluxExtrapolatedPressureFvPatchScalarField&
@@ -115,7 +112,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         fixedFluxExtrapolatedPressureFvPatchScalarField
         (
             const fixedFluxExtrapolatedPressureFvPatchScalarField&,

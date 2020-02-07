@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::mappedFieldFvPatchField
-
-Group
-    grpGenericBoundaryConditions grpCoupledBoundaryConditions
 
 Description
     This boundary condition provides a self-contained version of the \c mapped
@@ -149,7 +146,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         mappedFieldFvPatchField
         (
             const mappedFieldFvPatchField<Type>&
@@ -167,7 +164,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         mappedFieldFvPatchField
         (
             const mappedFieldFvPatchField<Type>&,
@@ -191,22 +188,17 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Mapping functions
 
             //- Map (and resize as needed) from self given a mapping object
-            virtual void autoMap
-            (
-                const fvPatchFieldMapper&
-            );
+            //  Used to update fields following mesh topology change
+            virtual void autoMap(const fvPatchFieldMapper&);
 
             //- Reverse map the given fvPatchField onto this fvPatchField
-            virtual void rmap
-            (
-                const fvPatchField<Type>&,
-                const labelList&
-            );
+            //  Used to reconstruct fields
+            virtual void rmap(const fvPatchField<Type>&, const labelList&);
 
 
         // Evaluation functions

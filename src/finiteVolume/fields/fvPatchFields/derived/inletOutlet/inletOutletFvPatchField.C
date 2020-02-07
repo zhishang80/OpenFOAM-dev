@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -138,10 +138,10 @@ void Foam::inletOutletFvPatchField<Type>::write(Ostream& os) const
     fvPatchField<Type>::write(os);
     if (phiName_ != "phi")
     {
-        os.writeKeyword("phi") << phiName_ << token::END_STATEMENT << nl;
+        writeEntry(os, "phi", phiName_);
     }
-    this->refValue().writeEntry("inletValue", os);
-    this->writeEntry("value", os);
+    writeEntry(os, "inletValue", this->refValue());
+    writeEntry(os, "value", *this);
 }
 
 

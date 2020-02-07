@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::regionModel
+    Foam::regionModels::regionModel
 
 Description
     Base class for region models
@@ -30,17 +30,15 @@ Description
 SourceFiles
     regionModelI.H
     regionModel.C
+    regionModelTemplates.C
 
 \*---------------------------------------------------------------------------*/
 
 #ifndef regionModel_H
 #define regionModel_H
 
-#include "IOdictionary.H"
-#include "Switch.H"
-#include "labelList.H"
-#include "volFields.H"
-#include "mappedPatchBase.H"
+#include "fvMesh.H"
+#include "AMIInterpolation.H"
 #include "regionModelFunctionObjectList.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -59,16 +57,13 @@ class regionModel
 :
     public IOdictionary
 {
-
-private:
-
     // Private Member Functions
 
-        //- Disallow default bitwise copy construct
-        regionModel(const regionModel&);
+        //- Disallow default bitwise copy construction
+        regionModel(const regionModel&) = delete;
 
         //- Disallow default bitwise assignment
-        void operator=(const regionModel&);
+        void operator=(const regionModel&) = delete;
 
         //- Construct region mesh and fields
         void constructMeshObjects();
@@ -128,8 +123,7 @@ protected:
             mutable wordList interRegionAMINames_;
 
             //- List of AMI objects per coupled region
-            mutable PtrList<PtrList<AMIPatchToPatchInterpolation>>
-                interRegionAMI_;
+            mutable PtrList<PtrList<AMIInterpolation>> interRegionAMI_;
 
 
     // Protected member functions
@@ -141,7 +135,7 @@ protected:
         virtual bool read(const dictionary& dict);
 
         //- Create or return a new inter-region AMI object
-        virtual const AMIPatchToPatchInterpolation& interRegionAMI
+        virtual const AMIInterpolation& interRegionAMI
         (
             const regionModel& nbrRegion,
             const label regionPatchi,
@@ -295,14 +289,6 @@ public:
                 List<Type>& regionField
             ) const;
 
-            //- Convert a primary region field to the local region
-            template<class Type>
-            void toRegion
-            (
-                const label regionPatchi,
-                List<Type>& primaryFieldField
-            ) const;
-
             //- Convert a local region field to the primary region with op
             template<class Type, class CombineOp>
             void toPrimary
@@ -312,13 +298,34 @@ public:
                 const CombineOp& cop
             ) const;
 
-            //- Convert a primary region field to the local region with op
-            template<class Type, class CombineOp>
+            //- Convert a primary region field to the local region
+            template<class Type>
             void toRegion
             (
                 const label regionPatchi,
-                List<Type>& primaryFieldField,
-                const CombineOp& cop
+                List<Type>& primaryFieldField
+            ) const;
+
+            //- Return a primary patch field mapped the region internal field
+            template<class Type>
+            void toRegion
+            (
+                Field<Type>& regionField,
+                const label regionPatchi,
+                const fvPatchField<Type>& primaryPatchField
+            ) const;
+
+            //- Return a primary patch field mapped the local region
+            template<class Type>
+            void toRegion
+            (
+                Field<Type>& rf,
+                const typename GeometricField
+                <
+                    Type,
+                    fvPatchField,
+                    volMesh
+                >::Boundary& pBf
             ) const;
 
 

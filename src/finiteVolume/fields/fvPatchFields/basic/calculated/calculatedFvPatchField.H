@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,11 +24,8 @@ License
 Class
     Foam::calculatedFvPatchField
 
-Group
-    grpGenericBoundaryConditions
-
 Description
-    This boundary condition is not designed to be evaluated; it is assmued
+    This boundary condition is not designed to be evaluated; it is assumed
     that the value is assigned via field assignment, and not via a call to
     e.g. \c updateCoeffs or \c evaluate.
 
@@ -97,10 +94,11 @@ public:
             const calculatedFvPatchField<Type>&,
             const fvPatch&,
             const DimensionedField<Type, volMesh>&,
-            const fvPatchFieldMapper&
+            const fvPatchFieldMapper&,
+            const bool mappingRequired=true
         );
 
-        //- Construct as copy
+        //- Copy constructor
         calculatedFvPatchField
         (
             const calculatedFvPatchField<Type>&
@@ -115,7 +113,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         calculatedFvPatchField
         (
             const calculatedFvPatchField<Type>&,
@@ -135,7 +133,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Attributes
 

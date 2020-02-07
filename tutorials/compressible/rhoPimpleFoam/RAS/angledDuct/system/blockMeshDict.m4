@@ -1,9 +1,9 @@
 /*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  dev                                   |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
-|    \\/     M anipulation  |                                                 |
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  dev
+     \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
@@ -103,51 +103,14 @@ blocks
     outlet ( noutlet ncells ncells )  simpleGrading (1 1 1)
 );
 
-edges
-(
-);
+defaultPatch
+{
+    name walls;
+    type wall;
+}
 
 boundary
 (
-    // is there no way of defining all my 'defaultFaces' to be 'wall'?
-    front
-    {
-        type wall;
-        faces
-        (
-            // inlet block
-            frontQuad(in1, join1, join2, in2)
-            // outlet block
-            frontQuad(poro1, out1, out2, poro2)
-        );
-    }
-
-    back
-    {
-        type wall;
-        faces
-        (
-            // inlet block
-            backQuad(in1, join1, join2, in2)
-            // outlet block
-            backQuad(poro1, out1, out2, poro2)
-        );
-    }
-
-    walls
-    {
-        type wall;
-        faces
-        (
-            // inlet block
-            quad2D(in1, join1)
-            quad2D(join2, in2)
-            // outlet block
-            quad2D(poro1, out1)
-            quad2D(out2, poro2)
-        );
-    }
-
     porosityWall
     {
         type wall;
@@ -180,10 +143,6 @@ boundary
             quad2D(out2, out1)
         );
     }
-);
-
-mergePatchPairs
-(
 );
 
 // ************************************************************************* //

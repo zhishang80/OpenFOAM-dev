@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -94,20 +94,10 @@ tmp<volScalarField> LESeddyViscosity<BasicTurbulenceModel>::epsilon() const
 {
     tmp<volScalarField> tk(this->k());
 
-    return tmp<volScalarField>
+    return volScalarField::New
     (
-        new volScalarField
-        (
-            IOobject
-            (
-                IOobject::groupName("epsilon", this->alphaRhoPhi_.group()),
-                this->runTime_.timeName(),
-                this->mesh_,
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
-            Ce_*tk()*sqrt(tk())/this->delta()
-        )
+        IOobject::groupName("epsilon", this->alphaRhoPhi_.group()),
+        Ce_*tk()*sqrt(tk())/this->delta()
     );
 }
 

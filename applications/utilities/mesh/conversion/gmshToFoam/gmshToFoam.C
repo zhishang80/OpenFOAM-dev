@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -264,7 +264,7 @@ scalar readMeshFormat(IFstream& inFile)
 
     inFile.getLine(line);
     IStringStream tagStr(line);
-    word tag(tagStr);
+    variable tag(tagStr);
 
     if (tag != "$EndMeshFormat")
     {
@@ -319,7 +319,7 @@ void readPoints(IFstream& inFile, pointField& points, Map<label>& mshToFoam)
 
     inFile.getLine(line);
     IStringStream tagStr(line);
-    word tag(tagStr);
+    variable tag(tagStr);
 
     if (tag != "$ENDNOD" && tag != "$EndNodes")
     {
@@ -392,7 +392,7 @@ void readPhysNames(IFstream& inFile, Map<word>& physicalNames)
 
     inFile.getLine(line);
     IStringStream tagStr(line);
-    word tag(tagStr);
+    variable tag(tagStr);
 
     if (tag != "$EndPhysicalNames")
     {
@@ -695,7 +695,7 @@ void readCells
 
     inFile.getLine(line);
     IStringStream tagStr(line);
-    word tag(tagStr);
+    variable tag(tagStr);
 
     if (tag != "$ENDELM" && tag != "$EndElements")
     {
@@ -811,7 +811,7 @@ int main(int argc, char *argv[])
         inFile.getLine(line);
         IStringStream lineStr(line);
 
-        word tag(lineStr);
+        variable tag(lineStr);
 
         if (tag == "$MeshFormat")
         {
@@ -916,7 +916,7 @@ int main(int argc, char *argv[])
             runTime.constant(),
             runTime
         ),
-        xferMove(points),
+        move(points),
         cells,
         boundaryFaces,
         boundaryPatchNames,
@@ -1001,7 +1001,7 @@ int main(int argc, char *argv[])
     Info<< endl;
 
 
-    //Get polyMesh to write to constant
+    // Get polyMesh to write to constant
 
     runTime.setTime(instant(runTime.constant()), 0);
 

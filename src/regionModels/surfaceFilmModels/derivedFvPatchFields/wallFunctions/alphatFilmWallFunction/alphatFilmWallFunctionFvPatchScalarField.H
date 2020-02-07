@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::compressible::RASModels::alphatFilmWallFunctionFvPatchScalarField
-
-Group
-    grpSurfaceFilmBoundaryConditions grpCmpWallFunctions
 
 Description
     This boundary condition provides a turbulent thermal diffusivity condition
@@ -141,7 +138,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         alphatFilmWallFunctionFvPatchScalarField
         (
             const alphatFilmWallFunctionFvPatchScalarField&
@@ -156,7 +153,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         alphatFilmWallFunctionFvPatchScalarField
         (
             const alphatFilmWallFunctionFvPatchScalarField&,
@@ -176,7 +173,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Evaluation functions
 

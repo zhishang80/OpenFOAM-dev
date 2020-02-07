@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2018-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::functionObjects::turbulenceIntensity
-
-Group
-    grpFieldFunctionObjects
 
 Description
     Evaluates and writes the turbulence intensity field 'I'.
@@ -111,12 +108,6 @@ class turbulenceIntensity
         //- File header information
         virtual void writeFileHeader(const label i);
 
-        //- Disallow default bitwise copy construct
-        turbulenceIntensity(const turbulenceIntensity&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const turbulenceIntensity&);
-
 
 public:
 
@@ -134,6 +125,9 @@ public:
             const dictionary& dict
         );
 
+        //- Disallow default bitwise copy construction
+        turbulenceIntensity(const turbulenceIntensity&) = delete;
+
 
     //- Destructor
     virtual ~turbulenceIntensity();
@@ -149,6 +143,12 @@ public:
 
         //- Write the turbulenceIntensity field
         virtual bool write();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const turbulenceIntensity&) = delete;
 };
 
 

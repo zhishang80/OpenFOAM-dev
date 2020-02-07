@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -77,7 +77,7 @@ class starcdSurfaceWriter
 
         //- Templated write operation
         template<class Type>
-        void writeTemplate
+        void Write
         (
             const fileName& outputDir,
             const fileName& surfaceName,
@@ -85,8 +85,7 @@ class starcdSurfaceWriter
             const faceList& faces,
             const word& fieldName,
             const Field<Type>& values,
-            const bool isNodeValues,
-            const bool verbose
+            const bool isNodeValues
         ) const;
 
 
@@ -98,8 +97,8 @@ public:
 
     // Constructors
 
-        //- Construct null
-        starcdSurfaceWriter();
+        //- Construct given write format
+        starcdSurfaceWriter(const IOstream::streamFormat writeFormat);
 
 
     //- Destructor
@@ -121,8 +120,7 @@ public:
             const fileName& outputDir,
             const fileName& surfaceName,
             const pointField& points,
-            const faceList& faces,
-            const bool verbose = false
+            const faceList& faces
         ) const;
 
         //- Write scalarField for a single surface to file.
@@ -135,8 +133,7 @@ public:
             const faceList& faces,
             const word& fieldName,          // name of field
             const Field<scalar>& values,
-            const bool isNodeValues,
-            const bool verbose = false
+            const bool isNodeValues
         ) const;
 
         //- Write vectorField for a single surface to file.
@@ -149,8 +146,7 @@ public:
             const faceList& faces,
             const word& fieldName,          // name of field
             const Field<vector>& values,
-            const bool isNodeValues,
-            const bool verbose = false
+            const bool isNodeValues
         ) const;
 
         //- Write sphericalTensorField for a single surface to file.
@@ -163,10 +159,36 @@ public:
             const faceList& faces,
             const word& fieldName,          // name of field
             const Field<sphericalTensor>& values,
-            const bool isNodeValues,
-            const bool verbose = false
+            const bool isNodeValues
         ) const;
 
+        //- Write symmTensorField for a single surface to file.
+        //  One value per face or vertex (isNodeValues = true)
+        virtual void write
+        (
+            const fileName& outputDir,      // <case>/surface/TIME
+            const fileName& surfaceName,    // name of surface
+            const pointField& points,
+            const faceList& faces,
+            const word& fieldName,          // name of field
+            const Field<symmTensor>& values,
+            const bool isNodeValues
+        ) const
+        {}
+
+        //- Write tensorField for a single surface to file.
+        //  One value per face or vertex (isNodeValues = true)
+        virtual void write
+        (
+            const fileName& outputDir,      // <case>/surface/TIME
+            const fileName& surfaceName,    // name of surface
+            const pointField& points,
+            const faceList& faces,
+            const word& fieldName,          // name of field
+            const Field<tensor>& values,
+            const bool isNodeValues
+        ) const
+        {}
 };
 
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::standardPhaseChange
+    Foam::regionModels::surfaceFilmModels::standardPhaseChange
 
 Description
     Standard phase change model with modification for boiling
@@ -54,17 +54,6 @@ class standardPhaseChange
 :
     public phaseChangeModel
 {
-private:
-
-    // Private member functions
-
-        //- Disallow default bitwise copy construct
-        standardPhaseChange(const standardPhaseChange&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const standardPhaseChange&);
-
-
 protected:
 
     // Protected data
@@ -114,6 +103,9 @@ public:
             const dictionary& dict
         );
 
+        //- Disallow default bitwise copy construction
+        standardPhaseChange(const standardPhaseChange&) = delete;
+
 
     //- Destructor
     virtual ~standardPhaseChange();
@@ -131,6 +123,12 @@ public:
                 scalarField& dMass,
                 scalarField& dEnergy
             );
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const standardPhaseChange&) = delete;
 };
 
 

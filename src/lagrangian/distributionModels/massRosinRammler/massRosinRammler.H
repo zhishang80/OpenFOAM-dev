@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,13 +22,13 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::massRosinRammler
+    Foam::distributionModels::massRosinRammler
 
 Description
     Mass-based Rosin-Rammler distributionModel.
 
     Corrected form of the Rosin-Rammler distribution taking into account the
-    varying number of particels per parces for for fixed-mass parcels.  This
+    varying number of particles per parcel for for fixed-mass parcels.  This
     distribution should be used when
     \verbatim
         parcelBasisType mass;
@@ -68,7 +68,7 @@ class massRosinRammler
 :
     public distributionModel
 {
-    // Private data
+    // Private Data
 
         //- Distribution minimum
         scalar minValue_;
@@ -93,7 +93,7 @@ public:
     // Constructors
 
         //- Construct from components
-        massRosinRammler(const dictionary& dict, cachedRandom& rndGen);
+        massRosinRammler(const dictionary& dict, Random& rndGen);
 
         //- Construct copy
         massRosinRammler(const massRosinRammler& p);

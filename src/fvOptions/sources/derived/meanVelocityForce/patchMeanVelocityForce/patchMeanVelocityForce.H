@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -83,17 +83,6 @@ protected:
         virtual scalar magUbarAve(const volVectorField& U) const;
 
 
-private:
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        patchMeanVelocityForce(const patchMeanVelocityForce&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const patchMeanVelocityForce&);
-
-
 public:
 
     //- Runtime type information
@@ -110,6 +99,15 @@ public:
             const dictionary& dict,
             const fvMesh& mesh
         );
+
+        //- Disallow default bitwise copy construction
+        patchMeanVelocityForce(const patchMeanVelocityForce&) = delete;
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const patchMeanVelocityForce&) = delete;
 };
 
 

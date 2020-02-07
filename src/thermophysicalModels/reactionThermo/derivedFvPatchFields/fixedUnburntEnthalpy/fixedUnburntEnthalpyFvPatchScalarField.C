@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -105,11 +105,10 @@ void Foam::fixedUnburntEnthalpyFvPatchScalarField::updateCoeffs()
 
     const label patchi = patch().index();
 
-    const scalarField& pw = thermo.p().boundaryField()[patchi];
     fvPatchScalarField& Tw =
         const_cast<fvPatchScalarField&>(thermo.Tu().boundaryField()[patchi]);
     Tw.evaluate();
-    operator==(thermo.heu(pw, Tw, patchi));
+    operator==(thermo.heu(Tw, patchi));
 
     fixedValueFvPatchScalarField::updateCoeffs();
 }

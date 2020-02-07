@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -40,11 +40,11 @@ void Foam::RBD::rigidBodyModelState::write(dictionary& dict) const
 
 void Foam::RBD::rigidBodyModelState::write(Ostream& os) const
 {
-    os.writeKeyword("q") << q_ << token::END_STATEMENT << nl;
-    os.writeKeyword("qDot") << qDot_ << token::END_STATEMENT << nl;
-    os.writeKeyword("qDdot") << qDdot_ << token::END_STATEMENT << nl;
-    os.writeKeyword("t") << t_ << token::END_STATEMENT << nl;
-    os.writeKeyword("deltaT") << deltaT_ << token::END_STATEMENT << nl;
+    writeEntry(os, "q", q_);
+    writeEntry(os, "qDot", qDot_);
+    writeEntry(os, "qDdot", qDdot_);
+    writeEntry(os, "t", t_);
+    writeEntry(os, "deltaT", deltaT_);
 }
 
 

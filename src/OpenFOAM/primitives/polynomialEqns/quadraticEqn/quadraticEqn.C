@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -58,7 +58,7 @@ Foam::Roots<2> Foam::quadraticEqn::roots() const
 
     if (a == 0)
     {
-        return Roots<2>(linearEqn(b, c).roots(), roots::nan, 0);
+        return Roots<2>(linearEqn(b, c).roots(), rootType::nan, 0);
     }
 
     // This is assumed not to over- or under-flow. If it does, all bets are off.
@@ -67,11 +67,11 @@ Foam::Roots<2> Foam::quadraticEqn::roots() const
     // How many roots of what types are available?
     const bool oneReal = disc == 0;
     const bool twoReal = disc > 0;
-    //const bool twoComplex = disc < 0;
+    // const bool twoComplex = disc < 0;
 
     if (oneReal)
     {
-        const Roots<1> r = linearEqn(- a, b/2).roots();
+        const Roots<1> r = linearEqn(a, b/2).roots();
         return Roots<2>(r, r);
     }
     else if (twoReal)
@@ -81,7 +81,7 @@ Foam::Roots<2> Foam::quadraticEqn::roots() const
     }
     else // if (twoComplex)
     {
-        return Roots<2>(roots::complex, 0);
+        return Roots<2>(rootType::complex, 0);
     }
 }
 

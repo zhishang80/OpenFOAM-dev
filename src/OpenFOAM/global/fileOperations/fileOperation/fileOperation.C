@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -70,7 +70,7 @@ namespace Foam
         debug::optimisationSwitches().lookupOrAddDefault
         (
             "fileHandler",
-            //Foam::fileOperations::uncollatedFileOperation::typeName,
+            // Foam::fileOperations::uncollatedFileOperation::typeName,
             word("uncollated"),
             false,
             false
@@ -272,7 +272,7 @@ Foam::fileOperation::lookupProcessorsPath(const fileName& fName) const
 
         // Note: use parallel synchronised reading so cache will be same
         //       order on all processors
-        fileNameList dirNames(readDir(path, fileName::Type::DIRECTORY));
+        fileNameList dirNames(readDir(path, fileType::directory));
 
         // Extract info from processorsDDD or processorDDD:
         // - highest processor number
@@ -460,10 +460,10 @@ bool Foam::fileOperation::writeObject
     IOstream::streamFormat fmt,
     IOstream::versionNumber ver,
     IOstream::compressionType cmp,
-    const bool valid
+    const bool write
 ) const
 {
-    if (valid)
+    if (write)
     {
         fileName pathName(io.objectPath());
 
@@ -687,7 +687,7 @@ Foam::instantList Foam::fileOperation::findTimes
         Foam::readDir
         (
             directory,
-            fileName::DIRECTORY
+            fileType::directory
         )
     );
 
@@ -707,7 +707,7 @@ Foam::instantList Foam::fileOperation::findTimes
                 Foam::readDir
                 (
                     collDir,
-                    fileName::DIRECTORY
+                    fileType::directory
                 )
             );
             mergeTimes
@@ -775,7 +775,11 @@ Foam::IOobject Foam::fileOperation::findInstance
     for (; instanceI >= 0; --instanceI)
     {
         // Shortcut: if actual directory is the timeName we've already tested it
-        if (ts[instanceI].name() == startIO.instance())
+        if
+        (
+            ts[instanceI].name() == startIO.instance()
+         && ts[instanceI].name() != stopInstance
+        )
         {
             continue;
         }
@@ -898,7 +902,7 @@ Foam::fileNameList Foam::fileOperation::readObjects
     if (Foam::isDir(path))
     {
         newInstance = instance;
-        objectNames = Foam::readDir(path, fileName::FILE);
+        objectNames = Foam::readDir(path, fileType::file);
     }
     else
     {
@@ -908,7 +912,7 @@ Foam::fileNameList Foam::fileOperation::readObjects
         if (!procsPath.empty())
         {
             newInstance = instance;
-            objectNames = Foam::readDir(procsPath, fileName::FILE);
+            objectNames = Foam::readDir(procsPath, fileType::file);
         }
     }
     return objectNames;
@@ -928,7 +932,7 @@ Foam::label Foam::fileOperation::nProcs
     label nProcs = 0;
     if (Pstream::master(comm_))
     {
-        fileNameList dirNames(Foam::readDir(dir, fileName::Type::DIRECTORY));
+        fileNameList dirNames(Foam::readDir(dir, fileType::directory));
 
         // Detect any processorsDDD or processorDDD
         label maxProc = -1;
@@ -979,6 +983,17 @@ Foam::label Foam::fileOperation::nProcs
     }
     Pstream::scatter(nProcs, Pstream::msgType(), comm_);
     return nProcs;
+}
+
+
+void Foam::fileOperation::flush() const
+{
+    if (debug)
+    {
+        Pout<< "fileOperation::flush : clearing processor directories cache"
+            << endl;
+    }
+    procsDirs_.clear();
 }
 
 
@@ -1104,7 +1119,7 @@ Foam::label Foam::fileOperation::splitProcessorPath
 
     if (f.size() && f[0] == 's')
     {
-        // "processsorsNNN"
+        // "processorsNNN"
 
         f = f.substr(1);
 
@@ -1164,6 +1179,8 @@ Foam::label Foam::fileOperation::detectProcessorPath(const fileName& fName)
 }
 
 
+// * * * * * * * * * * * * * * * Global Functions  * * * * * * * * * * * * * //
+
 const Foam::fileOperation& Foam::fileHandler()
 {
     if (!fileOperation::fileHandlerPtr_.valid())
@@ -1199,6 +1216,46 @@ void Foam::fileHandler(autoPtr<fileOperation>& newHandlerPtr)
     if (newHandlerPtr.valid())
     {
         fileOperation::fileHandlerPtr_ = newHandlerPtr;
+    }
+}
+
+
+Foam::fileName Foam::search(const word& file, const fileName& directory)
+{
+    // Search the current directory for the file
+    fileNameList files(fileHandler().readDir(directory));
+    forAll(files, i)
+    {
+        if (files[i] == file)
+        {
+            return directory/file;
+        }
+    }
+
+    // If not found search each of the sub-directories
+    fileNameList dirs(fileHandler().readDir(directory, fileType::directory));
+    forAll(dirs, i)
+    {
+        fileName path = search(file, directory/dirs[i]);
+        if (path != fileName::null)
+        {
+            return path;
+        }
+    }
+
+    return fileName::null;
+}
+
+
+void Foam::cpFiles(const fileName& srcDir, const fileName& targetDir)
+{
+    mkDir(targetDir);
+
+    const fileNameList srcFiles(readDir(srcDir, fileType::file, true));
+
+    forAll(srcFiles, filei)
+    {
+        cp(srcDir/srcFiles[filei], targetDir);
     }
 }
 

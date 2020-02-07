@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -186,7 +186,7 @@ Foam::pointMapper::pointMapper(const pointMesh& pMesh, const mapPolyMesh& mpm)
     }
     else
     {
-        //Check if there are inserted points with no owner
+        // Check if there are inserted points with no owner
 
         // Make a copy of the point map, add the entries for points from points
         // and check for left-overs
@@ -216,12 +216,6 @@ Foam::pointMapper::~pointMapper()
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
-
-Foam::label Foam::pointMapper::size() const
-{
-    return mpm_.pointMap().size();
-}
-
 
 Foam::label Foam::pointMapper::sizeBeforeMapping() const
 {

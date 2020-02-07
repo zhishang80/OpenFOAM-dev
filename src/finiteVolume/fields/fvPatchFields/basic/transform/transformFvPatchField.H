@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::transformFvPatchField
-
-Group
-    grpGenericBoundaryConditions
 
 Description
     Foam::transformFvPatchField
@@ -88,7 +85,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         transformFvPatchField
         (
             const transformFvPatchField<Type>&
@@ -97,7 +94,7 @@ public:
         //- Construct and return a clone
         virtual tmp<fvPatchField<Type>> clone() const = 0;
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         transformFvPatchField
         (
             const transformFvPatchField<Type>&,
@@ -111,7 +108,7 @@ public:
         ) const = 0;
 
 
-    // Member functions
+    // Member Functions
 
         // Attributes
 
@@ -154,7 +151,7 @@ public:
             virtual tmp<Field<Type>> gradientBoundaryCoeffs() const;
 
 
-    // Member operators
+    // Member Operators
 
         virtual void operator=(const fvPatchField<Type>&);
 };

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -248,11 +248,11 @@ Foam::label Foam::hexRef8::addInternalFace
 
         ////- Inflate-from-point:
         //// Check if point has any internal faces we can use.
-        //label masterPointi = -1;
+        // label masterPointi = -1;
         //
-        //const labelList& pFaces = mesh_.pointFaces()[meshPointi];
+        // const labelList& pFaces = mesh_.pointFaces()[meshPointi];
         //
-        //forAll(pFaces, i)
+        // forAll(pFaces, i)
         //{
         //    if (mesh_.isInternalFace(pFaces[i]))
         //    {
@@ -263,7 +263,7 @@ Foam::label Foam::hexRef8::addInternalFace
         //    }
         //}
         //
-        //return meshMod.setAction
+        // return meshMod.setAction
         //(
         //    polyAddFace
         //    (
@@ -1965,7 +1965,7 @@ Foam::hexRef8::hexRef8(const polyMesh& mesh, const bool readHistory)
             IOobject::READ_IF_PRESENT,
             IOobject::NO_WRITE
         ),
-        dimensionedScalar("level0Edge", dimLength, getLevel0EdgeLength())
+        dimensionedScalar(dimLength, getLevel0EdgeLength())
     ),
     history_
     (
@@ -2036,7 +2036,7 @@ Foam::hexRef8::hexRef8(const polyMesh& mesh, const bool readHistory)
 
     // Check initial mesh for consistency
 
-    //if (debug)
+    // if (debug)
     {
         checkMesh();
     }
@@ -2093,7 +2093,6 @@ Foam::hexRef8::hexRef8
         ),
         dimensionedScalar
         (
-            "level0Edge",
             dimLength,
             (level0Edge >= 0 ? level0Edge : getLevel0EdgeLength())
         )
@@ -2145,7 +2144,7 @@ Foam::hexRef8::hexRef8
 
     // Check initial mesh for consistency
 
-    //if (debug)
+    // if (debug)
     {
         checkMesh();
     }
@@ -2201,7 +2200,6 @@ Foam::hexRef8::hexRef8
         ),
         dimensionedScalar
         (
-            "level0Edge",
             dimLength,
             (level0Edge >= 0 ? level0Edge : getLevel0EdgeLength())
         )
@@ -2245,7 +2243,7 @@ Foam::hexRef8::hexRef8
 
     // Check initial mesh for consistency
 
-    //if (debug)
+    // if (debug)
     {
         checkMesh();
     }
@@ -3064,7 +3062,7 @@ Foam::labelList Foam::hexRef8::consistentSlowRefinement2
     );
 
 
-    //if (debug)
+    // if (debug)
     //{
     //    // Dump wanted level
     //    volScalarField wantedLevel
@@ -3079,7 +3077,7 @@ Foam::labelList Foam::hexRef8::consistentSlowRefinement2
     //            false
     //        ),
     //        fMesh,
-    //        dimensionedScalar("zero", dimless, 0)
+    //        dimensionedScalar(dimless, 0)
     //    );
     //
     //    forAll(wantedLevel, celli)
@@ -3252,7 +3250,7 @@ Foam::labelListList Foam::hexRef8::setRefinement
         checkMesh();
         // Cannot call checkRefinementlevels since hanging points might
         // get triggered by the mesher after subsetting.
-        //checkRefinementLevels(-1, labelList(0));
+        // checkRefinementLevels(-1, labelList(0));
     }
 
     // Clear any saved point/cell data.
@@ -3906,7 +3904,7 @@ Foam::labelListList Foam::hexRef8::setRefinement
                     // Convert dynamiclist to face.
                     newFace.transfer(faceVerts);
 
-                    //Pout<< "Split face:" << facei << " verts:" << f
+                    // Pout<< "Split face:" << facei << " verts:" << f
                     //    << " into quad:" << newFace << endl;
 
                     // Get new owner/neighbour
@@ -4380,7 +4378,7 @@ void Foam::hexRef8::updateMesh
             cellLevel_[newCelli] = fnd();
         }
 
-        //if (findIndex(cellLevel_, -1) != -1)
+        // if (findIndex(cellLevel_, -1) != -1)
         //{
         //    WarningInFunction
         //        << "Problem : "
@@ -4416,7 +4414,7 @@ void Foam::hexRef8::updateMesh
 
                 if (oldPointi == -1)
                 {
-                    //FatalErrorInFunction
+                    // FatalErrorInFunction
                     //    << "Problem : point " << newPointi
                     //    << " at " << mesh_.points()[newPointi]
                     //    << " does not originate from another point"
@@ -4454,7 +4452,7 @@ void Foam::hexRef8::updateMesh
             pointLevel_[newPointi] = fnd();
         }
 
-        //if (findIndex(pointLevel_, -1) != -1)
+        // if (findIndex(pointLevel_, -1) != -1)
         //{
         //    WarningInFunction
         //        << "Problem : "
@@ -4561,7 +4559,7 @@ void Foam::hexRef8::subset
     setInstance(mesh_.facesInstance());
 
     // Nothing needs doing to faceRemover.
-    //faceRemover_.subset(pointMap, faceMap, cellMap);
+    // faceRemover_.subset(pointMap, faceMap, cellMap);
 
     // Clear cell shapes
     cellShapesPtr_.clear();
@@ -5031,7 +5029,7 @@ void Foam::hexRef8::checkRefinementLevels
     //        false                   // no separation
     //    );
     //
-    //    //OFstream str(mesh_.time().path()/"hangingPoints.obj");
+    //    // OFstream str(mesh_.time().path()/"hangingPoints.obj");
     //
     //    label nHanging = 0;
     //
@@ -5044,7 +5042,7 @@ void Foam::hexRef8::checkRefinementLevels
     //            Pout<< "Hanging boundary point " << pointi
     //                << " at " << mesh_.points()[pointi]
     //                << endl;
-    //            //meshTools::writeOBJ(str, mesh_.points()[pointi]);
+    //            // meshTools::writeOBJ(str, mesh_.points()[pointi]);
     //        }
     //    }
     //
@@ -5094,7 +5092,7 @@ const Foam::cellShapeList& Foam::hexRef8::cellShapes() const
 
                 if (haveQuads)
                 {
-                    faceList faces(quads.xfer());
+                    faceList faces(move(quads));
                     cellShapesPtr_()[celli] = degenerateMatcher::match(faces);
                     nSplitHex++;
                 }
@@ -5148,7 +5146,7 @@ Foam::labelList Foam::hexRef8::getSplitPoints() const
     labelList splitMasterLevel(mesh_.nPoints(), 0);
 
     // Unmark all with not 8 cells
-    //const labelListList& pointCells = mesh_.pointCells();
+    // const labelListList& pointCells = mesh_.pointCells();
 
     for (label pointi = 0; pointi < mesh_.nPoints(); pointi++)
     {
@@ -5644,7 +5642,7 @@ void Foam::hexRef8::setUnrefinement
         if (facesToRemove.size() != splitFaces.size())
         {
             FatalErrorInFunction
-                << "Ininitial set of split points to unrefine does not"
+                << "Initial set of split points to unrefine does not"
                 << " seem to be consistent or not mid points of refined cells"
                 << abort(FatalError);
         }
@@ -5674,7 +5672,7 @@ void Foam::hexRef8::setUnrefinement
 
         // Check that the lowest numbered pCells is the master of the region
         // (should be guaranteed by directRemoveFaces)
-        //if (debug)
+        // if (debug)
         {
             label masterCelli = min(pCells);
 
@@ -5687,7 +5685,7 @@ void Foam::hexRef8::setUnrefinement
                 if (region == -1)
                 {
                     FatalErrorInFunction
-                        << "Ininitial set of split points to unrefine does not"
+                        << "Initial set of split points to unrefine does not"
                         << " seem to be consistent or not mid points"
                         << " of refined cells" << nl
                         << "cell:" << celli << " on splitPoint " << pointi
@@ -5745,17 +5743,16 @@ void Foam::hexRef8::setUnrefinement
 }
 
 
-// Write refinement to polyMesh directory.
-bool Foam::hexRef8::write(const bool valid) const
+bool Foam::hexRef8::write(const bool write) const
 {
     bool writeOk =
-        cellLevel_.write(valid)
-     && pointLevel_.write(valid)
-     && level0Edge_.write(valid);
+        cellLevel_.write(write)
+     && pointLevel_.write(write)
+     && level0Edge_.write(write);
 
     if (history_.active())
     {
-        writeOk = writeOk && history_.write(valid);
+        writeOk = writeOk && history_.write(write);
     }
 
     return writeOk;

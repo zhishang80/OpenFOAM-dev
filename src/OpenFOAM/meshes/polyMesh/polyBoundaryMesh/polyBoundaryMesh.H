@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -73,7 +73,7 @@ class polyBoundaryMesh
         mutable autoPtr<HashTable<labelList, word>> groupPatchIDsPtr_;
 
         //- Edges of neighbouring patches
-        mutable autoPtr<List<labelPairList>> neighbourEdgesPtr_;
+        mutable autoPtr<List<labelPairList>> nbrEdgesPtr_;
 
 
     // Private Member Functions
@@ -81,10 +81,10 @@ class polyBoundaryMesh
         //- Calculate the geometry for the patches (transformation tensors etc.)
         void calcGeometry();
 
-        //- Disallow construct as copy
+        //- Disallow default bitwise copy construction
         polyBoundaryMesh(const polyBoundaryMesh&);
 
-        //- Disallow assignment
+        //- Disallow default bitwise assignment
         void operator=(const polyBoundaryMesh&);
 
 
@@ -149,7 +149,7 @@ public:
         //  it as much as possible consistent with coupled patch addressing
         //  (where coupling is by local patch face index).
         //  Only valid for singly connected polyBoundaryMesh and not parallel
-        const List<labelPairList>& neighbourEdges() const;
+        const List<labelPairList>& nbrEdges() const;
 
         //- Return a list of patch names
         wordList names() const;
@@ -226,7 +226,7 @@ public:
         //  (is shuffle) If validBoundary calls updateMesh()
         //  after reordering to recalculate data (so call needs to be parallel
         //  sync in that case)
-        void reorder(const labelUList&, const bool validBoundary);
+        void shuffle(const labelUList& newToOld, const bool validBoundary);
 
         //- writeData member function required by regIOobject
         bool writeData(Ostream&) const;
@@ -237,7 +237,7 @@ public:
             IOstream::streamFormat fmt,
             IOstream::versionNumber ver,
             IOstream::compressionType cmp,
-            const bool valid
+            const bool write = true
         ) const;
 
 

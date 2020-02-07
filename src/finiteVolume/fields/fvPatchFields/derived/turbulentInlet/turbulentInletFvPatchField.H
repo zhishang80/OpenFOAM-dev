@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::turbulentInletFvPatchField
-
-Group
-    grpInletBoundaryConditions
 
 Description
     This boundary condition generates a fluctuating inlet condition by adding
@@ -93,7 +90,7 @@ class turbulentInletFvPatchField
 :
     public fixedValueFvPatchField<Type>
 {
-    // Private data
+    // Private Data
 
         //- Random number generator
         Random ranGen_;
@@ -144,7 +141,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         turbulentInletFvPatchField
         (
             const turbulentInletFvPatchField<Type>&
@@ -159,7 +156,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         turbulentInletFvPatchField
         (
             const turbulentInletFvPatchField<Type>&,
@@ -179,7 +176,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Access
 
@@ -211,17 +208,12 @@ public:
         // Mapping functions
 
             //- Map (and resize as needed) from self given a mapping object
-            virtual void autoMap
-            (
-                const fvPatchFieldMapper&
-            );
+            //  Used to update fields following mesh topology change
+            virtual void autoMap(const fvPatchFieldMapper&);
 
             //- Reverse map the given fvPatchField onto this fvPatchField
-            virtual void rmap
-            (
-                const fvPatchField<Type>&,
-                const labelList&
-            );
+            //  Used to reconstruct fields
+            virtual void rmap(const fvPatchField<Type>&, const labelList&);
 
 
         // Evaluation functions

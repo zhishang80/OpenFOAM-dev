@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -88,9 +88,10 @@ public:
 
         static const NamedEnum<distributionType, 3> distributionTypeNames_;
 
+
 private:
 
-    // Private member data
+    // Private Data
 
         //- Merging distance
         scalar mergeDist_;
@@ -130,7 +131,7 @@ private:
 
             //- Split segment into subsegments overlapping the processor
             //  bounding box.
-            //void Foam::distributedTriSurfaceMesh::splitSegment
+            // void Foam::distributedTriSurfaceMesh::splitSegment
             //(
             //    const label segmentI,
             //    const point& start,
@@ -210,7 +211,7 @@ private:
 
         // Surface redistribution
 
-            //- Finds new bounds based on an indepedent decomposition.
+            //- Finds new bounds based on an independent decomposition.
             List<List<treeBoundBox>> independentlyDistributedBbs
             (
                 const triSurface&
@@ -289,13 +290,6 @@ private:
             void distributeFields(const mapDistribute& map);
 
 
-        //- Disallow default bitwise copy construct
-        distributedTriSurfaceMesh(const distributedTriSurfaceMesh&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const distributedTriSurfaceMesh&);
-
-
 public:
 
     //- Runtime type information
@@ -322,6 +316,9 @@ public:
             const IOobject& io,
             const dictionary& dict
         );
+
+        //- Disallow default bitwise copy construction
+        distributedTriSurfaceMesh(const distributedTriSurfaceMesh&) = delete;
 
 
     //- Destructor
@@ -455,7 +452,7 @@ public:
                 IOstream::streamFormat fmt,
                 IOstream::versionNumber ver,
                 IOstream::compressionType cmp,
-                const bool valid
+                const bool write = true
             ) const;
 
             //- Is object global
@@ -470,6 +467,12 @@ public:
             {
                 return searchableSurface::localFilePath(type());
             }
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const distributedTriSurfaceMesh&) = delete;
 };
 
 

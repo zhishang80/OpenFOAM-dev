@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -56,7 +56,7 @@ constantHeatTransfer::constantHeatTransfer
 )
 :
     heatTransferModel(typeName, film, dict),
-    c0_(readScalar(coeffDict_.lookup("c0")))
+    c0_(coeffDict_.lookup<scalar>("c0"))
 {}
 
 
@@ -72,28 +72,16 @@ void constantHeatTransfer::correct()
 {}
 
 
-tmp<volScalarField> constantHeatTransfer::h() const
+tmp<volScalarField::Internal> constantHeatTransfer::h() const
 {
-    return tmp<volScalarField>
+    return volScalarField::Internal::New
     (
-        new volScalarField
+        "htc",
+        filmModel_.regionMesh(),
+        dimensionedScalar
         (
-            IOobject
-            (
-                "htc",
-                filmModel_.time().timeName(),
-                filmModel_.regionMesh(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
-            filmModel_.regionMesh(),
-            dimensionedScalar
-            (
-                "c0",
-                dimEnergy/dimTime/sqr(dimLength)/dimTemperature,
-                c0_
-            )
+            dimEnergy/dimTime/sqr(dimLength)/dimTemperature,
+            c0_
         )
     );
 }

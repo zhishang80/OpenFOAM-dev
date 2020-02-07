@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -25,6 +25,7 @@ License
 
 #include "multiphaseSystem.H"
 #include "alphaContactAngleFvPatchScalarField.H"
+#include "unitConversion.H"
 #include "fixedValueFvsPatchFields.H"
 #include "Time.H"
 #include "subCycle.H"
@@ -35,11 +36,6 @@ License
 #include "fvcDiv.H"
 #include "fvcFlux.H"
 #include "fvcAverage.H"
-
-// * * * * * * * * * * * * * * * Static Member Data  * * * * * * * * * * * * //
-
-const Foam::scalar Foam::multiphaseSystem::convertToRad =
-    Foam::constant::mathematical::pi/180.0;
 
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
@@ -151,7 +147,7 @@ void Foam::multiphaseSystem::solveAlphas()
             mesh_
         ),
         mesh_,
-        dimensionedScalar("sumAlpha", dimless, 0)
+        dimensionedScalar(dimless, 0)
     );
 
     phasei = 0;
@@ -288,7 +284,7 @@ void Foam::multiphaseSystem::correctContactAngle
 
             bool matched = (tp.key().first() == phase1.name());
 
-            scalar theta0 = convertToRad*tp().theta0(matched);
+            scalar theta0 = degToRad(tp().theta0(matched));
             scalarField theta(boundary[patchi].size(), theta0);
 
             scalar uTheta = tp().uTheta();
@@ -296,8 +292,8 @@ void Foam::multiphaseSystem::correctContactAngle
             // Calculate the dynamic contact angle if required
             if (uTheta > small)
             {
-                scalar thetaA = convertToRad*tp().thetaA(matched);
-                scalar thetaR = convertToRad*tp().thetaR(matched);
+                scalar thetaA = degToRad(tp().thetaA(matched));
+                scalar thetaR = degToRad(tp().thetaR(matched));
 
                 // Calculated the component of the velocity parallel to the wall
                 vectorField Uwall
@@ -401,7 +397,7 @@ Foam::multiphaseSystem::multiphaseSystem
             IOobject::AUTO_WRITE
         ),
         mesh_,
-        dimensionedScalar("alphas", dimless, 0.0)
+        dimensionedScalar(dimless, 0)
     ),
 
     sigmas_(lookup("sigmas")),
@@ -551,21 +547,11 @@ Foam::tmp<Foam::volScalarField> Foam::multiphaseSystem::Cvm
 {
     tmp<volScalarField> tCvm
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                "Cvm",
-                mesh_.time().timeName(),
-                mesh_
-            ),
+            "Cvm",
             mesh_,
-            dimensionedScalar
-            (
-                "Cvm",
-                dimensionSet(1, -3, 0, 0, 0),
-                0
-            )
+            dimensionedScalar(dimensionSet(1, -3, 0, 0, 0), 0)
         )
     );
 
@@ -607,21 +593,11 @@ Foam::tmp<Foam::volVectorField> Foam::multiphaseSystem::Svm
 {
     tmp<volVectorField> tSvm
     (
-        new volVectorField
+        volVectorField::New
         (
-            IOobject
-            (
-                "Svm",
-                mesh_.time().timeName(),
-                mesh_
-            ),
+            "Svm",
             mesh_,
-            dimensionedVector
-            (
-                "Svm",
-                dimensionSet(1, -2, -2, 0, 0),
-                Zero
-            )
+            dimensionedVector(dimensionSet(1, -2, -2, 0, 0), Zero)
         )
     );
 
@@ -687,8 +663,8 @@ Foam::multiphaseSystem::dragCoeffs() const
             (
                 max
                 (
-                    //fvc::average(dm.phase1()*dm.phase2()),
-                    //fvc::average(dm.phase1())*fvc::average(dm.phase2()),
+                    // fvc::average(dm.phase1()*dm.phase2()),
+                    // fvc::average(dm.phase1())*fvc::average(dm.phase2()),
                     dm.phase1()*dm.phase2(),
                     dm.residualPhaseFraction()
                 )
@@ -734,21 +710,11 @@ Foam::tmp<Foam::volScalarField> Foam::multiphaseSystem::dragCoeff
 {
     tmp<volScalarField> tdragCoeff
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                "dragCoeff",
-                mesh_.time().timeName(),
-                mesh_
-            ),
+            "dragCoeff",
             mesh_,
-            dimensionedScalar
-            (
-                "dragCoeff",
-                dimensionSet(1, -3, -1, 0, 0),
-                0
-            )
+            dimensionedScalar(dimensionSet(1, -3, -1, 0, 0), 0)
         )
     );
 
@@ -782,21 +748,11 @@ Foam::tmp<Foam::surfaceScalarField> Foam::multiphaseSystem::surfaceTension
 {
     tmp<surfaceScalarField> tSurfaceTension
     (
-        new surfaceScalarField
+        surfaceScalarField::New
         (
-            IOobject
-            (
-                "surfaceTension",
-                mesh_.time().timeName(),
-                mesh_
-            ),
+            "surfaceTension",
             mesh_,
-            dimensionedScalar
-            (
-                "surfaceTension",
-                dimensionSet(1, -2, -2, 0, 0),
-                0
-            )
+            dimensionedScalar(dimensionSet(1, -2, -2, 0, 0), 0)
         )
     );
 
@@ -814,7 +770,7 @@ Foam::tmp<Foam::surfaceScalarField> Foam::multiphaseSystem::surfaceTension
             if (sigma != sigmas_.end())
             {
                 tSurfaceTension.ref() +=
-                    dimensionedScalar("sigma", dimSigma_, sigma())
+                    dimensionedScalar(dimSigma_, sigma())
                    *fvc::interpolate(K(phase1, phase2))*
                     (
                         fvc::interpolate(phase2)*fvc::snGrad(phase1)
@@ -833,16 +789,11 @@ Foam::multiphaseSystem::nearInterface() const
 {
     tmp<volScalarField> tnearInt
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                "nearInterface",
-                mesh_.time().timeName(),
-                mesh_
-            ),
+            "nearInterface",
             mesh_,
-            dimensionedScalar("nearInterface", dimless, 0.0)
+            dimensionedScalar(dimless, 0)
         )
     );
 
@@ -866,7 +817,7 @@ void Foam::multiphaseSystem::solve()
     const Time& runTime = mesh_.time();
 
     const dictionary& alphaControls = mesh_.solverDict("alpha");
-    label nAlphaSubCycles(readLabel(alphaControls.lookup("nAlphaSubCycles")));
+    label nAlphaSubCycles(alphaControls.lookup<label>("nAlphaSubCycles"));
 
     if (nAlphaSubCycles > 1)
     {
@@ -899,7 +850,7 @@ void Foam::multiphaseSystem::solve()
                         mesh_
                     ),
                     mesh_,
-                    dimensionedScalar("0", dimensionSet(0, 3, -1, 0, 0), 0)
+                    dimensionedScalar(dimensionSet(0, 3, -1, 0, 0), 0)
                 )
             );
 

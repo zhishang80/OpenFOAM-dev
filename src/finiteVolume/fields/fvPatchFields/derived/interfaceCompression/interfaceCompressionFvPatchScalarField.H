@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::interfaceCompressionFvPatchScalarField
-
-Group
-    grpGenericBoundaryConditions
 
 Description
     Applies interface-compression to the phase-fraction distribution at the
@@ -96,7 +93,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         interfaceCompressionFvPatchScalarField
         (
             const interfaceCompressionFvPatchScalarField&
@@ -111,7 +108,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         interfaceCompressionFvPatchScalarField
         (
             const interfaceCompressionFvPatchScalarField&,
@@ -131,7 +128,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Evaluation functions
 

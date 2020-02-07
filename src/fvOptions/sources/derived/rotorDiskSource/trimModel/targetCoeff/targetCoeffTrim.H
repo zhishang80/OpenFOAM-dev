@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2014 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -59,8 +59,8 @@ Description
     Where:
 
         alpha = user-input conversion coefficient (default = 1)
-        rho   = desity
-        omega = rotor angulr velocity
+        rho   = density
+        omega = rotor angular velocity
         pi    = mathematical pi
 
 
@@ -156,7 +156,7 @@ public:
     virtual ~targetCoeffTrim();
 
 
-    // Member functions
+    // Member Functions
 
         //- Read
         void read(const dictionary& dict);

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -148,7 +148,7 @@ Foam::List<Foam::labelPair> Foam::mapDistributeBase::schedule
     return List<labelPair>(UIndirectList<labelPair>(allComms, mySchedule));
 
 
-    //if (debug)
+    // if (debug)
     //{
     //    Pout<< "I need to:" << endl;
     //    const List<labelPair>& comms = schedule();
@@ -454,7 +454,7 @@ void Foam::mapDistributeBase::exchangeAddressing
         wantedRemoteElements,
         subMap_,
         tag,
-        Pstream::worldComm  //TBD
+        Pstream::worldComm  // TBD
     );
 
     // Renumber elements
@@ -532,7 +532,7 @@ void Foam::mapDistributeBase::exchangeAddressing
         wantedRemoteElements,
         subMap_,
         tag,
-        Pstream::worldComm      //TBD
+        Pstream::worldComm      // TBD
     );
 
     // Renumber elements
@@ -562,15 +562,15 @@ Foam::mapDistributeBase::mapDistributeBase()
 Foam::mapDistributeBase::mapDistributeBase
 (
     const label constructSize,
-    const Xfer<labelListList>& subMap,
-    const Xfer<labelListList>& constructMap,
+    const labelListList&& subMap,
+    const labelListList&& constructMap,
     const bool subHasFlip,
     const bool constructHasFlip
 )
 :
     constructSize_(constructSize),
-    subMap_(subMap),
-    constructMap_(constructMap),
+    subMap_(move(subMap)),
+    constructMap_(move(constructMap)),
     subHasFlip_(subHasFlip),
     constructHasFlip_(constructHasFlip),
     schedulePtr_()
@@ -675,13 +675,13 @@ Foam::mapDistributeBase::mapDistributeBase
     );
 
     //// Sort remote elements needed (not really necessary)
-    //forAll(compactMap, proci)
+    // forAll(compactMap, proci)
     //{
     //    if (proci != Pstream::myProcNo())
     //    {
     //        Map<label>& globalMap = compactMap[proci];
     //
-    //        SortableList<label> sorted(globalMap.toc().xfer());
+    //        SortableList<label> sorted(move(globalMap.toc()));
     //
     //        forAll(sorted, i)
     //        {
@@ -735,13 +735,13 @@ Foam::mapDistributeBase::mapDistributeBase
     );
 
     //// Sort remote elements needed (not really necessary)
-    //forAll(compactMap, proci)
+    // forAll(compactMap, proci)
     //{
     //    if (proci != Pstream::myProcNo())
     //    {
     //        Map<label>& globalMap = compactMap[proci];
     //
-    //        SortableList<label> sorted(globalMap.toc().xfer());
+    //        SortableList<label> sorted(move(globalMap.toc()));
     //
     //        forAll(sorted, i)
     //        {
@@ -782,13 +782,13 @@ Foam::mapDistributeBase::mapDistributeBase(const mapDistributeBase& map)
 {}
 
 
-Foam::mapDistributeBase::mapDistributeBase(const Xfer<mapDistributeBase>& map)
+Foam::mapDistributeBase::mapDistributeBase(mapDistributeBase&& map)
 :
-    constructSize_(map().constructSize_),
-    subMap_(map().subMap_.xfer()),
-    constructMap_(map().constructMap_.xfer()),
-    subHasFlip_(map().subHasFlip_),
-    constructHasFlip_(map().constructHasFlip_),
+    constructSize_(map.constructSize_),
+    subMap_(move(map.subMap_)),
+    constructMap_(move(map.constructMap_)),
+    subHasFlip_(map.subHasFlip_),
+    constructHasFlip_(map.constructHasFlip_),
     schedulePtr_()
 {}
 
@@ -809,12 +809,6 @@ void Foam::mapDistributeBase::transfer(mapDistributeBase& rhs)
     subHasFlip_ = rhs.subHasFlip_;
     constructHasFlip_ = rhs.constructHasFlip_;
     schedulePtr_.clear();
-}
-
-
-Foam::Xfer<Foam::mapDistributeBase> Foam::mapDistributeBase::xfer()
-{
-    return xferMove(*this);
 }
 
 

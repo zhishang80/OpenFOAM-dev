@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-    fileName vtkPath(runTime.path()/"VTK");
+    const fileName vtkPath(runTime.rootPath()/runTime.globalCaseName()/"VTK");
     mkDir(vtkPath);
 
     Info<< "Scanning times to determine track data for cloud " << cloudName
@@ -215,7 +215,7 @@ int main(int argc, char *argv[])
             setFormat
         );
 
-        //OFstream vtkTracks(vtkPath/"particleTracks.vtk");
+        // OFstream vtkTracks(vtkPath/"particleTracks.vtk");
         fileName vtkFile
         (
             scalarFormatterPtr().getFileName

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -105,7 +105,7 @@ public:
     virtual ~pointSet();
 
 
-    // Member functions
+    // Member Functions
 
         //- Sync set across coupled patches. Adds coupled points to set.
         virtual void sync(const polyMesh& mesh);
@@ -117,7 +117,7 @@ public:
         virtual void updateMesh(const mapPolyMesh& morphMap);
 
         //- Update any stored data for new labels
-        //virtual void updateMesh(const polyTopoChange& meshMod);
+        // virtual void updateMesh(const polyTopoChange& meshMod);
 
         //- Write maxLen items with label and coordinates.
         virtual void writeDebug

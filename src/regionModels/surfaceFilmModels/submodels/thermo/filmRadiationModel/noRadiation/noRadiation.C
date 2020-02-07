@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -71,23 +71,13 @@ void noRadiation::correct()
 {}
 
 
-tmp<volScalarField> noRadiation::Shs()
+tmp<volScalarField::Internal> noRadiation::Shs()
 {
-    return tmp<volScalarField>
+    return volScalarField::Internal::New
     (
-        new volScalarField
-        (
-            IOobject
-            (
-                typeName + ":Shs",
-                film().time().timeName(),
-                film().regionMesh(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
-            film().regionMesh(),
-            dimensionedScalar("zero", dimMass/pow3(dimTime), 0.0)
-        )
+        IOobject::modelName("Shs", typeName),
+        film().regionMesh(),
+        dimensionedScalar(dimMass/pow3(dimTime), 0)
     );
 }
 

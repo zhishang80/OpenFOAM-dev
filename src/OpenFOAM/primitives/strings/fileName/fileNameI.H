@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -54,10 +54,18 @@ inline Foam::fileName::fileName()
     string()
 {}
 
+
 inline Foam::fileName::fileName(const fileName& fn)
 :
     string(fn)
 {}
+
+
+inline Foam::fileName::fileName(fileName&& fn)
+:
+    string(move(fn))
+{}
+
 
 inline Foam::fileName::fileName(const word& w)
 :

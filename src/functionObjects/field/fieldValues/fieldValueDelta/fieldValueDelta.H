@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::functionObjects::fieldValues::fieldValueDelta
-
-Group
-    grpFieldFunctionObjects
 
 Description
     Provides a differencing option between two 'field value' function objects.
@@ -103,13 +100,13 @@ class fieldValueDelta
 {
 public:
         //- Operation type enumeration
-        enum operationType
+        enum class operationType
         {
-            opAdd,
-            opSubtract,
-            opMin,
-            opMax,
-            opAverage
+            add,
+            subtract,
+            min,
+            max,
+            average
         };
 
         //- Operation type names
@@ -118,7 +115,7 @@ public:
 
 private:
 
-    // Private data
+    // Private Data
 
         //- Operation to apply to values
         operationType operation_;

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -59,20 +59,6 @@ inline Foam::PackedBoolList::PackedBoolList(const PackedList<1>& lst)
 {}
 
 
-inline Foam::PackedBoolList::PackedBoolList(const Xfer<PackedBoolList>& lst)
-:
-    PackedList<1>()
-{
-    transfer(lst());
-}
-
-
-inline Foam::PackedBoolList::PackedBoolList(const Xfer<PackedList<1>>& lst)
-:
-    PackedList<1>(lst)
-{}
-
-
 inline Foam::PackedBoolList::PackedBoolList(const Foam::UList<bool>& lst)
 :
     PackedList<1>()
@@ -115,12 +101,6 @@ inline void Foam::PackedBoolList::transfer(PackedBoolList& lst)
 inline void Foam::PackedBoolList::transfer(PackedList<1>& lst)
 {
     PackedList<1>::transfer(lst);
-}
-
-
-inline Foam::Xfer<Foam::PackedBoolList> Foam::PackedBoolList::xfer()
-{
-    return xferMove(*this);
 }
 
 

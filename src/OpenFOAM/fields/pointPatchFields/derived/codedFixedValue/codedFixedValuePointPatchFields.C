@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,20 +24,26 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "codedFixedValuePointPatchFields.H"
-#include "pointPatchFields.H"
 #include "addToRunTimeSelectionTable.H"
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
-namespace Foam
-{
+#include "pointPatchFields.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
-makePointPatchFields(codedFixedValue);
+defineTypeName(Foam::codedFixedValuePointPatchFieldBase);
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+template<>
+const Foam::wordList
+Foam::CodedBase<Foam::codedFixedValuePointPatchFieldBase>::codeKeys_ =
+{
+    "code",
+    "codeInclude",
+    "localCode"
+};
 
-} // End namespace Foam
+namespace Foam
+{
+    makePointPatchFields(codedFixedValue);
+}
+
 
 // ************************************************************************* //

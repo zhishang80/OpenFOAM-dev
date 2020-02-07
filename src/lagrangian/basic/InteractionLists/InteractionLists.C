@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -38,8 +38,6 @@ void Foam::InteractionLists<ParticleType>::buildInteractionLists()
 {
     Info<< "Building InteractionLists with interaction distance "
         << maxDistance_ << endl;
-
-    Random rndGen(419715);
 
     const vector interactionVec = maxDistance_*vector::one;
 
@@ -158,7 +156,7 @@ void Foam::InteractionLists<ParticleType>::buildInteractionLists()
 
     treeBoundBox procBbRndExt
     (
-        treeBoundBox(mesh_.points()).extend(rndGen, 1e-4)
+        treeBoundBox(mesh_.points()).extend(1e-4)
     );
 
     indexedOctree<treeDataCell> coupledPatchRangeTree
@@ -188,14 +186,14 @@ void Foam::InteractionLists<ParticleType>::buildInteractionLists()
     {
         const labelPair& ciat = cellIAndTToExchange[bbI];
 
-        const vectorTensorTransform& transform = globalTransforms.transform
+        const transformer& transform = globalTransforms.transform
         (
             globalTransforms.transformIndex(ciat)
         );
 
         treeBoundBox tempTransformedBb
         (
-            transform.invTransformPosition(cellBbsToExchange[bbI].points())
+            transform.invTransformPosition(cellBbsToExchange[bbI].points())()
         );
 
         treeBoundBox extendedBb
@@ -405,14 +403,17 @@ void Foam::InteractionLists<ParticleType>::buildInteractionLists()
     {
         const labelPair& wfiat = wallFaceIAndTToExchange[bbI];
 
-        const vectorTensorTransform& transform = globalTransforms.transform
+        const transformer& transform = globalTransforms.transform
         (
             globalTransforms.transformIndex(wfiat)
         );
 
         treeBoundBox tempTransformedBb
         (
-            transform.invTransformPosition(wallFaceBbsToExchange[bbI].points())
+            transform.invTransformPosition
+            (
+                wallFaceBbsToExchange[bbI].points()
+            )()
         );
 
         treeBoundBox extendedBb
@@ -535,7 +536,7 @@ void Foam::InteractionLists<ParticleType>::buildInteractionLists()
 
         label wallFaceIndex = globalTransforms.index(wfiat);
 
-        const vectorTensorTransform& transform = globalTransforms.transform
+        const transformer& transform = globalTransforms.transform
         (
             globalTransforms.transformIndex(wfiat)
         );
@@ -702,7 +703,7 @@ void Foam::InteractionLists<ParticleType>::findExtendedProcBbsInRange
                             permutationIndices
                         );
 
-                        const vectorTensorTransform& transform =
+                        const transformer& transform =
                             globalTransforms.transform(transI);
 
                         treeBoundBox extendedReferredProcBb
@@ -710,7 +711,7 @@ void Foam::InteractionLists<ParticleType>::findExtendedProcBbsInRange
                             transform.transformPosition
                             (
                                 allExtendedProcBbs[proci].points()
-                            )
+                            )()
                         );
 
                         if (procBb.overlaps(extendedReferredProcBb))
@@ -749,7 +750,7 @@ void Foam::InteractionLists<ParticleType>::findExtendedProcBbsInRange
                         permutationIndices
                     );
 
-                    const vectorTensorTransform& transform =
+                    const transformer& transform =
                         globalTransforms.transform(transI);
 
                     treeBoundBox extendedReferredProcBb
@@ -757,7 +758,7 @@ void Foam::InteractionLists<ParticleType>::findExtendedProcBbsInRange
                         transform.transformPosition
                         (
                             allExtendedProcBbs[proci].points()
-                        )
+                        )()
                     );
 
                     if (procBb.overlaps(extendedReferredProcBb))
@@ -792,7 +793,7 @@ void Foam::InteractionLists<ParticleType>::findExtendedProcBbsInRange
                     permutationIndices
                 );
 
-                const vectorTensorTransform& transform =
+                const transformer& transform =
                     globalTransforms.transform(transI);
 
                 treeBoundBox extendedReferredProcBb
@@ -800,7 +801,7 @@ void Foam::InteractionLists<ParticleType>::findExtendedProcBbsInRange
                     transform.transformPosition
                     (
                         allExtendedProcBbs[proci].points()
-                    )
+                    )()
                 );
 
                 if (procBb.overlaps(extendedReferredProcBb))
@@ -818,9 +819,9 @@ void Foam::InteractionLists<ParticleType>::findExtendedProcBbsInRange
         }
     }
 
-    extendedProcBbsInRange = tmpExtendedProcBbsInRange.xfer();
-    extendedProcBbsTransformIndex = tmpExtendedProcBbsTransformIndex.xfer();
-    extendedProcBbsOrigProc = tmpExtendedProcBbsOrigProc.xfer();
+    extendedProcBbsInRange = move(tmpExtendedProcBbsInRange);
+    extendedProcBbsTransformIndex = move(tmpExtendedProcBbsTransformIndex);
+    extendedProcBbsOrigProc = move(tmpExtendedProcBbsOrigProc);
 }
 
 
@@ -900,8 +901,8 @@ void Foam::InteractionLists<ParticleType>::buildMap
         new mapDistribute
         (
             constructSize,
-            sendMap.xfer(),
-            constructMap.xfer()
+            move(sendMap),
+            move(constructMap)
         )
     );
 }
@@ -960,7 +961,7 @@ void Foam::InteractionLists<ParticleType>::prepareParticleToBeReferred
     const globalIndexAndTransform& globalTransforms =
         mesh_.globalData().globalTransforms();
 
-    const vectorTensorTransform& transform = globalTransforms.transform
+    const transformer& transform = globalTransforms.transform
     (
         globalTransforms.transformIndex(ciat)
     );
@@ -1010,7 +1011,7 @@ void Foam::InteractionLists<ParticleType>::prepareWallDataToRefer()
 
         label wallFaceIndex = globalTransforms.index(wfiat);
 
-        const vectorTensorTransform& transform = globalTransforms.transform
+        const transformer& transform = globalTransforms.transform
         (
             globalTransforms.transformIndex(wfiat)
         );
@@ -1028,10 +1029,10 @@ void Foam::InteractionLists<ParticleType>::prepareWallDataToRefer()
         // supported
         referredWallData_[rWVI] = U.boundaryField()[patchi][patchFacei];
 
-        if (transform.hasR())
+        if (transform.transforms())
         {
             referredWallData_[rWVI] =
-                transform.R().T() & referredWallData_[rWVI];
+                transform.invTransform(referredWallData_[rWVI]);
         }
     }
 }

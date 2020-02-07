@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::nullObject
+    Foam::NullObject
 
 Description
     Singleton null-object class and instance
@@ -51,16 +51,16 @@ class NullObject
     NullObject()
     {}
 
-    //- Disallow default bitwise copy construct
-    NullObject(const NullObject&);
-
-    //- Disallow default bitwise assignment
-    void operator=(const NullObject&);
-
 public:
 
     //- The unique null object
     static const NullObject nullObject;
+
+    //- Disallow default bitwise copy construction
+    NullObject(const NullObject&) = delete;
+
+    //- Disallow default bitwise assignment
+    void operator=(const NullObject&) = delete;
 };
 
 
@@ -75,6 +75,10 @@ inline const T& NullObjectRef();
 //- Return pointer to the nullObject of type T
 template<class T>
 inline const T* NullObjectPtr();
+
+//- Return reference to the nullObject of type T
+template<class T>
+inline T&& NullObjectMove();
 
 
 //- Return true if t is a reference to the nullObject of type T

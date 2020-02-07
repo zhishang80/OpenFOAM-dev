@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -53,25 +53,13 @@ class cyclicAMIGAMGInterfaceField
     public GAMGInterfaceField,
     public cyclicAMILduInterfaceField
 {
-    // Private data
+    // Private Data
 
         //- Local reference cast into the cyclic interface
         const cyclicAMIGAMGInterface& cyclicAMIInterface_;
 
-        //- Is the transform required
-        bool doTransform_;
-
         //- Rank of component for transformation
         int rank_;
-
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        cyclicAMIGAMGInterfaceField(const cyclicAMIGAMGInterfaceField&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const cyclicAMIGAMGInterfaceField&);
 
 
 public:
@@ -93,9 +81,14 @@ public:
         cyclicAMIGAMGInterfaceField
         (
             const GAMGInterface& GAMGCp,
-            const bool doTransform,
             const int rank
         );
+
+        //- Disallow default bitwise copy construction
+        cyclicAMIGAMGInterfaceField
+        (
+            const cyclicAMIGAMGInterfaceField&
+        ) = delete;
 
 
     //- Destructor
@@ -128,22 +121,10 @@ public:
 
         //- Cyclic interface functions
 
-            //- Does the interface field perform the transformation
-            virtual bool doTransform() const
+            //- Return transformation between the coupled patches
+            virtual const transformer& transform() const
             {
-                return doTransform_;
-            }
-
-            //- Return face transformation tensor
-            virtual const tensorField& forwardT() const
-            {
-                return cyclicAMIInterface_.forwardT();
-            }
-
-            //- Return neighbour-cell transformation tensor
-            virtual const tensorField& reverseT() const
-            {
-                return cyclicAMIInterface_.reverseT();
+                return cyclicAMIInterface_.transform();
             }
 
             //- Return rank of component for transform
@@ -151,6 +132,12 @@ public:
             {
                 return rank_;
             }
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const cyclicAMIGAMGInterfaceField&) = delete;
 };
 
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,9 +24,6 @@ License
 Class
     Foam::incompressible::RASModels::LienLeschziner
 
-Group
-    grpIcoRASTurbulence
-
 Description
     Lien and Leschziner low-Reynolds number k-epsilon turbulence model for
     incompressible flows.
@@ -42,7 +39,7 @@ Description
 
     Implemented according to the specification in:
     <a href=
-    "http://personalpages.manchester.ac.uk/staff/david.d.apsley/specturb.pdf"
+    "https://personalpages.manchester.ac.uk/staff/david.d.apsley/turbmod.pdf"
     >Apsley: Turbulence Models 2002</a>
 
     In addition to the low-Reynolds number damping functions support for
@@ -150,18 +147,20 @@ public:
         //- Return the effective diffusivity for k
         tmp<volScalarField> DkEff() const
         {
-            return tmp<volScalarField>
+            return volScalarField::New
             (
-                new volScalarField("DkEff", nut_/sigmak_ + nu())
+                "DkEff",
+                nut_/sigmak_ + nu()
             );
         }
 
         //- Return the effective diffusivity for epsilon
         tmp<volScalarField> DepsilonEff() const
         {
-            return tmp<volScalarField>
+            return volScalarField::New
             (
-                new volScalarField("DepsilonEff", nut_/sigmaEps_ + nu())
+                "DepsilonEff",
+                nut_/sigmaEps_ + nu()
             );
         }
 

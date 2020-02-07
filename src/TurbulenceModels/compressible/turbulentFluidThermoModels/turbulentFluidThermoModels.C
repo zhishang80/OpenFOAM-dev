@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -45,8 +45,14 @@ makeBaseTurbulenceModel
 #include "Stokes.H"
 makeLaminarModel(Stokes);
 
+#include "generalizedNewtonian.H"
+makeLaminarModel(generalizedNewtonian);
+
 #include "Maxwell.H"
 makeLaminarModel(Maxwell);
+
+#include "Giesekus.H"
+makeLaminarModel(Giesekus);
 
 
 // -------------------------------------------------------------------------- //

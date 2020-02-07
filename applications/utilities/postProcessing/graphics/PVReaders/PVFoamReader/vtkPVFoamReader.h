@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -139,20 +139,12 @@ public:
     const char* GetPartArrayName(int index);
 
     // Description:
-    // volField selection list control
-    virtual vtkDataArraySelection* GetVolFieldSelection();
-    int  GetNumberOfVolFieldArrays();
-    int  GetVolFieldArrayStatus(const char* name);
-    void SetVolFieldArrayStatus(const char* name, int status);
-    const char* GetVolFieldArrayName(int index);
-
-    // Description:
-    // pointField selection list control
-    virtual vtkDataArraySelection* GetPointFieldSelection();
-    int  GetNumberOfPointFieldArrays();
-    int  GetPointFieldArrayStatus(const char* name);
-    void SetPointFieldArrayStatus(const char* name, int status);
-    const char* GetPointFieldArrayName(int index);
+    // Field selection list control
+    virtual vtkDataArraySelection* GetFieldSelection();
+    int  GetNumberOfFieldArrays();
+    int  GetFieldArrayStatus(const char* name);
+    void SetFieldArrayStatus(const char* name, int status);
+    const char* GetFieldArrayName(int index);
 
     // Description:
     // lagrangianField selection list control
@@ -235,16 +227,15 @@ private:
     int InterpolateVolFields;
 
     vtkDataArraySelection* PartSelection;
-    vtkDataArraySelection* VolFieldSelection;
-    vtkDataArraySelection* PointFieldSelection;
+    vtkDataArraySelection* FieldSelection;
     vtkDataArraySelection* LagrangianFieldSelection;
 
     //- Cached data for output port0 (experimental!)
     vtkMultiBlockDataSet* output0_;
 
-    //BTX
+    // BTX
     Foam::vtkPVFoam* foamData_;
-    //ETX
+    // ETX
 };
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

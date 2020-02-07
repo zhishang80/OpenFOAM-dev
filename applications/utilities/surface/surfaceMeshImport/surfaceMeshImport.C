@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -284,11 +284,11 @@ int main(int argc, char *argv[])
             runTime.constant(),
             runTime
         ),
-        surf.xfer()
+        move(surf)
     );
 
 
-    Info<< "writing surfMesh:\n  " << smesh.objectPath() << endl;
+    Info<< "writing surfMesh:\n  " << smesh.localObjectPath() << endl;
     smesh.write();
 
     Info<< "\nEnd\n" << endl;

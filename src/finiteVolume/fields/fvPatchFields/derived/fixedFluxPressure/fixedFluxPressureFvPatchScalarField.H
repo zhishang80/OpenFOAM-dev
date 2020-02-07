@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::fixedFluxPressureFvPatchScalarField
-
-Group
-    grpInletBoundaryConditions grpWallBoundaryConditions
 
 Description
     This boundary condition sets the pressure gradient to the provided value
@@ -67,7 +64,7 @@ class fixedFluxPressureFvPatchScalarField
 :
     public fixedGradientFvPatchScalarField
 {
-    // Private data
+    // Private Data
 
         //- Current time index (used for updating)
         label curTimeIndex_;
@@ -106,7 +103,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         fixedFluxPressureFvPatchScalarField
         (
             const fixedFluxPressureFvPatchScalarField&
@@ -121,7 +118,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         fixedFluxPressureFvPatchScalarField
         (
             const fixedFluxPressureFvPatchScalarField&,
@@ -141,7 +138,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         //- Update the patch pressure gradient field from the given snGradp
         virtual void updateCoeffs(const scalarField& snGradp);

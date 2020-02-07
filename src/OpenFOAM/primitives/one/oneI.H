@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
+   \\    /   O peration     | Website:  https://openfoam.org
     \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
@@ -40,6 +40,26 @@ public:
 
     typedef arg2 type;
 };
+
+inline scalar operator+(const scalar& t, const one&)
+{
+    return t + 1;
+}
+
+inline scalar operator+(const one&, const scalar& t)
+{
+    return 1 + t;
+}
+
+inline scalar operator-(const scalar& t, const one&)
+{
+    return t - 1;
+}
+
+inline scalar operator-(const one&, const scalar& t)
+{
+    return 1 - t;
+}
 
 inline const one& operator*(const one& o, const one&)
 {

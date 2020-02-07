@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -28,6 +28,7 @@ License
 #include "cyclicPolyPatch.H"
 #include "cyclicAMIPolyPatch.H"
 #include "cyclicACMIPolyPatch.H"
+#include "cyclicRepeatAMIPolyPatch.H"
 #include "processorPolyPatch.H"
 #include "symmetryPlanePolyPatch.H"
 #include "symmetryPolyPatch.H"
@@ -102,11 +103,40 @@ void Foam::particle::writeFields(const TrackCloudType& c)
 template<class TrackCloudType>
 void Foam::particle::hitFace
 (
-    const vector& direction,
+    const vector& displacement,
+    const scalar fraction,
     TrackCloudType& cloud,
     trackingData& td
 )
 {
+    if (debug)
+    {
+        Info << "Particle " << origId() << nl << FUNCTION_NAME << nl << endl;
+    }
+
+    if (onBoundaryFace())
+    {
+        changeToMasterPatch();
+    }
+
+    hitFaceNoChangeToMasterPatch(displacement, fraction, cloud, td);
+}
+
+
+template<class TrackCloudType>
+void Foam::particle::hitFaceNoChangeToMasterPatch
+(
+    const vector& displacement,
+    const scalar fraction,
+    TrackCloudType& cloud,
+    trackingData& td
+)
+{
+    if (debug)
+    {
+        Info << "Particle " << origId() << nl << FUNCTION_NAME << nl << endl;
+    }
+
     typename TrackCloudType::particleType& p =
         static_cast<typename TrackCloudType::particleType&>(*this);
     typename TrackCloudType::particleType::trackingData& ttd =
@@ -122,8 +152,6 @@ void Foam::particle::hitFace
     }
     else if (onBoundaryFace())
     {
-        changeToMasterPatch();
-
         if (!p.hitPatch(cloud, ttd))
         {
             const polyPatch& patch = mesh_.boundaryMesh()[p.patch()];
@@ -146,11 +174,15 @@ void Foam::particle::hitFace
             }
             else if (isA<cyclicACMIPolyPatch>(patch))
             {
-                p.hitCyclicACMIPatch(cloud, ttd, direction);
+                p.hitCyclicACMIPatch(displacement, fraction, cloud, ttd);
             }
             else if (isA<cyclicAMIPolyPatch>(patch))
             {
-                p.hitCyclicAMIPatch(cloud, ttd, direction);
+                p.hitCyclicAMIPatch(displacement, fraction, cloud, ttd);
+            }
+            else if (isA<cyclicRepeatAMIPolyPatch>(patch))
+            {
+                p.hitCyclicRepeatAMIPatch(displacement, fraction, cloud, ttd);
             }
             else if (isA<processorPolyPatch>(patch))
             {
@@ -170,17 +202,24 @@ void Foam::particle::hitFace
 
 
 template<class TrackCloudType>
-void Foam::particle::trackToAndHitFace
+Foam::scalar Foam::particle::trackToAndHitFace
 (
-    const vector& direction,
+    const vector& displacement,
     const scalar fraction,
     TrackCloudType& cloud,
     trackingData& td
 )
 {
-    trackToFace(direction, fraction);
+    if (debug)
+    {
+        Info << "Particle " << origId() << nl << FUNCTION_NAME << nl << endl;
+    }
 
-    hitFace(direction, cloud, td);
+    const scalar f = trackToFace(displacement, fraction);
+
+    hitFace(displacement, fraction, cloud, td);
+
+    return f;
 }
 
 
@@ -217,7 +256,7 @@ template<class TrackCloudType>
 void Foam::particle::hitSymmetryPatch(TrackCloudType&, trackingData&)
 {
     const vector nf = normal();
-    transformProperties(I - 2.0*nf*nf);
+    transformProperties(transformer::rotation(I - 2.0*nf*nf));
 }
 
 
@@ -226,12 +265,12 @@ void Foam::particle::hitCyclicPatch(TrackCloudType&, trackingData&)
 {
     const cyclicPolyPatch& cpp =
         static_cast<const cyclicPolyPatch&>(mesh_.boundaryMesh()[patch()]);
-    const cyclicPolyPatch& receiveCpp = cpp.neighbPatch();
-    const label receiveFacei = receiveCpp.whichFace(facei_);
+    const cyclicPolyPatch& receiveCpp = cpp.nbrPatch();
 
     // Set the topology
     facei_ = tetFacei_ = cpp.transformGlobalFace(facei_);
     celli_ = mesh_.faceOwner()[facei_];
+
     // See note in correctAfterParallelTransfer for tetPti addressing ...
     tetPti_ = mesh_.faces()[tetFacei_].size() - 1 - tetPti_;
 
@@ -239,25 +278,9 @@ void Foam::particle::hitCyclicPatch(TrackCloudType&, trackingData&)
     reflect();
 
     // Transform the properties
-    if (!receiveCpp.parallel())
+    if (receiveCpp.transform().transformsPosition())
     {
-        const tensor& T =
-        (
-            receiveCpp.forwardT().size() == 1
-          ? receiveCpp.forwardT()[0]
-          : receiveCpp.forwardT()[receiveFacei]
-        );
-        transformProperties(T);
-    }
-    else if (receiveCpp.separated())
-    {
-        const vector& s =
-        (
-            (receiveCpp.separation().size() == 1)
-          ? receiveCpp.separation()[0]
-          : receiveCpp.separation()[receiveFacei]
-        );
-        transformProperties(-s);
+        transformProperties(receiveCpp.transform());
     }
 }
 
@@ -265,40 +288,60 @@ void Foam::particle::hitCyclicPatch(TrackCloudType&, trackingData&)
 template<class TrackCloudType>
 void Foam::particle::hitCyclicAMIPatch
 (
-    TrackCloudType&,
-    trackingData& td,
-    const vector& direction
+    const vector& displacement,
+    const scalar fraction,
+    TrackCloudType& cloud,
+    trackingData& td
 )
 {
-    vector pos = position();
-
     const cyclicAMIPolyPatch& cpp =
         static_cast<const cyclicAMIPolyPatch&>(mesh_.boundaryMesh()[patch()]);
-    const cyclicAMIPolyPatch& receiveCpp = cpp.neighbPatch();
-    const label sendFacei = cpp.whichFace(facei_);
-    const label receiveFacei = cpp.pointFace(sendFacei, direction, pos);
+    const cyclicAMIPolyPatch& receiveCpp = cpp.nbrPatch();
 
+    if (debug)
+    {
+        Info<< "Particle " << origId() << " crossing AMI from " << cpp.name()
+            << " to " << receiveCpp.name() << endl << endl;
+    }
+
+    // Get the send patch data
+    vector sendNormal, sendDisplacement;
+    patchData(sendNormal, sendDisplacement);
+
+    vector pos = position();
+
+    const labelPair receiveIs =
+        cpp.pointAMIAndFace
+        (
+            cpp.whichFace(facei_),
+            displacement - fraction*sendDisplacement,
+            pos
+        );
+    const label receiveAMIi = receiveIs.first();
+    const label receiveFacei = receiveIs.second();
+
+    // If the receiving face could not be found then issue a warning and remove
+    // the particle
     if (receiveFacei < 0)
     {
-        // If the patch face of the particle is not known assume that the
-        // particle is lost and mark it to be deleted.
         td.keepParticle = false;
         WarningInFunction
-            << "Particle lost across " << cyclicAMIPolyPatch::typeName
-            << " patches " << cpp.name() << " and " << receiveCpp.name()
-            << " at position " << pos << endl;
+            << "Particle transfer from " << cyclicAMIPolyPatch::typeName
+            << " patches " << cpp.name() << " to " << receiveCpp.name()
+            << " failed at position " << pos << " and with displacement "
+            << (displacement - fraction*sendDisplacement) << nl
+            << "    A receiving face could not be found" << nl
+            << "    The particle has been removed" << nl << endl;
+        return;
     }
 
     // Set the topology
     facei_ = tetFacei_ = receiveFacei + receiveCpp.start();
 
     // Locate the particle on the receiving side
-    vector directionT = direction;
-    cpp.reverseTransformDirection(directionT, sendFacei);
     locate
     (
         pos,
-        &directionT,
         mesh_.faceOwner()[facei_],
         false,
         "Particle crossed between " + cyclicAMIPolyPatch::typeName +
@@ -311,25 +354,45 @@ void Foam::particle::hitCyclicAMIPatch
     facei_ = tetFacei_;
 
     // Transform the properties
-    if (!receiveCpp.parallel())
+    vector displacementT = displacement;
+
+    const transformer AMITransform =
+        receiveCpp.owner()
+      ? receiveCpp.AMITransforms()[receiveAMIi]
+      : inv(cpp.AMITransforms()[receiveAMIi]);
+
+    if (AMITransform.transformsPosition())
     {
-        const tensor& T =
-        (
-            receiveCpp.forwardT().size() == 1
-          ? receiveCpp.forwardT()[0]
-          : receiveCpp.forwardT()[receiveFacei]
-        );
-        transformProperties(T);
+        transformProperties(AMITransform);
+        displacementT = AMITransform.transform(displacementT);
     }
-    else if (receiveCpp.separated())
+
+    if (receiveCpp.transform().transformsPosition())
     {
-        const vector& s =
-        (
-            (receiveCpp.separation().size() == 1)
-          ? receiveCpp.separation()[0]
-          : receiveCpp.separation()[receiveFacei]
-        );
-        transformProperties(-s);
+        transformProperties(receiveCpp.transform());
+        displacementT = receiveCpp.transform().transform(displacementT);
+    }
+
+    // If on a boundary and the displacement points into the receiving face
+    // then issue a warning and remove the particle
+    if (onBoundaryFace())
+    {
+        vector receiveNormal, receiveDisplacement;
+        patchData(receiveNormal, receiveDisplacement);
+
+        if (((displacementT - fraction*receiveDisplacement)&receiveNormal) > 0)
+        {
+            td.keepParticle = false;
+            WarningInFunction
+                << "Particle transfer from " << cyclicAMIPolyPatch::typeName
+                << " patches " << cpp.name() << " to " << receiveCpp.name()
+                << " failed at position " << pos << " and with displacement "
+                << (displacementT - fraction*receiveDisplacement) << nl
+                << "    The displacement points into both the source and "
+                << "receiving faces, so the tracking cannot proceed" << nl
+                << "    The particle has been removed" << nl << endl;
+            return;
+        }
     }
 }
 
@@ -337,13 +400,20 @@ void Foam::particle::hitCyclicAMIPatch
 template<class TrackCloudType>
 void Foam::particle::hitCyclicACMIPatch
 (
+    const vector& displacement,
+    const scalar fraction,
     TrackCloudType& cloud,
-    trackingData& td,
-    const vector& direction
+    trackingData& td
 )
 {
+    typename TrackCloudType::particleType& p =
+        static_cast<typename TrackCloudType::particleType&>(*this);
+
     const cyclicACMIPolyPatch& cpp =
         static_cast<const cyclicACMIPolyPatch&>(mesh_.boundaryMesh()[patch()]);
+
+    vector patchNormal, patchDisplacement;
+    patchData(patchNormal, patchDisplacement);
 
     const label localFacei = cpp.whichFace(facei_);
 
@@ -359,21 +429,43 @@ void Foam::particle::hitCyclicACMIPatch
     if (!couple && !nonOverlap)
     {
         vector pos = position();
-        couple = cpp.pointFace(localFacei, direction, pos) >= 0;
+        couple =
+            cpp.pointAMIAndFace
+            (
+                localFacei,
+                displacement - fraction*patchDisplacement,
+                pos
+            ).first() >= 0;
         nonOverlap = !couple;
     }
 
     if (couple)
     {
-        hitCyclicAMIPatch(cloud, td, direction);
+        p.hitCyclicAMIPatch(displacement, fraction, cloud, td);
     }
     else
     {
         // Move to the face associated with the non-overlap patch and redo the
         // face interaction.
         tetFacei_ = facei_ = cpp.nonOverlapPatch().start() + localFacei;
-        hitFace(direction, cloud, td);
+        p.hitFaceNoChangeToMasterPatch(displacement, fraction, cloud, td);
     }
+}
+
+
+template<class TrackCloudType>
+void Foam::particle::hitCyclicRepeatAMIPatch
+(
+    const vector& displacement,
+    const scalar fraction,
+    TrackCloudType& cloud,
+    trackingData& td
+)
+{
+    typename TrackCloudType::particleType& p =
+        static_cast<typename TrackCloudType::particleType&>(*this);
+
+    p.hitCyclicAMIPatch(displacement, fraction, cloud, td);
 }
 
 

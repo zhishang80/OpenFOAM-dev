@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::viscosityModel
+    Foam::kineticTheoryModels::viscosityModel
 
 Description
 
@@ -52,15 +52,6 @@ namespace kineticTheoryModels
 
 class viscosityModel
 {
-    // Private member functions
-
-        //- Disallow default bitwise copy construct
-        viscosityModel(const viscosityModel&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const viscosityModel&);
-
-
 protected:
 
     // Protected data
@@ -91,6 +82,9 @@ public:
         //- Construct from components
         viscosityModel(const dictionary& dict);
 
+        //- Disallow default bitwise copy construction
+        viscosityModel(const viscosityModel&) = delete;
+
 
     // Selectors
 
@@ -120,6 +114,12 @@ public:
         {
             return true;
         }
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const viscosityModel&) = delete;
 };
 
 

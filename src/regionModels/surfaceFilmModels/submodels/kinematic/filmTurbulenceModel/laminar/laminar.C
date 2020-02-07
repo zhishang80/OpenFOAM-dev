@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -56,7 +56,7 @@ laminar::laminar
 )
 :
     filmTurbulenceModel(type(), film, dict),
-    Cf_(readScalar(coeffDict_.lookup("Cf")))
+    Cf_(coeffDict_.lookup<scalar>("Cf"))
 {}
 
 
@@ -72,24 +72,17 @@ tmp<volVectorField> laminar::Us() const
 {
     tmp<volVectorField> tUs
     (
-        new volVectorField
+        volVectorField::New
         (
-            IOobject
-            (
-                typeName + ":Us",
-                filmModel_.regionMesh().time().timeName(),
-                filmModel_.regionMesh(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
+            IOobject::modelName("Us", typeName),
             filmModel_.regionMesh(),
-            dimensionedVector("zero", dimVelocity, Zero),
+            dimensionedVector(dimVelocity, Zero),
             extrapolatedCalculatedFvPatchVectorField::typeName
         )
     );
 
-    // apply quadratic profile
-    tUs.ref() = Foam::sqrt(2.0)*filmModel_.U();
+    // Evaluate surface velocity assuming parabolic profile
+    tUs.ref() = 1.5*filmModel_.U();
     tUs.ref().correctBoundaryConditions();
 
     return tUs;
@@ -100,18 +93,11 @@ tmp<volScalarField> laminar::mut() const
 {
     return tmp<volScalarField>
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                typeName + ":mut",
-                filmModel_.regionMesh().time().timeName(),
-                filmModel_.regionMesh(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
+            IOobject::modelName("mut", typeName),
             filmModel_.regionMesh(),
-            dimensionedScalar("zero", dimMass/dimLength/dimTime, 0.0)
+            dimensionedScalar(dimMass/dimLength/dimTime, 0)
         )
     );
 }
@@ -128,16 +114,21 @@ tmp<fvVectorMatrix> laminar::Su(volVectorField& U) const
         static_cast<const kinematicSingleLayer&>(filmModel_);
 
     // local references to film fields
-    const volScalarField& mu = film.mu();
-    const volVectorField& Uw = film.Uw();
-    const volScalarField& delta = film.delta();
-    const volVectorField& Up = film.UPrimary();
-    const volScalarField& rhop = film.rhoPrimary();
+    const volScalarField::Internal& mu = film.mu();
+    const volScalarField::Internal& rho = film.rho();
+    const volVectorField::Internal& Uw = film.Uw();
+    const volScalarField::Internal& delta = film.delta();
+    const volVectorField::Internal& Up = film.UPrimary();
+    const volScalarField::Internal& rhop = film.rhoPrimary();
+    const volScalarField::Internal& VbyA = film.VbyA();
 
-    // employ simple coeff-based model
-    volScalarField Cs("Cs", Cf_*rhop*mag(Up - U));
-    volScalarField Cw("Cw", mu/((1.0/3.0)*(delta + film.deltaSmall())));
-    Cw.min(5000.0);
+    // Employ simple coeff-based model
+    volScalarField::Internal Cs("Cs", Cf_*rhop*mag(Up - U)/VbyA);
+    volScalarField::Internal Cw
+    (
+        "Cw",
+        mu/((1.0/3.0)*VbyA*delta + 1e-5*mu*film.time().deltaT()/rho)
+    );
 
     return
     (

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -52,19 +52,10 @@ class cyclicAMIPointPatch
 :
     public coupledFacePointPatch
 {
-    // Private data
+    // Private Data
 
         //- Local reference cast into the cyclic AMI patch
         const cyclicAMIPolyPatch& cyclicAMIPolyPatch_;
-
-
-    // Private Member Functions
-
-        //- Disallow default construct as copy
-        cyclicAMIPointPatch(const cyclicAMIPointPatch&);
-
-        //- Disallow default assignment
-        void operator=(const cyclicAMIPointPatch&);
 
 
 protected:
@@ -105,12 +96,18 @@ public:
             const pointBoundaryMesh& bm
         );
 
+        //- Disallow default bitwise copy construction
+        cyclicAMIPointPatch(const cyclicAMIPointPatch&);
+
 
     //- Destructor
     virtual ~cyclicAMIPointPatch();
 
 
     // Member Functions
+
+        //- Return true if this patch field is coupled
+        virtual bool coupled() const;
 
         //- Return the constraint type this pointPatch implements.
         virtual const word& constraintType() const
@@ -125,30 +122,24 @@ public:
         }
 
         //- Return neighbour point patch
-        const cyclicAMIPointPatch& neighbPatch() const
+        const cyclicAMIPointPatch& nbrPatch() const
         {
-            label patchi = cyclicAMIPolyPatch_.neighbPatchID();
+            label patchi = cyclicAMIPolyPatch_.nbrPatchID();
             const pointPatch& pp = this->boundaryMesh()[patchi];
             return refCast<const cyclicAMIPointPatch>(pp);
         }
 
-        //- Are the cyclic planes parallel
-        bool parallel() const
+        //- Return transformation between the coupled patches
+        virtual const transformer& transform() const
         {
-            return cyclicAMIPolyPatch_.parallel();
+            return cyclicAMIPolyPatch_.transform();
         }
 
-        //- Return face transformation tensor
-        const tensorField& forwardT() const
-        {
-            return cyclicAMIPolyPatch_.forwardT();
-        }
 
-        //- Return neighbour-cell transformation tensor
-        const tensorField& reverseT() const
-        {
-            return cyclicAMIPolyPatch_.reverseT();
-        }
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const cyclicAMIPointPatch&);
 };
 
 

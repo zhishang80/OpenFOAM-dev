@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -60,6 +60,7 @@ Description
 #include "ReadFields.H"
 #include "volFields.H"
 #include "surfaceFields.H"
+#include "pointFields.H"
 
 using namespace Foam;
 
@@ -208,7 +209,7 @@ labelList findBaffles(const polyMesh& mesh, const labelList& boundaryFaces)
         }
 
         Pout<< "Writing " << duplicateSet.size()
-            << " duplicate faces to faceSet " << duplicateSet.objectPath()
+            << " duplicate faces to faceSet " << duplicateSet.localObjectPath()
             << nl << endl;
         duplicateSet.write();
     }
@@ -278,35 +279,11 @@ int main(int argc, char *argv[])
 
     if (fields) Info<< "Reading geometric fields" << nl << endl;
 
-    PtrList<volScalarField> vsFlds;
-    if (fields) ReadFields(mesh, objects, vsFlds);
+    #include "readVolFields.H"
+    #include "readSurfaceFields.H"
+    #include "readPointFields.H"
 
-    PtrList<volVectorField> vvFlds;
-    if (fields) ReadFields(mesh, objects, vvFlds);
-
-    PtrList<volSphericalTensorField> vstFlds;
-    if (fields) ReadFields(mesh, objects, vstFlds);
-
-    PtrList<volSymmTensorField> vsymtFlds;
-    if (fields) ReadFields(mesh, objects, vsymtFlds);
-
-    PtrList<volTensorField> vtFlds;
-    if (fields) ReadFields(mesh, objects, vtFlds);
-
-    PtrList<surfaceScalarField> ssFlds;
-    if (fields) ReadFields(mesh, objects, ssFlds);
-
-    PtrList<surfaceVectorField> svFlds;
-    if (fields) ReadFields(mesh, objects, svFlds);
-
-    PtrList<surfaceSphericalTensorField> sstFlds;
-    if (fields) ReadFields(mesh, objects, sstFlds);
-
-    PtrList<surfaceSymmTensorField> ssymtFlds;
-    if (fields) ReadFields(mesh, objects, ssymtFlds);
-
-    PtrList<surfaceTensorField> stFlds;
-    if (fields) ReadFields(mesh, objects, stFlds);
+    Info<< endl;
 
 
     // Mesh change engine
@@ -388,7 +365,7 @@ int main(int argc, char *argv[])
 
         Pout<< "Writing " << dupPoints.size()
             << " duplicated points to pointSet "
-            << dupPoints.objectPath() << nl << endl;
+            << dupPoints.localObjectPath() << nl << endl;
 
         dupPoints.write();
     }

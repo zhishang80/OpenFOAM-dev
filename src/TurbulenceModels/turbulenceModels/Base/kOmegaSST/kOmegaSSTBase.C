@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -45,7 +45,7 @@ kOmegaSST<TurbulenceModel, BasicTurbulenceModel>::kOmegaSST::F1
     tmp<volScalarField> CDkOmegaPlus = max
     (
         CDkOmega,
-        dimensionedScalar("1.0e-10", dimless/sqr(dimTime), 1.0e-10)
+        dimensionedScalar(dimless/sqr(dimTime), 1.0e-10)
     );
 
     tmp<volScalarField> arg1 = min

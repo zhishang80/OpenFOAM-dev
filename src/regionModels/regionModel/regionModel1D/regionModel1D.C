@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -39,7 +39,6 @@ namespace regionModels
 
 void Foam::regionModels::regionModel1D::constructMeshObjects()
 {
-
     nMagSfPtr_.reset
     (
         new surfaceScalarField
@@ -53,7 +52,7 @@ void Foam::regionModels::regionModel1D::constructMeshObjects()
                 IOobject::NO_WRITE
             ),
             regionMesh(),
-            dimensionedScalar("zero", dimArea, 0.0)
+            dimensionedScalar(dimArea, 0)
         )
     );
 }
@@ -61,10 +60,7 @@ void Foam::regionModels::regionModel1D::constructMeshObjects()
 
 void Foam::regionModels::regionModel1D::initialise()
 {
-    if (debug)
-    {
-        Pout<< "regionModel1D::initialise()" << endl;
-    }
+    DebugInFunction << endl;
 
     // Calculate boundaryFaceFaces and boundaryFaceCells
 
@@ -105,7 +101,7 @@ void Foam::regionModels::regionModel1D::initialise()
             } while (regionMesh().isInternalFace(facei));
 
             boundaryFaceOppositeFace_[localPyrolysisFacei] = facei;
-            faceIDs.remove(); //remove boundary face.
+            faceIDs.remove(); // remove boundary face.
             nFaces--;
 
             boundaryFaceFaces_[localPyrolysisFacei].transfer(faceIDs);

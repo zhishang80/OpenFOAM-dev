@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,11 +22,12 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    compressibleInterFoam
+    compressibleInterFilmFoam
 
 Description
     Solver for 2 compressible, non-isothermal immiscible fluids using a VOF
-    (volume of fluid) phase-fraction based interface capturing approach.
+    (volume of fluid) phase-fraction based interface capturing approach
+    and surface film modelling.
 
     The momentum and other fluid properties are of the "mixture" and a single
     momentum equation is solved.
@@ -45,7 +46,6 @@ Description
 #include "pimpleControl.H"
 #include "SLGThermo.H"
 #include "surfaceFilmModel.H"
-#include "pimpleControl.H"
 #include "fvOptions.H"
 #include "fvcSmooth.H"
 
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 {
     #include "postProcess.H"
 
-    #include "setRootCase.H"
+    #include "setRootCaseLists.H"
     #include "createTime.H"
     #include "createMesh.H"
     #include "createControl.H"
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 
     Info<< "\nStarting time loop\n" << endl;
 
-    while (runTime.run())
+    while (pimple.run(runTime))
     {
         #include "readTimeControls.H"
 

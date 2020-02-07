@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -65,7 +65,7 @@ class InflationInjection
 :
     public InjectionModel<CloudType>
 {
-    // Private data
+    // Private Data
 
         //- Name of cellSet for generating new particles
         word generationSetName_;
@@ -83,7 +83,7 @@ class InflationInjection
         //- Injection duration [s]
         scalar duration_;
 
-        //- Flow rate profile relative to SOI [m3/s]
+        //- Flow rate profile relative to SOI [m^3/s]
         TimeFunction1<scalar> flowRateProfile_;
 
         //- Growth rate of particle diameters towards target [m/s]

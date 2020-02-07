@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -25,13 +25,13 @@ License
 
 #include "dictionaryListEntry.H"
 #include "keyType.H"
-#include "IOstreams.H"
+#include "IOobject.H"
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
 Foam::label Foam::dictionaryListEntry::realSize(const dictionary& dict)
 {
-    if (dict.size() < 1 || dict.first()->keyword() != "FoamFile")
+    if (dict.size() < 1 || dict.first()->keyword() != IOobject::foamFile)
     {
         return dict.size();
     }
@@ -66,7 +66,12 @@ Foam::dictionaryListEntry::dictionaryListEntry
 
         for (label i=0; i<s; i++)
         {
-            entry::New(*this, is);
+            if (!entry::New(*this, is))
+            {
+                FatalIOErrorInFunction(is)
+                    << "Failed to read dictionary entry in list"
+                    << exit(FatalIOError);
+            }
         }
         is.readEndList("List");
     }
@@ -88,7 +93,13 @@ Foam::dictionaryListEntry::dictionaryListEntry
                 break;
             }
             is.putBack(nextToken);
-            entry::New(*this, is);
+
+            if (!entry::New(*this, is))
+            {
+                FatalIOErrorInFunction(is)
+                    << "Failed to read dictionary entry in list"
+                    << exit(FatalIOError);
+            }
         }
     }
     else

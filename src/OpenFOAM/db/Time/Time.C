@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -39,7 +39,7 @@ namespace Foam
     template<>
     const char* Foam::NamedEnum
     <
-        Foam::Time::stopAtControls,
+        Foam::Time::stopAtControl,
         4
     >::names[] =
     {
@@ -52,7 +52,7 @@ namespace Foam
     template<>
     const char* Foam::NamedEnum
     <
-        Foam::Time::writeControls,
+        Foam::Time::writeControl,
         5
     >::names[] =
     {
@@ -64,13 +64,13 @@ namespace Foam
     };
 }
 
-const Foam::NamedEnum<Foam::Time::stopAtControls, 4>
+const Foam::NamedEnum<Foam::Time::stopAtControl, 4>
     Foam::Time::stopAtControlNames_;
 
-const Foam::NamedEnum<Foam::Time::writeControls, 5>
+const Foam::NamedEnum<Foam::Time::writeControl, 5>
     Foam::Time::writeControlNames_;
 
-Foam::Time::fmtflags Foam::Time::format_(Foam::Time::general);
+Foam::Time::format Foam::Time::format_(Foam::Time::format::general);
 
 int Foam::Time::precision_(6);
 
@@ -162,7 +162,7 @@ void Foam::Time::setControls()
 
     // Check if time directory exists
     // If not increase time precision to see if it is formatted differently.
-    if (!fileHandler().exists(timePath(), false))
+    if (!fileHandler().exists(timePath(), false, false))
     {
         int oldPrecision = precision_;
         int requiredPrecision = -1;
@@ -186,7 +186,7 @@ void Foam::Time::setControls()
             oldTime = newTime;
 
             // Check the existence of the time directory with the new format
-            found = fileHandler().exists(timePath(), false);
+            found = fileHandler().exists(timePath(), false, false);
 
             if (found)
             {
@@ -331,8 +331,6 @@ Foam::Time::Time
 
     objectRegistry(*this),
 
-    libs_(),
-
     controlDict_
     (
         IOobject
@@ -350,24 +348,25 @@ Foam::Time::Time
     startTime_(0),
     endTime_(0),
 
-    stopAt_(saEndTime),
-    writeControl_(wcTimeStep),
+    stopAt_(stopAtControl::endTime),
+    writeControl_(writeControl::timeStep),
     writeInterval_(great),
     purgeWrite_(0),
     writeOnce_(false),
     subCycling_(false),
-    sigWriteNow_(true, *this),
-    sigStopAtWriteNow_(true, *this),
+    sigWriteNow_(writeInfoHeader, *this),
+    sigStopAtWriteNow_(writeInfoHeader, *this),
 
     writeFormat_(IOstream::ASCII),
     writeVersion_(IOstream::currentVersion),
     writeCompression_(IOstream::UNCOMPRESSED),
     graphFormat_("raw"),
     runTimeModifiable_(false),
+    cacheTemporaryObjects_(true),
 
     functionObjects_(*this, enableFunctionObjects)
 {
-    libs_.open(controlDict_, "libs");
+    libs.open(controlDict_, "libs");
 
     // Explicitly set read flags on objectRegistry so anything constructed
     // from it reads as well (e.g. fvSolution).
@@ -407,8 +406,6 @@ Foam::Time::Time
 
     objectRegistry(*this),
 
-    libs_(),
-
     controlDict_
     (
         IOobject
@@ -426,20 +423,21 @@ Foam::Time::Time
     startTime_(0),
     endTime_(0),
 
-    stopAt_(saEndTime),
-    writeControl_(wcTimeStep),
+    stopAt_(stopAtControl::endTime),
+    writeControl_(writeControl::timeStep),
     writeInterval_(great),
     purgeWrite_(0),
     writeOnce_(false),
     subCycling_(false),
-    sigWriteNow_(true, *this),
-    sigStopAtWriteNow_(true, *this),
+    sigWriteNow_(writeInfoHeader, *this),
+    sigStopAtWriteNow_(writeInfoHeader, *this),
 
     writeFormat_(IOstream::ASCII),
     writeVersion_(IOstream::currentVersion),
     writeCompression_(IOstream::UNCOMPRESSED),
     graphFormat_("raw"),
     runTimeModifiable_(false),
+    cacheTemporaryObjects_(true),
 
     functionObjects_
     (
@@ -449,7 +447,7 @@ Foam::Time::Time
       : !args.optionFound("noFunctionObjects")
     )
 {
-    libs_.open(controlDict_, "libs");
+    libs.open(controlDict_, "libs");
 
     // Explicitly set read flags on objectRegistry so anything constructed
     // from it reads as well (e.g. fvSolution).
@@ -489,8 +487,6 @@ Foam::Time::Time
 
     objectRegistry(*this),
 
-    libs_(),
-
     controlDict_
     (
         IOobject
@@ -509,24 +505,25 @@ Foam::Time::Time
     startTime_(0),
     endTime_(0),
 
-    stopAt_(saEndTime),
-    writeControl_(wcTimeStep),
+    stopAt_(stopAtControl::endTime),
+    writeControl_(writeControl::timeStep),
     writeInterval_(great),
     purgeWrite_(0),
     writeOnce_(false),
     subCycling_(false),
-    sigWriteNow_(true, *this),
-    sigStopAtWriteNow_(true, *this),
+    sigWriteNow_(writeInfoHeader, *this),
+    sigStopAtWriteNow_(writeInfoHeader, *this),
 
     writeFormat_(IOstream::ASCII),
     writeVersion_(IOstream::currentVersion),
     writeCompression_(IOstream::UNCOMPRESSED),
     graphFormat_("raw"),
     runTimeModifiable_(false),
+    cacheTemporaryObjects_(true),
 
     functionObjects_(*this, enableFunctionObjects)
 {
-    libs_.open(controlDict_, "libs");
+    libs.open(controlDict_, "libs");
 
 
     // Explicitly set read flags on objectRegistry so anything constructed
@@ -569,8 +566,6 @@ Foam::Time::Time
 
     objectRegistry(*this),
 
-    libs_(),
-
     controlDict_
     (
         IOobject
@@ -588,8 +583,8 @@ Foam::Time::Time
     startTime_(0),
     endTime_(0),
 
-    stopAt_(saEndTime),
-    writeControl_(wcTimeStep),
+    stopAt_(stopAtControl::endTime),
+    writeControl_(writeControl::timeStep),
     writeInterval_(great),
     purgeWrite_(0),
     writeOnce_(false),
@@ -600,10 +595,11 @@ Foam::Time::Time
     writeCompression_(IOstream::UNCOMPRESSED),
     graphFormat_("raw"),
     runTimeModifiable_(false),
+    cacheTemporaryObjects_(true),
 
     functionObjects_(*this, enableFunctionObjects)
 {
-    libs_.open(controlDict_, "libs");
+    libs.open(controlDict_, "libs");
 }
 
 
@@ -806,6 +802,11 @@ bool Foam::Time::run() const
         {
             functionObjects_.execute();
             functionObjects_.end();
+
+            if (cacheTemporaryObjects_)
+            {
+                cacheTemporaryObjects_ = checkCacheTemporaryObjects();
+            }
         }
     }
 
@@ -822,6 +823,11 @@ bool Foam::Time::run() const
             else
             {
                 functionObjects_.execute();
+
+                if (cacheTemporaryObjects_)
+                {
+                    cacheTemporaryObjects_ = checkCacheTemporaryObjects();
+                }
             }
         }
 
@@ -852,13 +858,13 @@ bool Foam::Time::end() const
 }
 
 
-bool Foam::Time::stopAt(const stopAtControls sa) const
+bool Foam::Time::stopAt(const stopAtControl sa) const
 {
     const bool changed = (stopAt_ != sa);
     stopAt_ = sa;
 
     // adjust endTime
-    if (sa == saEndTime)
+    if (sa == stopAtControl::endTime)
     {
         controlDict_.lookup("endTime") >> endTime_;
     }
@@ -945,7 +951,7 @@ void Foam::Time::setDeltaT(const scalar deltaT)
 
     functionObjects_.setTimeStep();
 
-    if (writeControl_ == wcAdjustableRunTime)
+    if (writeControl_ == writeControl::adjustableRunTime)
     {
         adjustDeltaT();
     }
@@ -1025,7 +1031,11 @@ Foam::Time& Foam::Time::operator++()
             // Reduce so all decide the same.
 
             label flag = 0;
-            if (sigStopAtWriteNow_.active() && stopAt_ == saWriteNow)
+            if
+            (
+                sigStopAtWriteNow_.active()
+             && stopAt_ == stopAtControl::writeNow
+            )
             {
                 flag += 1;
             }
@@ -1037,7 +1047,7 @@ Foam::Time& Foam::Time::operator++()
 
             if (flag & 1)
             {
-                stopAt_ = saWriteNow;
+                stopAt_ = stopAtControl::writeNow;
             }
             if (flag & 2)
             {
@@ -1049,12 +1059,12 @@ Foam::Time& Foam::Time::operator++()
 
         switch (writeControl_)
         {
-            case wcTimeStep:
+            case writeControl::timeStep:
                 writeTime_ = !(timeIndex_ % label(writeInterval_));
             break;
 
-            case wcRunTime:
-            case wcAdjustableRunTime:
+            case writeControl::runTime:
+            case writeControl::adjustableRunTime:
             {
                 label writeIndex = label
                 (
@@ -1070,7 +1080,7 @@ Foam::Time& Foam::Time::operator++()
             }
             break;
 
-            case wcCpuTime:
+            case writeControl::cpuTime:
             {
                 label writeIndex = label
                 (
@@ -1085,7 +1095,7 @@ Foam::Time& Foam::Time::operator++()
             }
             break;
 
-            case wcClockTime:
+            case writeControl::clockTime:
             {
                 label writeIndex = label
                 (
@@ -1105,16 +1115,16 @@ Foam::Time& Foam::Time::operator++()
         // Check if endTime needs adjustment to stop at the next run()/end()
         if (!end())
         {
-            if (stopAt_ == saNoWriteNow)
+            if (stopAt_ == stopAtControl::noWriteNow)
             {
                 endTime_ = value();
             }
-            else if (stopAt_ == saWriteNow)
+            else if (stopAt_ == stopAtControl::writeNow)
             {
                 endTime_ = value();
                 writeTime_ = true;
             }
-            else if (stopAt_ == saNextWrite && writeTime_ == true)
+            else if (stopAt_ == stopAtControl::nextWrite && writeTime_ == true)
             {
                 endTime_ = value();
             }

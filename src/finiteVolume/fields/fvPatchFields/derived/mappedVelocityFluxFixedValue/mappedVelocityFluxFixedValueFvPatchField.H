@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::mappedVelocityFluxFixedValueFvPatchField
-
-Group
-    grpInletBoundaryConditions grpCoupledBoundaryConditions
 
 Description
     This boundary condition maps the velocity and flux from a neighbour patch
@@ -84,7 +81,7 @@ class mappedVelocityFluxFixedValueFvPatchField
 :
     public fixedValueFvPatchVectorField
 {
-    // Private data
+    // Private Data
 
         //- Name of flux field
         word phiName_;
@@ -123,7 +120,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         mappedVelocityFluxFixedValueFvPatchField
         (
             const mappedVelocityFluxFixedValueFvPatchField&
@@ -138,7 +135,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         mappedVelocityFluxFixedValueFvPatchField
         (
             const mappedVelocityFluxFixedValueFvPatchField&,
@@ -158,7 +155,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Evaluation functions
 

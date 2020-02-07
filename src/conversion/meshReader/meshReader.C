@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -30,6 +30,7 @@ License
 #include "emptyPolyPatch.H"
 #include "cellModeller.H"
 #include "demandDrivenData.H"
+#include "polyMeshUnMergeCyclics.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
@@ -141,14 +142,17 @@ Foam::autoPtr<Foam::polyMesh> Foam::meshReader::mesh
                 registry.time().constant(),
                 registry
             ),
-            xferMove(points_),
-            xferMove(meshFaces_),
-            xferMove(cellPolys_)
+            move(points_),
+            move(meshFaces_),
+            move(cellPolys_)
         )
     );
 
     // adding patches also checks the mesh
     mesh().addPatches(polyBoundaryPatches(mesh));
+
+    // Un-merge any merged cyclics
+    polyMeshUnMergeCyclics(mesh());
 
     warnDuplicates("boundaries", mesh().boundaryMesh().names());
 

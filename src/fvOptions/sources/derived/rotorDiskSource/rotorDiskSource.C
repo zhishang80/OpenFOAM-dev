@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -89,7 +89,7 @@ void Foam::fv::rotorDiskSource::checkData()
                 {
                     scalar UIn
                     (
-                        readScalar(coeffs_.lookup("inletNormalVelocity"))
+                        coeffs_.lookup<scalar>("inletNormalVelocity")
                     );
                     inletVelocity_ = -coordSys_.R().e3()*UIn;
                     break;
@@ -247,7 +247,7 @@ void Foam::fv::rotorDiskSource::setFaceArea(vector& axis, const bool correct)
                 IOobject::NO_WRITE
             ),
             mesh_,
-            dimensionedScalar("0", dimArea, 0)
+            dimensionedScalar(dimArea, 0)
         );
         UIndirectList<scalar>(area.primitiveField(), cells_) = area_;
 
@@ -384,7 +384,7 @@ void Foam::fv::rotorDiskSource::createCoordinateSystem()
 
     const scalar sumArea = gSum(area_);
     const scalar diameter = Foam::sqrt(4.0*sumArea/mathematical::pi);
-    Info<< "    Rotor gometry:" << nl
+    Info<< "    Rotor geometry:" << nl
         << "    - disk diameter = " << diameter << nl
         << "    - disk area     = " << sumArea << nl
         << "    - origin        = " << coordSys_.origin() << nl
@@ -590,7 +590,7 @@ bool Foam::fv::rotorDiskSource::read(const dictionary& dict)
         applied_.setSize(fieldNames_.size(), false);
 
         // Read co-ordinate system/geometry invariant properties
-        scalar rpm(readScalar(coeffs_.lookup("rpm")));
+        scalar rpm(coeffs_.lookup<scalar>("rpm"));
         omega_ = rpm/60.0*mathematical::twoPi;
 
         coeffs_.lookup("nBlades") >> nBlades_;

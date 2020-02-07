@@ -1,33 +1,28 @@
-    word constProp(initialConditions.lookup("constantProperty"));
-    if ((constProp != "pressure") && (constProp != "volume"))
+    const word constProp(initialConditions.lookup("constantProperty"));
+    if
+    (
+        (constProp != "pressure")
+     && (constProp != "volume")
+     && (constProp != "temperature")
+    )
     {
-        FatalError << "in initialConditions, unknown constantProperty type "
-            << constProp << nl << " Valid types are: pressure volume."
-            << abort(FatalError);
+        FatalError
+            << "in initialConditions, unknown constantProperty type "
+            << constProp << nl
+            << "    Valid types are: pressure volume temperature."
+            << exit(FatalError);
     }
 
-    word fractionBasis(initialConditions.lookup("fractionBasis"));
+    const word fractionBasis(initialConditions.lookup("fractionBasis"));
     if ((fractionBasis != "mass") && (fractionBasis != "mole"))
     {
         FatalError << "in initialConditions, unknown fractionBasis type " << nl
             << "Valid types are: mass or mole."
-            << fractionBasis << abort(FatalError);
+            << fractionBasis << exit(FatalError);
     }
 
-    label nSpecie = Y.size();
-    PtrList<gasHThermoPhysics> specieData(Y.size());
-    forAll(specieData, i)
-    {
-        specieData.set
-        (
-            i,
-            new gasHThermoPhysics
-            (
-                dynamic_cast<const reactingMixture<gasHThermoPhysics>&>
-                    (thermo).speciesData()[i]
-            )
-        );
-    }
+    const label nSpecie = Y.size();
+    const scalarList W(::W(thermo));
 
     scalarList Y0(nSpecie, 0.0);
     scalarList X0(nSpecie, 0.0);
@@ -40,7 +35,7 @@
             const word& name = Y[i].name();
             if (fractions.found(name))
             {
-                X0[i] = readScalar(fractions.lookup(name));
+                X0[i] = fractions.lookup<scalar>(name);
             }
         }
 
@@ -49,12 +44,12 @@
         forAll(Y, i)
         {
             X0[i] /= mTot;
-            mw += specieData[i].W()*X0[i];
+            mw += W[i]*X0[i];
         }
 
         forAll(Y, i)
         {
-            Y0[i] = X0[i]*specieData[i].W()/mw;
+            Y0[i] = X0[i]*W[i]/mw;
         }
     }
     else  // mass fraction
@@ -64,7 +59,7 @@
             const word& name = Y[i].name();
             if (fractions.found(name))
             {
-                Y0[i] = readScalar(fractions.lookup(name));
+                Y0[i] = fractions.lookup<scalar>(name);
             }
         }
 
@@ -73,24 +68,24 @@
         forAll(Y, i)
         {
             Y0[i] /= mTot;
-            invW += Y0[i]/specieData[i].W();
+            invW += Y0[i]/W[i];
         }
         const scalar mw = 1.0/invW;
 
         forAll(Y, i)
         {
-            X0[i] = Y0[i]*mw/specieData[i].W();
+            X0[i] = Y0[i]*mw/W[i];
         }
     }
 
-    scalar h0 = 0.0;
+    const scalar h0 = ::h0(thermo, Y0, p[0], T0);
+
     forAll(Y, i)
     {
         Y[i] = Y0[i];
-        h0 += Y0[i]*specieData[i].Hs(p[0], T0);
     }
 
-    thermo.he() = dimensionedScalar("h", dimEnergy/dimMass, h0);
+    thermo.he() = dimensionedScalar(dimEnergy/dimMass, h0);
     thermo.correct();
 
     rho = thermo.rho();
@@ -104,5 +99,5 @@
     Info << constProp << " will be held constant." << nl
         << " p   = " << p[0] << " [Pa]" << nl
         << " T   = " << thermo.T()[0] << " [K] " << nl
-        << " rho = " << rho[0] << " [kg/m3]" << nl
+        << " rho = " << rho[0] << " [kg/m^3]" << nl
         << endl;

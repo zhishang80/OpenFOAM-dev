@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::functionObjects::fieldExpression
-
-Group
-    grpFieldFunctionObjects
 
 Description
 
@@ -63,7 +60,7 @@ protected:
     // Protected member data
 
         //- Name of field to process
-        word fieldName_;
+        const word fieldName_;
 
         //- Name of result field
         word resultName_;
@@ -73,21 +70,8 @@ protected:
 
         virtual bool calc() = 0;
 
-        void setResultName(const word& typeName, const word& defaultArg);
-
         template<class Type>
         bool foundObject(const word& name);
-
-
-private:
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        fieldExpression(const fieldExpression&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const fieldExpression&);
 
 
 public:
@@ -104,9 +88,12 @@ public:
             const word& name,
             const Time& runTime,
             const dictionary& dict,
-            const word& fieldName = word::null,
-            const word& resultName = word::null
+            const word& functionName,
+            const word& defaultFieldName = word::null
         );
+
+        //- Disallow default bitwise copy construction
+        fieldExpression(const fieldExpression&) = delete;
 
 
     //- Destructor
@@ -126,6 +113,12 @@ public:
 
         //- Clear the result field from the objectRegistry
         virtual bool clear();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const fieldExpression&) = delete;
 };
 
 

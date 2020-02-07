@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -39,6 +39,7 @@ SourceFiles
 #include "volFields.H"
 #include "dictionary.H"
 #include "runTimeSelectionTables.H"
+#include "phasePair.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -53,15 +54,6 @@ class saturationModel
 :
     public IOdictionary
 {
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        saturationModel(const saturationModel&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const saturationModel&);
-
-
 public:
 
     //- Runtime type information
@@ -75,16 +67,19 @@ public:
         saturationModel,
         dictionary,
         (
-            const dictionary& dict, const objectRegistry& db
+            const dictionary& dict, const phasePair& pair
         ),
-        (dict, db)
+        (dict, pair)
     );
 
 
     // Constructors
 
         //- Construct null
-        saturationModel(const objectRegistry& db);
+        saturationModel(const phasePair& pair);
+
+        //- Disallow default bitwise copy construction
+        saturationModel(const saturationModel&) = delete;
 
 
     // Selectors
@@ -93,7 +88,7 @@ public:
         static autoPtr<saturationModel> New
         (
             const dictionary& dict,
-            const objectRegistry& db
+            const phasePair& pair
         );
 
 
@@ -109,7 +104,7 @@ public:
             const volScalarField& T
         ) const = 0;
 
-        //- Saturation pressure derivetive w.r.t. temperature
+        //- Saturation pressure derivative w.r.t. temperature
         virtual tmp<volScalarField> pSatPrime
         (
             const volScalarField& T
@@ -126,6 +121,12 @@ public:
         (
             const volScalarField& p
         ) const = 0;
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const saturationModel&) = delete;
 };
 
 

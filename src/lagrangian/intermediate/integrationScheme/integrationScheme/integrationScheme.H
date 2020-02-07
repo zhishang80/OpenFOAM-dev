@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -58,7 +58,7 @@ Description
         \f]
         \f[
             \Delta \phi_i = (\alpha_i - \beta_i \phi^n) \Delta t -
-            (A - B \phi^n) \int_0^{\Delta t} t_e dt
+            \beta_i (A - B \phi^n) \int_0^{\Delta t} t_e dt
         \f]
 
     These partial calculations are defined in terms of the integral of the

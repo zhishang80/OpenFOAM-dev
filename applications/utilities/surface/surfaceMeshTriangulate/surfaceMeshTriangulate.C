@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -216,7 +216,7 @@ int main(int argc, char *argv[])
         forAllConstIter(HashTable<label>, zoneSize, iter)
         {
             label sz = compactZoneID.size();
-            //Info<< "For faceZone " << iter.key() << " allocating zoneID "
+            // Info<< "For faceZone " << iter.key() << " allocating zoneID "
             //    << sz << endl;
             compactZoneID.insert(iter.key(), sz);
         }
@@ -308,7 +308,7 @@ int main(int argc, char *argv[])
 
     // Gather all ZoneIDs
     List<labelList> gatheredZones(Pstream::nProcs());
-    gatheredZones[Pstream::myProcNo()] = compactZones.xfer();
+    gatheredZones[Pstream::myProcNo()] = move(compactZones);
     Pstream::gatherList(gatheredZones);
 
     // On master combine all points, faces, zones
@@ -347,10 +347,10 @@ int main(int argc, char *argv[])
 
         UnsortedMeshedSurface<face> unsortedFace
         (
-            xferMove(allPoints),
-            xferMove(allFaces),
-            xferMove(allZones),
-            xferMove(surfZones)
+            move(allPoints),
+            move(allFaces),
+            move(allZones),
+            move(surfZones)
         );
 
 

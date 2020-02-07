@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::thermo
+    Foam::species::thermo
 
 Description
     Basic thermodynamics type based on the use of fitting functions for
@@ -91,7 +91,7 @@ class thermo
     public Thermo,
     public Type<thermo<Thermo, Type>>
 {
-    // Private data
+    // Private Data
 
         //- Convergence tolerance of energy -> temperature inversion functions
         static const scalar tol_;
@@ -107,12 +107,13 @@ class thermo
         //  and dF(p, T)/dT
         inline scalar T
         (
-            scalar f,
-            scalar p,
-            scalar T0,
+            const scalar f,
+            const scalar p,
+            const scalar T0,
             scalar (thermo::*F)(const scalar, const scalar) const,
             scalar (thermo::*dFdT)(const scalar, const scalar) const,
-            scalar (thermo::*limit)(const scalar) const
+            scalar (thermo::*limit)(const scalar) const,
+            const bool diagnostics = false
         ) const;
 
 
@@ -151,7 +152,7 @@ public:
         // Fundamental properties
         // (These functions must be provided in derived types)
 
-            // Heat capacity at constant pressure [J/(kg K)]
+            // Heat capacity at constant pressure [J/kg/K]
             // inline scalar Cp(const scalar p, const scalar T) const;
 
             // Sensible enthalpy [J/kg]
@@ -160,19 +161,25 @@ public:
             // Chemical enthalpy [J/kg]
             // inline scalar Hc() const;
 
-            // Absolute Enthalpy [J/kg]
+            // Absolute enthalpy [J/kg]
             // inline scalar Ha(const scalar p, const scalar T) const;
 
-            // Entropy [J/(kg K)]
+            // Heat capacity at constant volume [J/kg/K]
+            // inline scalar Cv(const scalar p, const scalar T) const;
+
+            // Sensible internal energy [J/kg]
+            // inline scalar Es(const scalar p, const scalar T) const;
+
+            // Absolute internal energy [J/kg]
+            // inline scalar Ea(const scalar p, const scalar T) const;
+
+            // Entropy [J/kg/K]
             // inline scalar S(const scalar p, const scalar T) const;
 
 
         // Mass specific derived properties
 
-            //- Heat capacity at constant volume [J/(kg K)]
-            inline scalar Cv(const scalar p, const scalar T) const;
-
-            //- Heat capacity at constant pressure/volume [J/(kg K)]
+            //- Heat capacity at constant pressure/volume [J/kg/K]
             inline scalar Cpv(const scalar p, const scalar T) const;
 
             //- Gamma = Cp/Cv []
@@ -185,12 +192,6 @@ public:
             //- Enthalpy/Internal energy [J/kg]
             inline scalar HE(const scalar p, const scalar T) const;
 
-            //- Sensible internal energy [J/kg]
-            inline scalar Es(const scalar p, const scalar T) const;
-
-            //- Absolute internal energy [J/kg]
-            inline scalar Ea(const scalar p, const scalar T) const;
-
             //- Gibbs free energy [J/kg]
             inline scalar G(const scalar p, const scalar T) const;
 
@@ -200,10 +201,10 @@ public:
 
         // Mole specific derived properties
 
-            //- Heat capacity at constant pressure [J/(kmol K)]
+            //- Heat capacity at constant pressure [J/kmol/K]
             inline scalar cp(const scalar p, const scalar T) const;
 
-            //- Absolute Enthalpy [J/kmol]
+            //- Absolute enthalpy [J/kmol]
             inline scalar ha(const scalar p, const scalar T) const;
 
             //- Sensible enthalpy [J/kmol]
@@ -212,13 +213,13 @@ public:
             //- Chemical enthalpy [J/kmol]
             inline scalar hc() const;
 
-            //- Entropy [J/(kmol K)]
+            //- Entropy [J/kmol/K]
             inline scalar s(const scalar p, const scalar T) const;
 
             //- Enthalpy/Internal energy [J/kmol]
             inline scalar he(const scalar p, const scalar T) const;
 
-            //- Heat capacity at constant volume [J/(kmol K)]
+            //- Heat capacity at constant volume [J/kmol/K]
             inline scalar cv(const scalar p, const scalar T) const;
 
             //- Sensible internal energy [J/kmol]
@@ -318,13 +319,23 @@ public:
             ) const;
 
 
+        // Derivative term used for Jacobian
+
+            //- Derivative of B (according to Niemeyer et al.)
+            //  w.r.t. temperature
+            inline scalar dKcdTbyKc(const scalar p, const scalar T) const;
+
+            //- Derivative of cp w.r.t. temperature
+            inline scalar dcpdT(const scalar p, const scalar T) const;
+
+
         // I-O
 
             //- Write to Ostream
             void write(Ostream& os) const;
 
 
-    // Member operators
+    // Member Operators
 
         inline void operator+=(const thermo&);
         inline void operator*=(const scalar);

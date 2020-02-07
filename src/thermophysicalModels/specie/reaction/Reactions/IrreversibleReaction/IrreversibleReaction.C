@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -27,31 +27,21 @@ License
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-template
-<
-    template<class> class ReactionType,
-    class ReactionThermo,
-    class ReactionRate
->
-Foam::IrreversibleReaction<ReactionType, ReactionThermo, ReactionRate>::
+template<class ReactionThermo, class ReactionRate>
+Foam::IrreversibleReaction<ReactionThermo, ReactionRate>::
 IrreversibleReaction
 (
-    const ReactionType<ReactionThermo>& reaction,
+    const Reaction<ReactionThermo>& reaction,
     const ReactionRate& k
 )
 :
-    ReactionType<ReactionThermo>(reaction),
+    Reaction<ReactionThermo>(reaction),
     k_(k)
 {}
 
 
-template
-<
-    template<class> class ReactionType,
-    class ReactionThermo,
-    class ReactionRate
->
-Foam::IrreversibleReaction<ReactionType, ReactionThermo, ReactionRate>::
+template<class ReactionThermo, class ReactionRate>
+Foam::IrreversibleReaction<ReactionThermo, ReactionRate>::
 IrreversibleReaction
 (
     const speciesTable& species,
@@ -59,66 +49,151 @@ IrreversibleReaction
     const dictionary& dict
 )
 :
-    ReactionType<ReactionThermo>(species, thermoDatabase, dict),
+    Reaction<ReactionThermo>(species, thermoDatabase, dict),
     k_(species, dict)
 {}
 
 
-template
-<
-    template<class> class ReactionType,
-    class ReactionThermo,
-    class ReactionRate
->
-Foam::IrreversibleReaction<ReactionType, ReactionThermo, ReactionRate>::
+template<class ReactionThermo, class ReactionRate>
+Foam::IrreversibleReaction<ReactionThermo, ReactionRate>::
 IrreversibleReaction
 (
-    const IrreversibleReaction<ReactionType, ReactionThermo,ReactionRate>& irr,
+    const speciesTable& species,
+    const HashPtrTable<ReactionThermo>& thermoDatabase,
+    const objectRegistry& ob,
+    const dictionary& dict
+)
+:
+    Reaction<ReactionThermo>(species, thermoDatabase, dict),
+    k_(species, ob, dict)
+{}
+
+
+template<class ReactionThermo, class ReactionRate>
+Foam::IrreversibleReaction<ReactionThermo, ReactionRate>::
+IrreversibleReaction
+(
+    const IrreversibleReaction<ReactionThermo,ReactionRate>& irr,
     const speciesTable& species
 )
 :
-    ReactionType<ReactionThermo>(irr, species),
+    Reaction<ReactionThermo>(irr, species),
     k_(irr.k_)
 {}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-template
-<
-    template<class> class ReactionType,
-    class ReactionThermo,
-    class ReactionRate
->
-Foam::scalar Foam::IrreversibleReaction
-<
-    ReactionType,
-    ReactionThermo,
-    ReactionRate
->::kf
+template<class ReactionThermo, class ReactionRate>
+Foam::scalar Foam::IrreversibleReaction<ReactionThermo, ReactionRate>::kf
 (
     const scalar p,
     const scalar T,
-    const scalarField& c
+    const scalarField& c,
+    const label li
 ) const
 {
-    return k_(p, T, c);
+    return k_(p, T, c, li);
 }
 
 
-template
-<
-    template<class> class ReactionType,
-    class ReactionThermo,
-    class ReactionRate
->
-void Foam::IrreversibleReaction<ReactionType, ReactionThermo, ReactionRate>::
-write
+template<class ReactionThermo, class ReactionRate>
+Foam::scalar Foam::IrreversibleReaction<ReactionThermo, ReactionRate>::kr
+(
+    const scalar kfwd,
+    const scalar p,
+    const scalar T,
+    const scalarField& c,
+    const label li
+) const
+{
+    return 0;
+}
+
+
+template<class ReactionThermo, class ReactionRate>
+Foam::scalar Foam::IrreversibleReaction<ReactionThermo, ReactionRate>::kr
+(
+    const scalar p,
+    const scalar T,
+    const scalarField& c,
+    const label li
+) const
+{
+    return 0;
+}
+
+
+template<class ReactionThermo, class ReactionRate>
+Foam::scalar Foam::IrreversibleReaction<ReactionThermo, ReactionRate>::dkfdT
+(
+    const scalar p,
+    const scalar T,
+    const scalarField& c,
+    const label li
+) const
+{
+    return k_.ddT(p, T, c, li);
+}
+
+
+template<class ReactionThermo, class ReactionRate>
+Foam::scalar Foam::IrreversibleReaction<ReactionThermo, ReactionRate>::dkrdT
+(
+    const scalar p,
+    const scalar T,
+    const scalarField& c,
+    const label li,
+    const scalar dkfdT,
+    const scalar kr
+) const
+{
+    return 0;
+}
+
+
+template<class ReactionThermo, class ReactionRate>
+const Foam::List<Foam::Tuple2<Foam::label, Foam::scalar>>&
+Foam::IrreversibleReaction<ReactionThermo, ReactionRate>::beta() const
+{
+    return k_.beta();
+}
+
+
+template<class ReactionThermo, class ReactionRate>
+void Foam::IrreversibleReaction<ReactionThermo, ReactionRate>::dcidc
+(
+    const scalar p,
+    const scalar T,
+    const scalarField& c,
+    const label li,
+    scalarField& dcidc
+) const
+{
+    k_.dcidc(p, T, c, li, dcidc);
+}
+
+
+template<class ReactionThermo, class ReactionRate>
+Foam::scalar Foam::IrreversibleReaction<ReactionThermo, ReactionRate>::dcidT
+(
+    const scalar p,
+    const scalar T,
+    const scalarField& c,
+    const label li
+) const
+{
+    return k_.dcidT(p, T, c, li);
+}
+
+
+template<class ReactionThermo, class ReactionRate>
+void Foam::IrreversibleReaction<ReactionThermo, ReactionRate>::write
 (
     Ostream& os
 ) const
 {
-    ReactionType<ReactionThermo>::write(os);
+    Reaction<ReactionThermo>::write(os);
     k_.write(os);
 }
 

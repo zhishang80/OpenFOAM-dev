@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::RASModels::LaheyKEpsilon
-
-Group
-    grpRASTurbulence
 
 Description
     Continuous-phase k-epsilon model including bubble-generated turbulence.
@@ -79,7 +76,7 @@ class LaheyKEpsilon
 :
     public kEpsilon<BasicTurbulenceModel>
 {
-    // Private data
+    // Private Data
 
         mutable const PhaseCompressibleTurbulenceModel
         <
@@ -95,10 +92,6 @@ class LaheyKEpsilon
             typename BasicTurbulenceModel::transportModel
         >&
         gasTurbulence() const;
-
-        // Disallow default bitwise copy construct and assignment
-        LaheyKEpsilon(const LaheyKEpsilon&);
-        void operator=(const LaheyKEpsilon&);
 
 
 protected:
@@ -148,6 +141,9 @@ public:
             const word& type = typeName
         );
 
+        //- Disallow default bitwise copy construction
+        LaheyKEpsilon(const LaheyKEpsilon&) = delete;
+
 
     //- Destructor
     virtual ~LaheyKEpsilon()
@@ -161,6 +157,12 @@ public:
 
         //- Solve the turbulence equations and correct the turbulence viscosity
         virtual void correct();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const LaheyKEpsilon&) = delete;
 };
 
 

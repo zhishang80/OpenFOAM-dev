@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -122,8 +122,8 @@ void Foam::temperatureDependentAlphaContactAngleFvPatchScalarField::write
 {
     alphaContactAngleFvPatchScalarField::write(os);
     writeEntryIfDifferent<word>(os, "T", "T", TName_);
-    theta0_->writeData(os);
-    writeEntry("value", os);
+    writeEntry(os, theta0_());
+    writeEntry(os, "value", *this);
 }
 
 

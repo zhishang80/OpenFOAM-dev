@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -34,14 +34,14 @@ SourceFiles
 #ifndef kinematicParcelInjectionDataIOList_H
 #define kinematicParcelInjectionDataIOList_H
 
-#include "IOList.H"
+#include "GlobalIOList.H"
 #include "kinematicParcelInjectionData.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
 {
-    typedef IOList<kinematicParcelInjectionData>
+    typedef GlobalIOList<kinematicParcelInjectionData>
         kinematicParcelInjectionDataIOList;
 }
 

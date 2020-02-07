@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -106,7 +106,7 @@ Foam::fileName Foam::triSurfaceMesh::checkFile
         if (!exists(fName))
         {
             FatalErrorInFunction
-                << "Cannot find triSurfaceMesh at " << io.path(dictFName)
+                << "Cannot find triSurfaceMesh at " << io.path()/dictFName
                 << exit(FatalError);
         }
     }
@@ -475,7 +475,7 @@ Foam::tmp<Foam::pointField> Foam::triSurfaceMesh::coordinates() const
     pointField& pt = tPts.ref();
 
     // Use copy to calculate face centres so they don't get stored
-    pt = PrimitivePatch<triSurface::FaceType, SubList, const pointField&>
+    pt = PrimitivePatch<SubList<triSurface::FaceType>, const pointField&>
     (
         SubList<triSurface::FaceType>(*this, triSurface::size()),
         triSurface::points()
@@ -565,15 +565,9 @@ Foam::triSurfaceMesh::edgeTree() const
                 nPoints
             );
 
-            // Random number generator. Bit dodgy since not exactly random ;-)
-            Random rndGen(65431);
-
             // Slightly extended bb. Slightly off-centred just so on symmetric
             // geometry there are less face/edge aligned items.
-
-            bb = bb.extend(rndGen, 1e-4);
-            bb.min() -= point(rootVSmall, rootVSmall, rootVSmall);
-            bb.max() += point(rootVSmall, rootVSmall, rootVSmall);
+            bb = bb.extend(1e-4);
         }
 
         scalar oldTol = indexedOctree<treeDataEdge>::perturbTol();
@@ -779,7 +773,7 @@ void Foam::triSurfaceMesh::getNormal
             {
                 label facei = info[i].index();
                 // Cached:
-                //normal[i] = faceNormals()[facei];
+                // normal[i] = faceNormals()[facei];
 
                 // Uncached
                 normal[i] = s[facei].normal(pts);
@@ -882,7 +876,7 @@ bool Foam::triSurfaceMesh::writeObject
     IOstream::streamFormat fmt,
     IOstream::versionNumber ver,
     IOstream::compressionType cmp,
-    const bool valid
+    const bool write
 ) const
 {
     fileName fullPath;

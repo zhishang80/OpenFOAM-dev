@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -31,7 +31,7 @@ License
 template<class ChemistryModel>
 Foam::autoPtr<ChemistryModel> Foam::basicChemistryModel::New
 (
-    typename ChemistryModel::reactionThermo& thermo
+    const typename ChemistryModel::reactionThermo& thermo
 )
 {
     IOdictionary chemistryDict
@@ -137,7 +137,7 @@ Foam::autoPtr<ChemistryModel> Foam::basicChemistryModel::New
 
         FatalErrorInFunction
             << "All " << validNames[0][0] << '/' << validNames[0][1]
-            << "combinations for this thermodynamic model are:"
+            << " combinations for this thermodynamic model are:"
             << endl << endl;
         printTable(validNames, FatalErrorInFunction);
 

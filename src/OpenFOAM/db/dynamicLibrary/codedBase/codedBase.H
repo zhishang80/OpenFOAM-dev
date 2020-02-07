@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -53,7 +53,7 @@ class dlLibraryTable;
 
 class codedBase
 {
-    // Private data
+    // Private Data
 
         //- Previously loaded library
         mutable fileName oldLibPath_;
@@ -82,39 +82,29 @@ class codedBase
         //- Create library based on the dynamicCodeContext
         void createLibrary(dynamicCode&, const dynamicCodeContext&) const;
 
-        //- Disallow default bitwise copy construct
-        codedBase(const codedBase&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const codedBase&);
-
 
 protected:
 
         //- Update library as required
-        void updateLibrary
-        (
-            const word& name
-        ) const;
+        void updateLibrary() const;
 
-        //- Get the loaded dynamic libraries
-        virtual dlLibraryTable& libs() const = 0;
+        //- Name of the dynamically generated CodedType
+        virtual const word& codeName() const = 0;
 
-        //- Adapt the context for the current object
-        virtual void prepare
-        (
-            dynamicCode&,
-            const dynamicCodeContext&
-        ) const = 0;
-
-        // Return a description (type + name) for the output
+        //- Return a description (type + name) for the output
         virtual string description() const = 0;
 
-        // Clear any redirected objects
-        virtual void clearRedirect() const = 0;
-
-        // Get the dictionary to initialize the codeContext
+        //- Get the dictionary to initialize the codeContext
         virtual const dictionary& codeDict() const = 0;
+
+        //- Get the keywords associated with source code
+        virtual const wordList& codeKeys() const = 0;
+
+        //- Adapt the context for the current object
+        virtual void prepare(dynamicCode&, const dynamicCodeContext&) const = 0;
+
+        //- Clear any redirected objects
+        virtual void clearRedirect() const = 0;
 
 
 public:
@@ -128,9 +118,18 @@ public:
         //- Construct null
         codedBase();
 
+        //- Disallow default bitwise copy construction
+        codedBase(const codedBase&) = delete;
+
 
     //- Destructor
     virtual ~codedBase();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const codedBase&) = delete;
 };
 
 

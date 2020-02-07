@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -53,8 +53,8 @@ Foam::laminarFlameSpeedModels::SCOPE::polynomial::polynomial
 )
 :
     FixedList<scalar, 7>(polyDict.lookup("coefficients")),
-    ll(readScalar(polyDict.lookup("lowerLimit"))),
-    ul(readScalar(polyDict.lookup("upperLimit"))),
+    ll(polyDict.lookup<scalar>("lowerLimit")),
+    ul(polyDict.lookup<scalar>("upperLimit")),
     llv(polyPhi(ll, *this)),
     ulv(polyPhi(ul, *this)),
     lu(0)
@@ -82,12 +82,12 @@ Foam::laminarFlameSpeedModels::SCOPE::SCOPE
           )()
         ).optionalSubDict(typeName + "Coeffs")
     ),
-    LFL_(readScalar(coeffsDict_.lookup("lowerFlamabilityLimit"))),
-    UFL_(readScalar(coeffsDict_.lookup("upperFlamabilityLimit"))),
+    LFL_(coeffsDict_.lookup<scalar>("lowerFlamabilityLimit")),
+    UFL_(coeffsDict_.lookup<scalar>("upperFlamabilityLimit")),
     SuPolyL_(coeffsDict_.subDict("lowerSuPolynomial")),
     SuPolyU_(coeffsDict_.subDict("upperSuPolynomial")),
-    Texp_(readScalar(coeffsDict_.lookup("Texp"))),
-    pexp_(readScalar(coeffsDict_.lookup("pexp"))),
+    Texp_(coeffsDict_.lookup<scalar>("Texp")),
+    pexp_(coeffsDict_.lookup<scalar>("pexp")),
     MaPolyL_(coeffsDict_.subDict("lowerMaPolynomial")),
     MaPolyU_(coeffsDict_.subDict("upperMaPolynomial"))
 {
@@ -244,18 +244,11 @@ Foam::tmp<Foam::volScalarField> Foam::laminarFlameSpeedModels::SCOPE::Su0pTphi
 {
     tmp<volScalarField> tSu0
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                "Su0",
-                p.time().timeName(),
-                p.db(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
+            "Su0",
             p.mesh(),
-            dimensionedScalar("Su0", dimVelocity, 0.0)
+            dimensionedScalar(dimVelocity, 0)
         )
     );
 
@@ -293,18 +286,11 @@ Foam::tmp<Foam::volScalarField> Foam::laminarFlameSpeedModels::SCOPE::Su0pTphi
 {
     tmp<volScalarField> tSu0
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                "Su0",
-                p.time().timeName(),
-                p.db(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
+            "Su0",
             p.mesh(),
-            dimensionedScalar("Su0", dimVelocity, 0.0)
+            dimensionedScalar(dimVelocity, 0)
         )
     );
 
@@ -347,18 +333,11 @@ Foam::tmp<Foam::volScalarField> Foam::laminarFlameSpeedModels::SCOPE::Ma
 {
     tmp<volScalarField> tMa
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                "Ma",
-                phi.time().timeName(),
-                phi.db(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
+            "Ma",
             phi.mesh(),
-            dimensionedScalar("Ma", dimless, 0.0)
+            dimensionedScalar(dimless, 0)
         )
     );
 
@@ -407,18 +386,11 @@ Foam::laminarFlameSpeedModels::SCOPE::Ma() const
 
         return tmp<volScalarField>
         (
-            new volScalarField
+            volScalarField::New
             (
-                IOobject
-                (
-                    "Ma",
-                    mesh.time().timeName(),
-                    mesh,
-                    IOobject::NO_READ,
-                    IOobject::NO_WRITE
-                ),
+                "Ma",
                 mesh,
-                dimensionedScalar("Ma", dimless, Ma(equivalenceRatio_))
+                dimensionedScalar(dimless, Ma(equivalenceRatio_))
             )
         );
     }

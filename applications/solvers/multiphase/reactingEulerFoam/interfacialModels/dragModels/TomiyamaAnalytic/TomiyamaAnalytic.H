@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2014-2015 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2014-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -29,11 +29,10 @@ Description
 
     Reference:
     \verbatim
-        "Drag Coefficients of Bubbles. 1st Report. Drag Coefficients of a
-         Single Bubble in a Stagnant Liquid."
-        Tomiyama, A., Kataoka, I., and Sakaguchi, T.,
-        Nippon Kikai Gakkai Ronbunshu
-        Volume 61, Issue 587, 1995, pp. 2357-2364
+        Tomiyama, A., Kataoka, I., & Sakaguchi, T. (1995).
+        Drag coefficients of bubbles (1 st Report, Drag coefficients of a single
+        bubble in a stagnant liquid).
+        Nihon Kikaigakkai Ronbunshu, 61, 2357-2364.
     \endverbatim
 
 SourceFiles
@@ -50,9 +49,6 @@ SourceFiles
 
 namespace Foam
 {
-
-class phasePair;
-
 namespace dragModels
 {
 
@@ -64,7 +60,7 @@ class TomiyamaAnalytic
 :
     public dragModel
 {
-    // Private data
+    // Private Data
 
         //- Residual Reynolds Number
         const dimensionedScalar residualRe_;

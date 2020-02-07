@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -80,8 +80,9 @@ public:
 
     private:
 
-        //- Private data
-        curveStyleNo CurveStyleNo;
+        // Private Data
+
+            curveStyleNo CurveStyleNo;
 
 
     public:
@@ -114,7 +115,7 @@ public:
 
 private:
 
-    // private data
+    // Private Data
 
         string name_;
         curveStyle style_;
@@ -125,7 +126,7 @@ public:
     // Constructors
 
         //- Construct as interpolation of an existing curve
-        //curve(const curve&, const label);
+        // curve(const curve&, const label);
 
         //- Construct from name, style and size
         curve
@@ -149,7 +150,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Access
 
@@ -164,10 +165,10 @@ public:
             }
 
 
-    // Friend functions
+    // Friend Functions
 
         //- Gradient of the curve
-        //friend curve grad(const curve&);
+        // friend curve grad(const curve&);
 
 
     // Ostream operator

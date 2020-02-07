@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::kineticTheoryModel
+    Foam::RASModels::kineticTheoryModel
 
 Description
     Kinetic theory particle phase RAS model
@@ -76,7 +76,7 @@ class kineticTheoryModel
         RASModel<EddyDiffusivity<phaseCompressibleTurbulenceModel>>
     >
 {
-    // Private data
+    // Private Data
 
         // Input Fields
 
@@ -147,12 +147,6 @@ class kineticTheoryModel
         void correctNut()
         {}
 
-        //- Disallow default bitwise copy construct
-        kineticTheoryModel(const kineticTheoryModel&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const kineticTheoryModel&);
-
 
 public:
 
@@ -174,6 +168,9 @@ public:
             const word& propertiesName = turbulenceModel::propertiesName,
             const word& type = typeName
         );
+
+        //- Disallow default bitwise copy construction
+        kineticTheoryModel(const kineticTheoryModel&) = delete;
 
 
     //- Destructor
@@ -222,6 +219,12 @@ public:
 
         //- Solve the kinetic theory equations and correct the viscosity
         virtual void correct();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const kineticTheoryModel&) = delete;
 };
 
 

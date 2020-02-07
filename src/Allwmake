@@ -21,8 +21,6 @@ wmakeCheckPwd "$WM_PROJECT_DIR/src" || {
 # Update OpenFOAM version strings if required
 wmakePrintBuild -check || wrmo OpenFOAM/global/global.o 2>/dev/null
 
-wmakeLnInclude OpenFOAM
-wmakeLnInclude OSspecific/${WM_OSTYPE:-POSIX}
 Pstream/Allwmake $targetType $*
 
 OSspecific/${WM_OSTYPE:-POSIX}/Allwmake $targetType $*
@@ -35,22 +33,19 @@ wmake $targetType meshTools
 
 # Decomposition methods needed by dummyThirdParty
 # (dummy metisDecomp, scotchDecomp etc) needed by e.g. meshTools
-parallel/decompose/AllwmakeLnInclude
 dummyThirdParty/Allwmake $targetType $*
-
-wmakeLnInclude fvOptions
 
 wmake $targetType finiteVolume
 wmake $targetType lagrangian/basic
 wmake $targetType lagrangian/distributionModels
 wmake $targetType genericPatchFields
 
-wmake $targetType conversion
 wmake $targetType mesh/extrudeModel
 wmake $targetType dynamicMesh
-wmake $targetType sampling
 wmake $targetType dynamicFvMesh
 wmake $targetType topoChangerFvMesh
+wmake $targetType conversion
+wmake $targetType sampling
 
 # Compile scotchDecomp, metisDecomp etc.
 parallel/Allwmake $targetType $*
@@ -61,6 +56,7 @@ wmake $targetType randomProcesses
 transportModels/Allwmake $targetType $*
 thermophysicalModels/Allwmake $targetType $*
 TurbulenceModels/Allwmake $targetType $*
+wmake $targetType radiationModels
 wmake $targetType combustionModels
 regionModels/Allwmake $targetType $*
 lagrangian/Allwmake $targetType $*
@@ -71,7 +67,6 @@ fvAgglomerationMethods/Allwmake $targetType $*
 wmake $targetType fvMotionSolver
 wmake $targetType engine
 wmake $targetType fvOptions
-wmake $targetType regionCoupled
 
 functionObjects/Allwmake $targetType $*
 
@@ -79,9 +74,10 @@ wmake $targetType sixDoFRigidBodyMotion
 wmake $targetType sixDoFRigidBodyState
 wmake $targetType rigidBodyDynamics
 wmake $targetType rigidBodyMeshMotion
-wmake $targetType waves
-wmake $targetType semiPermeableBaffle
+wmake $targetType rigidBodyState
+wmake $targetType specieTransfer
 wmake $targetType atmosphericModels
+wmake $targetType waves
 
 
 #------------------------------------------------------------------------------

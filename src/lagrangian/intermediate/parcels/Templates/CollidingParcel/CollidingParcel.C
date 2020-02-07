@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -114,25 +114,15 @@ bool Foam::CollidingParcel<ParcelType>::move
 
 
 template<class ParcelType>
-void Foam::CollidingParcel<ParcelType>::transformProperties(const tensor& T)
-{
-    ParcelType::transformProperties(T);
-
-    f_ = transform(T, f_);
-
-    angularMomentum_ = transform(T, angularMomentum_);
-
-    torque_ = transform(T, torque_);
-}
-
-
-template<class ParcelType>
 void Foam::CollidingParcel<ParcelType>::transformProperties
 (
-    const vector& separation
+    const transformer& transform
 )
 {
-    ParcelType::transformProperties(separation);
+    ParcelType::transformProperties(transform);
+    f_ = transform.transform(f_);
+    angularMomentum_ = transform.transform(angularMomentum_);
+    torque_ = transform.transform(torque_);
 }
 
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::phaseChangeModel
+    Foam::regionModels::surfaceFilmModels::phaseChangeModel
 
 Description
     Base class for surface film phase change models
@@ -57,17 +57,6 @@ class phaseChangeModel
 :
     public filmSubModelBase
 {
-private:
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        phaseChangeModel(const phaseChangeModel&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const phaseChangeModel&);
-
-
 protected:
 
     // Protected Member Functions
@@ -112,6 +101,9 @@ public:
             const dictionary& dict
         );
 
+        //- Disallow default bitwise copy construction
+        phaseChangeModel(const phaseChangeModel&) = delete;
+
 
     // Selectors
 
@@ -154,6 +146,12 @@ public:
 
             //- Provide some feedback
             virtual void info(Ostream& os) const;
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const phaseChangeModel&) = delete;
 };
 
 

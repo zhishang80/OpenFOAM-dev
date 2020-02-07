@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -35,9 +35,7 @@ License
 
 namespace Foam
 {
-
-defineTypeNameAndDebug(regionSplit, 0);
-
+    defineTypeNameAndDebug(regionSplit, 0);
 }
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
@@ -172,7 +170,7 @@ Foam::autoPtr<Foam::globalIndex> Foam::regionSplit::calcRegionSplit
         {
             offsets[i] = mesh().nFaces();
         }
-        const globalIndex globalRegions(offsets.xfer());
+        const globalIndex globalRegions(move(offsets));
 
         // Minimize regions across connected cells
         // Note: still uses global decisions so all processors are running
@@ -215,7 +213,7 @@ Foam::autoPtr<Foam::globalIndex> Foam::regionSplit::calcRegionSplit
             compactOffsets[i] = globalToCompact.size();
         }
 
-        return autoPtr<globalIndex>(new globalIndex(compactOffsets.xfer()));
+        return autoPtr<globalIndex>(new globalIndex(move(compactOffsets)));
     }
 
 
@@ -402,9 +400,9 @@ Foam::regionSplit::regionSplit(const polyMesh& mesh, const bool doGlobalRegions)
 {
     globalNumberingPtr_ = calcRegionSplit
     (
-        doGlobalRegions,    //do global regions
-        boolList(0, false), //blockedFaces
-        List<labelPair>(0), //explicitConnections,
+        doGlobalRegions,    // do global regions
+        boolList(0, false), // blockedFaces
+        List<labelPair>(0), // explicitConnections,
         *this
     );
 }
@@ -423,8 +421,8 @@ Foam::regionSplit::regionSplit
     globalNumberingPtr_ = calcRegionSplit
     (
         doGlobalRegions,
-        blockedFace,        //blockedFaces
-        List<labelPair>(0), //explicitConnections,
+        blockedFace,        // blockedFaces
+        List<labelPair>(0), // explicitConnections,
         *this
     );
 }
@@ -444,8 +442,8 @@ Foam::regionSplit::regionSplit
     globalNumberingPtr_ = calcRegionSplit
     (
         doGlobalRegions,
-        blockedFace,            //blockedFaces
-        explicitConnections,    //explicitConnections,
+        blockedFace,            // blockedFaces
+        explicitConnections,    // explicitConnections,
         *this
     );
 }

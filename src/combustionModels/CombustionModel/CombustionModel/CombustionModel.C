@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -31,7 +31,7 @@ template<class ReactionThermo>
 Foam::CombustionModel<ReactionThermo>::CombustionModel
 (
     const word& modelType,
-    ReactionThermo& thermo,
+    const ReactionThermo& thermo,
     const compressibleTurbulenceModel& turb,
     const word& combustionProperties
 )
@@ -46,7 +46,7 @@ template<class ReactionThermo>
 Foam::autoPtr<Foam::CombustionModel<ReactionThermo>>
 Foam::CombustionModel<ReactionThermo>::New
 (
-    ReactionThermo& thermo,
+    const ReactionThermo& thermo,
     const compressibleTurbulenceModel& turb,
     const word& combustionProperties
 )

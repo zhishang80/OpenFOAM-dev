@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -52,7 +52,7 @@ namespace Foam
 Foam::displacementLaplacianFvMotionSolver::displacementLaplacianFvMotionSolver
 (
     const polyMesh& mesh,
-    const IOdictionary& dict
+    const dictionary& dict
 )
 :
     displacementMotionSolver(mesh, dict, typeName),

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -36,6 +36,7 @@ Description
 #include "Kmesh.H"
 #include "turbGen.H"
 #include "calcEk.H"
+#include "writeFile.H"
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -69,7 +70,10 @@ int main(int argc, char *argv[])
 
     calcEk(U, K).write
     (
-        runTime.path()/"graphs"/runTime.timeName(),
+        runTime.path()
+       /functionObjects::writeFile::outputPrefix
+       /"graphs"
+       /runTime.timeName(),
         "Ek",
         runTime.graphFormat()
     );

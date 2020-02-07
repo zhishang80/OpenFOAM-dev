@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::RASModels::v2f
-
-Group
-    grpRASTurbulence
 
 Description
     Lien and Kalitzin's v2-f turbulence model for incompressible and
@@ -214,26 +211,20 @@ public:
         //- Return the effective diffusivity for k
         tmp<volScalarField> DkEff() const
         {
-            return tmp<volScalarField>
+            return volScalarField::New
             (
-                new volScalarField
-                (
-                    "DkEff",
-                    this->nut_/sigmaK_ + this->nu()
-                )
+                "DkEff",
+                this->nut_/sigmaK_ + this->nu()
             );
         }
 
         //- Return the effective diffusivity for epsilon
         tmp<volScalarField> DepsilonEff() const
         {
-            return tmp<volScalarField>
+            return volScalarField::New
             (
-                new volScalarField
-                (
-                    "DepsilonEff",
-                    this->nut_/sigmaEps_ + this->nu()
-                )
+                "DepsilonEff",
+                this->nut_/sigmaEps_ + this->nu()
             );
         }
 

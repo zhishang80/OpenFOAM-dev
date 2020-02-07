@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::singleProcessorFaceSetsConstraint
+    Foam::decompositionConstraints::singleProcessorFaceSetsConstraint
 
 Description
     Constraint to keep all cells connected to face or point of faceSet on
@@ -55,7 +55,7 @@ class singleProcessorFaceSetsConstraint
 :
     public decompositionConstraint
 {
-    // Private data
+    // Private Data
 
         //- List of faceSet+processor
         List<Tuple2<word, label>> setNameAndProcs_;

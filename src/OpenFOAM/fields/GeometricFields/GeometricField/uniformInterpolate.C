@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -39,16 +39,9 @@ Foam::tmp<GeoField> Foam::uniformInterpolate
     // Interpolate
     tmp<GeoField> tfld
     (
-        new GeoField
+        GeoField::New
         (
-            IOobject
-            (
-                "uniformInterpolate(" + field0.name() + ')',
-                field0.time().timeName(),
-                field0.db(),
-                IOobject::NO_READ,
-                IOobject::AUTO_WRITE
-            ),
+            "uniformInterpolate(" + field0.name() + ')',
             weights[0]*(*fields[indices[0]])
         )
     );
@@ -91,7 +84,7 @@ Foam::tmp<GeoField> Foam::uniformInterpolate
 
 
     // Interpolate
-    tmp<GeoField> tfld(new GeoField(fieldIO, weights[0]*field0));
+    tmp<GeoField> tfld(GeoField::New(fieldIO.name(), weights[0]*field0));
     GeoField& fld = tfld.ref();
 
     for (label i = 1; i < times.size(); ++i)

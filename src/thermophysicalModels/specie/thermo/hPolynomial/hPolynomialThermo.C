@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -35,8 +35,8 @@ Foam::hPolynomialThermo<EquationOfState, PolySize>::hPolynomialThermo
 )
 :
     EquationOfState(dict),
-    Hf_(readScalar(dict.subDict("thermodynamics").lookup("Hf"))),
-    Sf_(readScalar(dict.subDict("thermodynamics").lookup("Sf"))),
+    Hf_(dict.subDict("thermodynamics").lookup<scalar>("Hf")),
+    Sf_(dict.subDict("thermodynamics").lookup<scalar>("Sf")),
     CpCoeffs_
     (
         dict.subDict("thermodynamics").lookup

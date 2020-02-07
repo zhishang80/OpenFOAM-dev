@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -60,10 +60,10 @@ Foam::saturationModels::ArdenBuck::xByTC
 Foam::saturationModels::ArdenBuck::ArdenBuck
 (
     const dictionary& dict,
-    const objectRegistry& db
+    const phasePair& pair
 )
 :
-    saturationModel(db)
+    saturationModel(pair)
 {}
 
 

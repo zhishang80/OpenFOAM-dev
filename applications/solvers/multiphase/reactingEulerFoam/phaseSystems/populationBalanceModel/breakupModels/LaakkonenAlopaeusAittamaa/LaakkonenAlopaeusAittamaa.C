@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2018-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -26,7 +26,6 @@ License
 #include "LaakkonenAlopaeusAittamaa.H"
 #include "addToRunTimeSelectionTable.H"
 #include "phaseCompressibleTurbulenceModel.H"
-#include "phaseSystem.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
@@ -60,12 +59,16 @@ LaakkonenAlopaeusAittamaa
     breakupModel(popBal, dict),
     C1_
     (
-        "C1",
-        dimensionSet(0, -2.0/3.0, 0, 0, 0),
-        dict.lookupOrDefault<scalar>("C1", 6.0)
+        dimensionedScalar::lookupOrDefault
+        (
+            "C1",
+            dict,
+            dimensionSet(0, -2.0/3.0, 0, 0, 0),
+            6.0
+        )
     ),
-    C2_("C2", dimless, dict.lookupOrDefault<scalar>("C2", 0.04)),
-    C3_("C3", dimless, dict.lookupOrDefault<scalar>("C3", 0.01))
+    C2_(dimensionedScalar::lookupOrDefault("C2", dict, dimless, 0.04)),
+    C3_(dimensionedScalar::lookupOrDefault("C3", dict, dimless, 0.01))
 {}
 
 
@@ -79,27 +82,24 @@ Foam::diameterModels::breakupModels::LaakkonenAlopaeusAittamaa::setBreakupRate
 )
 {
     const phaseModel& continuousPhase = popBal_.continuousPhase();
-    const sizeGroup& fi = *popBal_.sizeGroups()[i];
-    const volScalarField sigma
-    (
-        popBal_.fluid().sigma(phasePair(fi.phase(), continuousPhase))
-    );
+    const sizeGroup& fi = popBal_.sizeGroups()[i];
 
     breakupRate =
-        C1_*cbrt(continuousTurbulence().epsilon())
+        C1_*cbrt(popBal_.continuousTurbulence().epsilon())
        *erfc
         (
             sqrt
             (
-                C2_*sigma
+                C2_*popBal_.sigmaWithContinuousPhase(fi.phase())
                /(
-                    continuousPhase.rho()*pow(fi.d(), 5.0/3.0)
-                   *pow(continuousTurbulence().epsilon(), 2.0/3.0)
+                    continuousPhase.rho()*pow(fi.dSph(), 5.0/3.0)
+                   *pow(popBal_.continuousTurbulence().epsilon(), 2.0/3.0)
                 )
               + C3_*continuousPhase.mu()
                /(
                     sqrt(continuousPhase.rho()*fi.phase().rho())
-                   *cbrt(continuousTurbulence().epsilon())*pow(fi.d(), 4.0/3.0)
+                   *cbrt(popBal_.continuousTurbulence().epsilon())
+                   *pow(fi.dSph(), 4.0/3.0)
                 )
             )
         );

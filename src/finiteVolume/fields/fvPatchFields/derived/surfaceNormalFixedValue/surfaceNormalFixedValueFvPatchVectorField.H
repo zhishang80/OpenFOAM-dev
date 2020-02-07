@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,12 +24,11 @@ License
 Class
     Foam::surfaceNormalFixedValueFvPatchVectorField
 
-Group
-    grpGenericBoundaryConditions grpInletBoundaryConditions
-
 Description
-    This boundary condition provides a surface-normal vector boundary condition
-    by its magnitude.
+    Surface-normal fixed value vector boundary condition
+
+    in which the vector field is obtained by scaling the patch normals
+    by the scalar field provided.
 
 Usage
     \table
@@ -77,7 +76,7 @@ class surfaceNormalFixedValueFvPatchVectorField
 :
     public fixedValueFvPatchVectorField
 {
-    // Private data
+    // Private Data
 
         scalarField refValue_;
 
@@ -116,7 +115,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         surfaceNormalFixedValueFvPatchVectorField
         (
             const surfaceNormalFixedValueFvPatchVectorField&
@@ -131,7 +130,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         surfaceNormalFixedValueFvPatchVectorField
         (
             const surfaceNormalFixedValueFvPatchVectorField&,
@@ -155,22 +154,17 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Mapping functions
 
             //- Map (and resize as needed) from self given a mapping object
-            virtual void autoMap
-            (
-                const fvPatchFieldMapper&
-            );
+            //  Used to update fields following mesh topology change
+            virtual void autoMap(const fvPatchFieldMapper&);
 
             //- Reverse map the given fvPatchField onto this fvPatchField
-            virtual void rmap
-            (
-                const fvPatchVectorField&,
-                const labelList&
-            );
+            //  Used to reconstruct fields
+            virtual void rmap(const fvPatchVectorField&, const labelList&);
 
 
         // Evaluation functions

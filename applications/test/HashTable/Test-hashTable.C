@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -94,10 +94,10 @@ int main()
 
 
     HashTable<scalar> table2(table1);
-    HashTable<scalar> table3(table1.xfer());
+    HashTable<scalar> table3(move(table1));
 
     Info<< "\ncopy table1 -> table2" << nl
-        << "transfer table1 -> table3 via the xfer() method" << nl;
+        << "move table1 -> table3" << nl;
 
     Info<< "\ntable1" << table1 << nl
         << "\ntable2" << table2 << nl

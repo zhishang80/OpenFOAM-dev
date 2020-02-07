@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -52,23 +52,17 @@ class cyclicAMIGAMGInterface
     public GAMGInterface,
     public cyclicAMILduInterface
 {
-    // Private data
+    // Private Data
 
         //- Reference for the cyclicLduInterface from which this is
         //  agglomerated
         const cyclicAMILduInterface& fineCyclicAMIInterface_;
 
-        //- AMI interface
-        autoPtr<AMIPatchToPatchInterpolation> amiPtr_;
+        //- AMI interfaces
+        PtrList<AMIInterpolation> AMIs_;
 
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        cyclicAMIGAMGInterface(const cyclicAMIGAMGInterface&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const cyclicAMIGAMGInterface&);
+        //- AMI transformations
+        List<transformer> AMITransforms_;
 
 
 public:
@@ -92,6 +86,9 @@ public:
             const label coarseComm
         );
 
+        //- Disallow default bitwise copy construction
+        cyclicAMIGAMGInterface(const cyclicAMIGAMGInterface&) = delete;
+
 
     //- Destructor
     virtual ~cyclicAMIGAMGInterface();
@@ -112,39 +109,42 @@ public:
         //- Cyclic interface functions
 
             //- Return neighbour processor number
-            virtual label neighbPatchID() const
+            virtual label nbrPatchID() const
             {
-                return fineCyclicAMIInterface_.neighbPatchID();
+                return fineCyclicAMIInterface_.nbrPatchID();
             }
 
+            //- Does this side own the interface?
             virtual bool owner() const
             {
                 return fineCyclicAMIInterface_.owner();
             }
 
-            virtual const cyclicAMIGAMGInterface& neighbPatch() const
+            //- Return neighbour patch
+            virtual const cyclicAMIGAMGInterface& nbrPatch() const
             {
                 return dynamic_cast<const cyclicAMIGAMGInterface&>
                 (
-                    coarseInterfaces_[neighbPatchID()]
+                    coarseInterfaces_[nbrPatchID()]
                 );
             }
 
-            virtual const AMIPatchToPatchInterpolation& AMI() const
+            //- Return a reference to the AMI interpolators
+            virtual const PtrList<AMIInterpolation>& AMIs() const
             {
-                return amiPtr_();
+                return AMIs_;
             }
 
-            //- Return face transformation tensor
-            virtual const tensorField& forwardT() const
+            // Return a reference to the AMI transformations
+            virtual const List<transformer>& AMITransforms() const
             {
-                return fineCyclicAMIInterface_.forwardT();
+                return AMITransforms_;
             }
 
-            //- Return neighbour-cell transformation tensor
-            virtual const tensorField& reverseT() const
+            //- Return transformation between the coupled patches
+            virtual const transformer& transform() const
             {
-                return fineCyclicAMIInterface_.reverseT();
+                return fineCyclicAMIInterface_.transform();
             }
 
 
@@ -153,10 +153,16 @@ public:
             //- Write to stream
             virtual void write(Ostream&) const
             {
-                //TBD. How to serialise the AMI such that we can stream
+                // TBD. How to serialise the AMI such that we can stream
                 // cyclicAMIGAMGInterface.
                 NotImplemented;
             }
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const cyclicAMIGAMGInterface&) = delete;
 };
 
 

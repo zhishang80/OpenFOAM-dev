@@ -18,19 +18,19 @@
         )
     );
 
-    scalar p0 = readScalar(initialConditions.lookup("p"));
-    scalar T0 = readScalar(initialConditions.lookup("T"));
+    scalar p0 = initialConditions.lookup<scalar>("p");
+    scalar T0 = initialConditions.lookup<scalar>("T");
 
     #include "createBaseFields.H"
 
     Info<< "Reading thermophysical properties\n" << endl;
-    autoPtr<psiReactionThermo> pThermo(psiReactionThermo::New(mesh));
-    psiReactionThermo& thermo = pThermo();
+    autoPtr<rhoReactionThermo> pThermo(rhoReactionThermo::New(mesh));
+    rhoReactionThermo& thermo = pThermo();
     thermo.validate(args.executable(), "h");
 
-    autoPtr<BasicChemistryModel<psiReactionThermo>> pChemistry
+    autoPtr<BasicChemistryModel<rhoReactionThermo>> pChemistry
     (
-        BasicChemistryModel<psiReactionThermo>::New(thermo)
+        BasicChemistryModel<rhoReactionThermo>::New(thermo)
     );
 
     volScalarField rho
@@ -59,9 +59,8 @@
         mesh,
         dimensionedScalar
         (
-            "zero",
             dimensionSet(dimEnergy/dimMass/dimTemperature),
-            0.0
+            0
         )
     );
 
@@ -76,7 +75,7 @@
             IOobject::NO_WRITE
         ),
         mesh,
-        dimensionedVector("zero", dimVelocity, Zero)
+        dimensionedVector(dimVelocity, Zero)
     );
 
     #include "createPhi.H"

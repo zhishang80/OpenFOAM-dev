@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::mappedFixedValueFvPatchField
-
-Group
-    grpGenericBoundaryConditions grpCoupledBoundaryConditions
 
 Description
     This boundary condition maps the value at a set of cells or patch faces
@@ -145,7 +142,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         mappedFixedValueFvPatchField
         (
             const mappedFixedValueFvPatchField<Type>&
@@ -160,7 +157,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         mappedFixedValueFvPatchField
         (
             const mappedFixedValueFvPatchField<Type>&,
@@ -180,7 +177,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Evaluation functions
 

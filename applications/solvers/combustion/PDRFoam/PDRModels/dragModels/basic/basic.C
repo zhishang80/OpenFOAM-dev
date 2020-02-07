@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -93,20 +93,12 @@ Foam::tmp<Foam::volSymmTensorField> Foam::PDRDragModels::basic::Dcu() const
 {
     tmp<volSymmTensorField> tDragDcu
     (
-        new volSymmTensorField
+        volSymmTensorField::New
         (
-            IOobject
-            (
-                "tDragDcu",
-                U_.mesh().time().constant(),
-                U_.mesh(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
+            "tDragDcu",
             U_.mesh(),
             dimensionedSymmTensor
             (
-                "zero",
                 dimMass/dimTime/pow(dimLength, 3),
                 Zero
             )
@@ -132,18 +124,11 @@ Foam::tmp<Foam::volScalarField> Foam::PDRDragModels::basic::Gk() const
 {
     tmp<volScalarField> tGk
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                "tGk",
-                U_.mesh().time().constant(),
-                U_.mesh(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
+            "tGk",
             U_.mesh(),
-            dimensionedScalar("zero", dimMass/dimLength/pow(dimTime, 3), 0.0)
+            dimensionedScalar(dimMass/dimLength/pow(dimTime, 3), 0)
         )
     );
 

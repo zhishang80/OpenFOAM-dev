@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -49,9 +49,9 @@ Foam::XiEqModels::Gulder::Gulder
 )
 :
     XiEqModel(XiEqProperties, thermo, turbulence, Su),
-    XiEqCoef_(readScalar(XiEqModelCoeffs_.lookup("XiEqCoef"))),
+    XiEqCoef_(XiEqModelCoeffs_.lookup<scalar>("XiEqCoef")),
     SuMin_(0.01*Su.average()),
-    uPrimeCoef_(readScalar(XiEqModelCoeffs_.lookup("uPrimeCoef"))),
+    uPrimeCoef_(XiEqModelCoeffs_.lookup<scalar>("uPrimeCoef")),
     subGridSchelkin_
     (
         readBool(XiEqModelCoeffs_.lookup("subGridSchelkin"))
@@ -84,7 +84,7 @@ Foam::tmp<Foam::volScalarField> Foam::XiEqModels::Gulder::XiEq() const
         up
       / (
             sqrt(epsilon*tauEta)
-          + dimensionedScalar("1e-8", up.dimensions(), 1e-8)
+          + dimensionedScalar(up.dimensions(), 1e-8)
         )
     );
 

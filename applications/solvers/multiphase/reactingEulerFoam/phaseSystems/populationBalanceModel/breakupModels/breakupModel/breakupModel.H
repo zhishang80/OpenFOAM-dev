@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -38,7 +38,6 @@ SourceFiles
 
 #include "populationBalanceModel.H"
 #include "daughterSizeDistributionModel.H"
-#include "phaseCompressibleTurbulenceModel.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -55,7 +54,7 @@ class breakupModel
 {
 protected:
 
-    // Protected data
+    // Protected Data
 
         //- Reference to the populationBalanceModel
         const populationBalanceModel& popBal_;
@@ -147,9 +146,6 @@ public:
         {
             return popBal_;
         }
-
-        //- Return a reference to the turbulence model for the continuous phase
-        const phaseCompressibleTurbulenceModel& continuousTurbulence() const;
 
         //- Return const-reference to daughter size distribution pointer
         const autoPtr<daughterSizeDistributionModel>& dsdPtr() const

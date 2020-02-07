@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -60,6 +60,7 @@ namespace Foam
 // Forward declaration of classes
 class polyMesh;
 class polyPatch;
+class transformer;
 
 /*---------------------------------------------------------------------------*\
                         Class FaceCellWaveName Declaration
@@ -77,15 +78,6 @@ class FaceCellWave
 :
     public FaceCellWaveName
 {
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        FaceCellWave(const FaceCellWave&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const FaceCellWave&);
-
-
 protected:
 
     // Protected data
@@ -223,7 +215,15 @@ protected:
             //- Apply transformation to Type
             void transform
             (
-                const tensorField& rotTensor,
+                const tensor& rotTensor,
+                const label nFaces,
+                List<Type>& faceInfo
+            );
+
+            //- Apply transformation to Type
+            void transform
+            (
+                const transformer& trans,
                 const label nFaces,
                 List<Type>& faceInfo
             );
@@ -312,6 +312,9 @@ public:
             TrackingData& td = dummyTrackData_
         );
 
+        //- Disallow default bitwise copy construction
+        FaceCellWave(const FaceCellWave&) = delete;
+
 
     //- Destructor
     virtual ~FaceCellWave()
@@ -378,6 +381,12 @@ public:
             //- Iterate until no changes or maxIter reached.  Returns actual
             //  number of iterations.
             virtual label iterate(const label maxIter);
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const FaceCellWave&) = delete;
 };
 
 

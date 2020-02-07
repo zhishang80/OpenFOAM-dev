@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -52,36 +52,38 @@ typedef species::thermo<janafThermo<perfectGas<specie>>, absoluteEnthalpy>
 
 int main(int argc, char *argv[])
 {
-    argList::validArgs.append("control file");
+    #include "removeCaseOptions.H"
+
+    argList::validArgs.append("properties dictionary");
     argList args(argc, argv);
 
-    const fileName controlFileName(args[1]);
+    const fileName propertiesFileName(args[1]);
 
-    // Construct control dictionary
-    IFstream controlFile(controlFileName);
+    // Construct properties dictionary
+    IFstream propertiesFile(propertiesFileName);
 
-    // Check controlFile stream is OK
-    if (!controlFile.good())
+    // Check propertiesFile stream is OK
+    if (!propertiesFile.good())
     {
         FatalErrorInFunction
-            << "Cannot read file " << controlFileName
+            << "Cannot read file " << propertiesFileName
             << abort(FatalError);
     }
 
-    dictionary control(controlFile);
+    dictionary properties(propertiesFile);
 
 
-    scalar P(readScalar(control.lookup("P")));
-    scalar T0(readScalar(control.lookup("T0")));
-    mixture rMix(control.lookup("reactants"));
-    mixture pMix(control.lookup("products"));
+    scalar p(properties.lookup<scalar>("P"));
+    scalar T0(properties.lookup<scalar>("T0"));
+    mixture rMix(properties.lookup("reactants"));
+    mixture pMix(properties.lookup("products"));
 
 
     Info<< nl << "Reading thermodynamic data dictionary" << endl;
 
     fileName thermoDataFileName(findEtcFile("thermoData/thermoData"));
 
-    // Construct control dictionary
+    // Construct properties dictionary
     IFstream thermoDataFile(thermoDataFileName);
 
     // Check thermoData stream is OK
@@ -95,31 +97,27 @@ int main(int argc, char *argv[])
     dictionary thermoData(thermoDataFile);
 
 
-    thermo reactants
-    (
-        rMix[0].volFrac()*thermo(thermoData.subDict(rMix[0].name()))
-    );
+    const thermo reactant0(thermoData.subDict(rMix[0].name()));
 
-    for (label i = 1; i < rMix.size(); i++)
+    thermo reactants(rMix[0].volFrac()*reactant0.rho(p, T0)*reactant0);
+
+    for (label i=1; i<rMix.size(); i++)
     {
-        reactants = reactants
-            + rMix[i].volFrac()*thermo(thermoData.subDict(rMix[i].name()));
+        const thermo reactanti(thermoData.subDict(rMix[i].name()));
+        reactants += rMix[i].volFrac()*reactanti.rho(p, T0)*reactanti;
     }
 
+    const thermo product0(thermoData.subDict(pMix[0].name()));
+    thermo products(pMix[0].volFrac()*product0.rho(p, T0)*product0);
 
-    thermo products
-    (
-        2*pMix[0].volFrac()*thermo(thermoData.subDict(pMix[0].name()))
-    );
-
-    for (label i = 1; i < pMix.size(); i++)
+    for (label i=1; i<pMix.size(); i++)
     {
-        products = products
-            + 2*pMix[i].volFrac()*thermo(thermoData.subDict(pMix[i].name()));
+        const thermo producti(thermoData.subDict(pMix[i].name()));
+        products += pMix[i].volFrac()*producti.rho(p, T0)*producti;
     }
 
     Info<< "Adiabatic flame temperature of mixture " << rMix.name() << " = "
-         << products.THa(reactants.Ha(P, T0), P, 1000.0) << " K" << endl;
+         << products.THa(reactants.Ha(p, T0), p, 1000.0) << " K" << endl;
 
     return 0;
 }

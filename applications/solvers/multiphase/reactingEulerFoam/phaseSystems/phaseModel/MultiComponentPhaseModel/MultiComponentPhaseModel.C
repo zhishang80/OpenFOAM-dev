@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -46,12 +46,6 @@ Foam::MultiComponentPhaseModel<BasePhaseModel>::MultiComponentPhaseModel
 )
 :
     BasePhaseModel(fluid, phaseName, index),
-    Sc_
-    (
-        "Sc",
-        dimless,
-        fluid.subDict(phaseName)
-    ),
     residualAlpha_
     (
         "residualAlpha",
@@ -94,7 +88,7 @@ Foam::MultiComponentPhaseModel<BasePhaseModel>::~MultiComponentPhaseModel()
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 template<class BasePhaseModel>
-void Foam::MultiComponentPhaseModel<BasePhaseModel>::correctThermo()
+void Foam::MultiComponentPhaseModel<BasePhaseModel>::correctSpecies()
 {
     volScalarField Yt
     (
@@ -105,7 +99,7 @@ void Foam::MultiComponentPhaseModel<BasePhaseModel>::correctThermo()
             this->fluid().mesh()
         ),
         this->fluid().mesh(),
-        dimensionedScalar("zero", dimless, 0)
+        dimensionedScalar(dimless, 0)
     );
 
     PtrList<volScalarField>& Yi = YRef();
@@ -132,7 +126,7 @@ void Foam::MultiComponentPhaseModel<BasePhaseModel>::correctThermo()
         }
     }
 
-    BasePhaseModel::correctThermo();
+    BasePhaseModel::correctSpecies();
 }
 
 
@@ -149,18 +143,17 @@ Foam::MultiComponentPhaseModel<BasePhaseModel>::YiEqn(volScalarField& Yi)
 {
     const volScalarField& alpha = *this;
     const surfaceScalarField alphaRhoPhi(this->alphaRhoPhi());
-    const volScalarField rho(this->rho());
+    const volScalarField& rho = this->thermo().rho();
 
     return
     (
         fvm::ddt(alpha, rho, Yi)
       + fvm::div(alphaRhoPhi, Yi, "div(" + alphaRhoPhi.name() + ",Yi)")
-      - fvm::Sp(this->continuityError(), Yi)
 
       - fvm::laplacian
         (
             fvc::interpolate(alpha)
-           *fvc::interpolate(this->muEff()/Sc_),
+           *fvc::interpolate(this->alphaEff()),
             Yi
         )
      ==
@@ -177,6 +170,14 @@ const Foam::PtrList<Foam::volScalarField>&
 Foam::MultiComponentPhaseModel<BasePhaseModel>::Y() const
 {
     return this->thermo_->composition().Y();
+}
+
+
+template<class BasePhaseModel>
+const Foam::volScalarField&
+Foam::MultiComponentPhaseModel<BasePhaseModel>::Y(const word& name) const
+{
+    return this->thermo_->composition().Y(name);
 }
 
 

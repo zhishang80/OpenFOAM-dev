@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::compressible::convectiveHeatTransferFvPatchScalarField
-
-Group
-    grpCmpBoundaryConditions
 
 Description
     This boundary condition provides a convective heat transfer coefficient
@@ -135,7 +132,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         convectiveHeatTransferFvPatchScalarField
         (
             const convectiveHeatTransferFvPatchScalarField&
@@ -150,7 +147,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         convectiveHeatTransferFvPatchScalarField
         (
             const convectiveHeatTransferFvPatchScalarField&,
@@ -170,7 +167,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Evaluation functions
 

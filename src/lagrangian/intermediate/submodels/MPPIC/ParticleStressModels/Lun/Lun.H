@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -71,7 +71,7 @@ class Lun
 :
     public ParticleStressModel
 {
-    // Private data
+    // Private Data
 
         //- Coefficient of restitution
         scalar e_;
@@ -118,7 +118,7 @@ public:
             const Field<scalar>& uRms
         ) const;
 
-        //- Collision stress derivaive w.r.t. the volume fraction
+        //- Collision stress derivative w.r.t. the volume fraction
         tmp<Field<scalar>> dTaudTheta
         (
             const Field<scalar>& alpha,

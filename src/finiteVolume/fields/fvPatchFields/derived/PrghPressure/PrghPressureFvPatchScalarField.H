@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2018-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::PrghPressureFvPatchScalarField
-
-Group
-    grpGenericBoundaryConditions
 
 Description
     This boundary condition provides the p_rgh equivalent of a pressure
@@ -103,7 +100,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         PrghPressureFvPatchScalarField
         (
             const PrghPressureFvPatchScalarField&
@@ -118,7 +115,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         PrghPressureFvPatchScalarField
         (
             const PrghPressureFvPatchScalarField&,
@@ -138,7 +135,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Evaluation functions
 

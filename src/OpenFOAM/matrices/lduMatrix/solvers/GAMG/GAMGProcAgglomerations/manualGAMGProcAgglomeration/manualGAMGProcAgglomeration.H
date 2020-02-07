@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -37,16 +37,16 @@ Description
         processorAgglomeration
         (
             (
-                3           //at level 3
+                3           // at level 3
                 (
-                    (0 1)   //coarse 0 from 0,1 (and moved onto 0)
-                    (3 2)   //coarse 1 from 2,3 (and moved onto 3)
+                    (0 1)   // coarse 0 from 0,1 (and moved onto 0)
+                    (3 2)   // coarse 1 from 2,3 (and moved onto 3)
                 )
             )
             (
-                6           //at level6
+                6           // at level6
                 (
-                    (0 1)   //coarse 0 from 0,1 (and moved onto 0)
+                    (0 1)   // coarse 0 from 0,1 (and moved onto 0)
                 )
             )
         );
@@ -78,25 +78,13 @@ class manualGAMGProcAgglomeration
 :
     public GAMGProcAgglomeration
 {
-    // Private data
+    // Private Data
 
         //- Per level the agglomeration map
         const List<Tuple2<label, List<labelList>>> procAgglomMaps_;
 
         //- Any allocated communicators
         DynamicList<label> comms_;
-
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        manualGAMGProcAgglomeration
-        (
-            const manualGAMGProcAgglomeration&
-        );
-
-        //- Disallow default bitwise assignment
-        void operator=(const manualGAMGProcAgglomeration&);
 
 
 public:
@@ -114,6 +102,12 @@ public:
             const dictionary& controlDict
         );
 
+        //- Disallow default bitwise copy construction
+        manualGAMGProcAgglomeration
+        (
+            const manualGAMGProcAgglomeration&
+        );
+
 
     //- Destructor
     virtual ~manualGAMGProcAgglomeration();
@@ -124,6 +118,11 @@ public:
        //- Modify agglomeration. Return true if modified
         virtual bool agglomerate();
 
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const manualGAMGProcAgglomeration&) = delete;
 };
 
 

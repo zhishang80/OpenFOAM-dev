@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -54,7 +54,7 @@ class constantSaturationConditions
 {
 protected:
 
-    // Private data
+    // Private Data
 
         //- Constant saturation pressure
         dimensionedScalar pSat_;
@@ -74,7 +74,7 @@ public:
         constantSaturationConditions
         (
             const dictionary& dict,
-            const objectRegistry& db
+            const phasePair& pair
         );
 
 
@@ -87,7 +87,7 @@ public:
         //- Saturation pressure
         virtual tmp<volScalarField> pSat(const volScalarField& T) const;
 
-        //- Saturation pressure derivetive w.r.t. temperature
+        //- Saturation pressure derivative w.r.t. temperature
         virtual tmp<volScalarField> pSatPrime(const volScalarField& T) const;
 
         //- Natural log of the saturation pressure

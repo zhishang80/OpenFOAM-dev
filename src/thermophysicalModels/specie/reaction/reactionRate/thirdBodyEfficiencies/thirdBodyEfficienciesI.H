@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -73,7 +73,7 @@ inline Foam::thirdBodyEfficiencies::thirdBodyEfficiencies
     }
     else
     {
-        scalar defaultEff = readScalar(dict.lookup("defaultEfficiency"));
+        scalar defaultEff = dict.lookup<scalar>("defaultEfficiency");
         scalarList::operator=(defaultEff);
     }
 }
@@ -83,7 +83,7 @@ inline Foam::thirdBodyEfficiencies::thirdBodyEfficiencies
 
 inline Foam::scalar Foam::thirdBodyEfficiencies::M(const scalarList& c) const
 {
-    scalar M = 0.0;
+    scalar M = 0;
     forAll(*this, i)
     {
         M += operator[](i)*c[i];
@@ -102,7 +102,7 @@ inline void Foam::thirdBodyEfficiencies::write(Ostream& os) const
         coeffs[i].second() = operator[](i);
     }
 
-    os.writeKeyword("coeffs") << coeffs << token::END_STATEMENT << nl;
+    writeEntry(os, "coeffs", coeffs);
 }
 
 

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -87,6 +87,23 @@ protected:
             heatTransferModelTable heatTransferModels_;
 
 
+    // Protected Member Functions
+
+        //- Add energy transfer terms which result from bulk mass transfers
+        void addDmdtHefs
+        (
+            const phaseSystem::dmdtfTable& dmdtfs,
+            phaseSystem::heatTransferTable& eqns
+        ) const;
+
+        //- Add energy transfer terms which result from specie mass transfers
+        void addDmidtHef
+        (
+            const phaseSystem::dmidtfTable& dmidtfs,
+            phaseSystem::heatTransferTable& eqns
+        ) const;
+
+
 public:
 
     // Constructors
@@ -104,8 +121,8 @@ public:
         //- Return the heat transfer matrices
         virtual autoPtr<phaseSystem::heatTransferTable> heatTransfer() const;
 
-        //- Correct the thermodynamics
-        virtual void correctThermo();
+        //- Correct the energy transport e.g. alphat and Tf
+        virtual void correctEnergyTransport();
 
         //- Correct the interface thermodynamics
         virtual void correctInterfaceThermo();

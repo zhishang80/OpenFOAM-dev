@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2012 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -120,10 +120,10 @@ Foam::genericPolyPatch::~genericPolyPatch()
 
 void Foam::genericPolyPatch::write(Ostream& os) const
 {
-    os.writeKeyword("type") << actualTypeName_ << token::END_STATEMENT << nl;
+    writeEntry(os, "type", actualTypeName_);
     patchIdentifier::write(os);
-    os.writeKeyword("nFaces") << size() << token::END_STATEMENT << nl;
-    os.writeKeyword("startFace") << start() << token::END_STATEMENT << nl;
+    writeEntry(os, "nFaces", size());
+    writeEntry(os, "startFace", start());
 
     forAllConstIter(dictionary, dict_, iter)
     {
@@ -132,6 +132,8 @@ void Foam::genericPolyPatch::write(Ostream& os) const
             iter().keyword() != "type"
          && iter().keyword() != "nFaces"
          && iter().keyword() != "startFace"
+         && iter().keyword() != "inGroups"
+         && iter().keyword() != "faces"
         )
         {
             iter().write(os);

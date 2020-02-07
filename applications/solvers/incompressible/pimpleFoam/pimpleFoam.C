@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,11 +22,11 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    pimpleDyMFoam.C
+    pimpleFoam
 
 Description
-    Transient solver for incompressible, turbulent flow of Newtonian fluids
-    on a moving mesh.
+    Transient solver for incompressible, turbulent flow of Newtonian fluids,
+    with optional mesh motion and mesh topology changes.
 
     Turbulence modelling is generic, i.e. laminar, RAS or LES may be selected.
 
@@ -39,6 +39,8 @@ Description
 #include "pimpleControl.H"
 #include "CorrectPhi.H"
 #include "fvOptions.H"
+#include "localEulerDdtScheme.H"
+#include "fvcSmooth.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -46,27 +48,39 @@ int main(int argc, char *argv[])
 {
     #include "postProcess.H"
 
-    #include "setRootCase.H"
+    #include "setRootCaseLists.H"
     #include "createTime.H"
     #include "createDynamicFvMesh.H"
     #include "initContinuityErrs.H"
     #include "createDyMControls.H"
     #include "createFields.H"
     #include "createUfIfPresent.H"
-    #include "CourantNo.H"
-    #include "setInitialDeltaT.H"
 
     turbulence->validate();
+
+    if (!LTS)
+    {
+        #include "CourantNo.H"
+        #include "setInitialDeltaT.H"
+    }
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
     Info<< "\nStarting time loop\n" << endl;
 
-    while (runTime.run())
+    while (pimple.run(runTime))
     {
         #include "readDyMControls.H"
-        #include "CourantNo.H"
-        #include "setDeltaT.H"
+
+        if (LTS)
+        {
+            #include "setRDeltaT.H"
+        }
+        else
+        {
+            #include "CourantNo.H"
+            #include "setDeltaT.H"
+        }
 
         runTime++;
 
@@ -75,7 +89,7 @@ int main(int argc, char *argv[])
         // --- Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
         {
-            if (pimple.firstIter() || moveMeshOuterCorrectors)
+            if (pimple.firstPimpleIter() || moveMeshOuterCorrectors)
             {
                 mesh.update();
 

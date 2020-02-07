@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -42,14 +42,15 @@ namespace distributionModels
 Foam::distributionModels::uniform::uniform
 (
     const dictionary& dict,
-    cachedRandom& rndGen
+    Random& rndGen
 )
 :
     distributionModel(typeName, dict, rndGen),
-    minValue_(readScalar(distributionModelDict_.lookup("minValue"))),
-    maxValue_(readScalar(distributionModelDict_.lookup("maxValue")))
+    minValue_(distributionModelDict_.template lookup<scalar>("minValue")),
+    maxValue_(distributionModelDict_.template lookup<scalar>("maxValue"))
 {
     check();
+    info();
 }
 
 
@@ -71,7 +72,7 @@ Foam::distributionModels::uniform::~uniform()
 
 Foam::scalar Foam::distributionModels::uniform::sample() const
 {
-    return rndGen_.position<scalar>(minValue_, maxValue_);
+    return rndGen_.scalarAB(minValue_, maxValue_);
 }
 
 

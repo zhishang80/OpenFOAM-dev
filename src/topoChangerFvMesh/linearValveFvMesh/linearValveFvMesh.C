@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -260,26 +260,11 @@ bool Foam::linearValveFvMesh::attached() const
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-// Construct from components
 Foam::linearValveFvMesh::linearValveFvMesh(const IOobject& io)
 :
     topoChangerFvMesh(io),
-    motionDict_
-    (
-        IOdictionary
-        (
-            IOobject
-            (
-                "dynamicMeshDict",
-                time().constant(),
-                *this,
-                IOobject::MUST_READ_IF_MODIFIED,
-                IOobject::NO_WRITE,
-                false
-            )
-        ).optionalSubDict(typeName + "Coeffs")
-    ),
-    msPtr_(motionSolver::New(*this))
+    motionDict_(dict().optionalSubDict(typeName + "Coeffs")),
+    msPtr_(motionSolver::New(*this), dict())
 {
     addZonesAndModifiers();
 }

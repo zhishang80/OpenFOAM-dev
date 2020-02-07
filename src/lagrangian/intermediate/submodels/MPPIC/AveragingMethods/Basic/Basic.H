@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -64,7 +64,7 @@ class Basic
 {
 public:
 
-    //- Public typedefs
+    // Public Typedefs
 
         //- Gradient type
         typedef typename AveragingMethod<Type>::TypeGrad TypeGrad;
@@ -72,7 +72,7 @@ public:
 
 private:
 
-    //- Private data
+    // Private data
 
         //- Cell average field
         Field<Type>& data_;
@@ -81,7 +81,7 @@ private:
         Field<TypeGrad> dataGrad_;
 
 
-    //- Private member functions
+    // Private member functions
 
         //- Re-calculate gradient
         virtual void updateGrad();

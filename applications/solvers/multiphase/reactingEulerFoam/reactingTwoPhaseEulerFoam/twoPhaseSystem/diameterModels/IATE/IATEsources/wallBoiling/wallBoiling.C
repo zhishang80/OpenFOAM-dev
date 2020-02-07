@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -74,7 +74,7 @@ Foam::diameterModels::IATEsources::wallBoiling::R
             phase().mesh()
         ),
         phase().mesh(),
-        dimensionedScalar("R", dimless/dimTime, 0)
+        dimensionedScalar(dimless/dimTime, 0)
     );
 
     volScalarField::Internal Rdk
@@ -86,7 +86,7 @@ Foam::diameterModels::IATEsources::wallBoiling::R
             phase().mesh()
         ),
         phase().mesh(),
-        dimensionedScalar("Rdk", kappai.dimensions()/dimTime, 0)
+        dimensionedScalar(kappai.dimensions()/dimTime, 0)
     );
 
     const phaseCompressibleTurbulenceModel& turbulence =
@@ -117,7 +117,7 @@ Foam::diameterModels::IATEsources::wallBoiling::R
             const alphatWallBoilingWallFunction& alphatw =
                 refCast<const alphatWallBoilingWallFunction>(alphatBf[patchi]);
 
-            const scalarField& dmdt = alphatw.dmdt();
+            const scalarField& dmdt = alphatw.dmdtf();
             const scalarField& dDep = alphatw.dDeparture();
 
             const labelList& faceCells = alphatw.patch().faceCells();

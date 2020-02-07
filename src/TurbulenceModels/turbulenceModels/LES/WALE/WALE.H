@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::LESModels::WALE
-
-Group
-    grpLESTurbulence
 
 Description
     The Wall-adapting local eddy-viscosity (WALE) SGS model.
@@ -78,13 +75,6 @@ class WALE
 :
     public LESeddyViscosity<BasicTurbulenceModel>
 {
-    // Private Member Functions
-
-        // Disallow default bitwise copy construct and assignment
-        WALE(const WALE&);
-        void operator=(const WALE&);
-
-
 protected:
 
     // Protected data
@@ -133,6 +123,9 @@ public:
             const word& type = typeName
         );
 
+        //- Disallow default bitwise copy construction
+        WALE(const WALE&) = delete;
+
 
     //- Destructor
     virtual ~WALE()
@@ -155,6 +148,12 @@ public:
 
         //- Correct Eddy-Viscosity and related properties
         virtual void correct();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const WALE&) = delete;
 };
 
 

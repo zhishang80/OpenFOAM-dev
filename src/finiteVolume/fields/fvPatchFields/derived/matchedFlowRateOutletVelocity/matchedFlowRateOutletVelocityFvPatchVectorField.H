@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2017-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::matchedFlowRateOutletVelocityFvPatchVectorField
-
-Group
-    grpOutletBoundaryConditions
 
 Description
     Velocity outlet boundary condition which corrects the extrapolated velocity
@@ -75,7 +72,7 @@ class matchedFlowRateOutletVelocityFvPatchVectorField
 :
     public fixedValueFvPatchVectorField
 {
-    // Private data
+    // Private Data
 
         //- Inlet patch name from which the corresponding flow rate is obtained
         word inletPatchName_;
@@ -87,7 +84,7 @@ class matchedFlowRateOutletVelocityFvPatchVectorField
         word rhoName_;
 
 
-    // Private member functions
+    // Private Member Functions
 
         //- Update the patch values given the appropriate density type and value
         template<class RhoType>
@@ -133,7 +130,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         matchedFlowRateOutletVelocityFvPatchVectorField
         (
             const matchedFlowRateOutletVelocityFvPatchVectorField&
@@ -148,7 +145,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         matchedFlowRateOutletVelocityFvPatchVectorField
         (
             const matchedFlowRateOutletVelocityFvPatchVectorField&,
@@ -168,7 +165,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         //- Update the coefficients associated with the patch field
         virtual void updateCoeffs();

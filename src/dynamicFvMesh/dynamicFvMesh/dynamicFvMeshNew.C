@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,26 +24,13 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "staticFvMesh.H"
+#include "Time.H"
 
 // * * * * * * * * * * * * * * * * Selectors * * * * * * * * * * * * * * * * //
 
 Foam::autoPtr<Foam::dynamicFvMesh> Foam::dynamicFvMesh::New(const IOobject& io)
 {
-    // Note: - do not register the dictionary since dynamicFvMeshes themselves
-    // do this.
-    // - defaultRegion (region0) gets loaded from constant, other ones
-    //   get loaded from constant/<regionname>. Normally we'd use
-    //   polyMesh::dbDir() but we haven't got a polyMesh yet ...
-    IOobject dictHeader
-    (
-        "dynamicMeshDict",
-        io.time().constant(),
-        (io.name() == polyMesh::defaultRegion ? "" : io.name()),
-        io.db(),
-        IOobject::MUST_READ_IF_MODIFIED,
-        IOobject::NO_WRITE,
-        false
-    );
+    IOobject dictHeader(dynamicMeshDictIOobject(io));
 
     if (dictHeader.typeHeaderOk<IOdictionary>(true))
     {
@@ -53,7 +40,7 @@ Foam::autoPtr<Foam::dynamicFvMesh> Foam::dynamicFvMesh::New(const IOobject& io)
 
         Info<< "Selecting dynamicFvMesh " << dynamicFvMeshTypeName << endl;
 
-        const_cast<Time&>(io.time()).libs().open
+        libs.open
         (
             dict,
             "dynamicFvMeshLibs",

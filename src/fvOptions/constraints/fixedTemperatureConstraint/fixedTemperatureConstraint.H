@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -48,8 +48,11 @@ Note:
     The 'uniform' option allows the use of a time-varying uniform temperature
     by means of the Function1 type.
 
+See also
+    Foam::fvOption
+
 SourceFiles
-    fvOption.C
+    fixedTemperatureConstraint.C
 
 \*---------------------------------------------------------------------------*/
 
@@ -75,7 +78,6 @@ class fixedTemperatureConstraint
 :
     public cellSetOption
 {
-
 public:
 
     //- Temperature mode
@@ -104,17 +106,6 @@ protected:
         word TName_;
 
 
-private:
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        fixedTemperatureConstraint(const fixedTemperatureConstraint&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const fixedTemperatureConstraint&);
-
-
 public:
 
     //- Runtime type information
@@ -132,6 +123,9 @@ public:
             const fvMesh& mesh
         );
 
+        //- Disallow default bitwise copy construction
+        fixedTemperatureConstraint(const fixedTemperatureConstraint&) = delete;
+
 
     //- Destructor
     virtual ~fixedTemperatureConstraint()
@@ -143,11 +137,14 @@ public:
         //- Constrain energy equation to fix the temperature
         virtual void constrain(fvMatrix<scalar>& eqn, const label fieldi);
 
+        //- Read dictionary
+        virtual bool read(const dictionary& dict);
 
-        // IO
 
-            //- Read dictionary
-            virtual bool read(const dictionary& dict);
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const fixedTemperatureConstraint&) = delete;
 };
 
 

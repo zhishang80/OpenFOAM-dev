@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::RASModels::LRR
-
-Group
-    grpRASTurbulence
 
 Description
     Launder, Reece and Rodi Reynolds-stress turbulence model for
@@ -102,13 +99,6 @@ class LRR
 :
     public ReynoldsStress<RASModel<BasicTurbulenceModel>>
 {
-    // Private Member Functions
-
-        // Disallow default bitwise copy construct and assignment
-        LRR(const LRR&);
-        void operator=(const LRR&);
-
-
 protected:
 
     // Protected data
@@ -172,6 +162,9 @@ public:
             const word& type = typeName
         );
 
+        //- Disallow default bitwise copy construction
+        LRR(const LRR&) = delete;
+
 
     //- Destructor
     virtual ~LRR()
@@ -204,6 +197,12 @@ public:
         //- Solve the turbulence equations and correct eddy-Viscosity and
         //  related properties
         virtual void correct();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const LRR&) = delete;
 };
 
 

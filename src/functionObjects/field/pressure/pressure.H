@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::functionObjects::pressure
-
-Group
-    grpFieldFunctionObjects
 
 Description
     Includes tools to manipulate the pressure into different forms.
@@ -50,12 +47,12 @@ Description
 
     where
     \vartable
-        \rho        | Density [kg/m3]
+        \rho        | Density [kg/m^3]
         U           | Velocity [m/s]
-        \rho_{\inf} | Freestream density [kg/m3]
+        \rho_{\inf} | Freestream density [kg/m^3]
         p_{\inf}    | Freestream pressure [Pa]
         U_{\inf}    | Freestream velocity [m/s]
-        p_k         | Kinematic pressure (p/rho)[m2/s2]
+        p_k         | Kinematic pressure (p/rho) [m^2/s^2]
         p           | Pressure [Pa]
         p_0         | Total pressure [Pa]
         p_{ref}     | Reference pressure level [Pa]
@@ -135,7 +132,7 @@ class pressure
 :
     public fieldExpression
 {
-    // Private data
+    // Private Data
 
         //- Name of velocity field, default is "U"
         word UName_;

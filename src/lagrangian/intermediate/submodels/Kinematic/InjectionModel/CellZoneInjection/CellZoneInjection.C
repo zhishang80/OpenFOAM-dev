@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -40,7 +40,7 @@ void Foam::CellZoneInjection<CloudType>::setPositions
     const fvMesh& mesh = this->owner().mesh();
     const scalarField& V = mesh.V();
     const label nCells = cellZoneCells.size();
-    cachedRandom& rnd = this->owner().rndGen();
+    Random& rnd = this->owner().rndGen();
 
     DynamicList<vector> positions(nCells);          // initial size only
     DynamicList<label> injectorCells(nCells);       // initial size only
@@ -170,7 +170,7 @@ Foam::CellZoneInjection<CloudType>::CellZoneInjection
 :
     InjectionModel<CloudType>(dict, owner, modelName, typeName),
     cellZoneName_(this->coeffDict().lookup("cellZone")),
-    numberDensity_(readScalar(this->coeffDict().lookup("numberDensity"))),
+    numberDensity_(this->coeffDict().template lookup<scalar>("numberDensity")),
     positions_(),
     injectorCells_(),
     injectorTetFaces_(),

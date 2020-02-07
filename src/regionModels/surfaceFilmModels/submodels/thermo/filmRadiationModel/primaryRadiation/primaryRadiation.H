@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::primaryRadiation
+    Foam::regionModels::surfaceFilmModels::primaryRadiation
 
 Description
     Radiation model whereby the radiative heat flux is mapped from the primary
@@ -56,21 +56,10 @@ class primaryRadiation
 :
     public filmRadiationModel
 {
-private:
+    // Private Data
 
-    // Private data
-
-        //- Incident radiative flux mapped from  the primary region / [kg/s3]
-        volScalarField qinPrimary_;
-
-
-    // Private member functions
-
-        //- Disallow default bitwise copy construct
-        primaryRadiation(const primaryRadiation&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const primaryRadiation&);
+        //- Incident radiative flux mapped from the primary region [kg/s^3]
+        volScalarField::Internal qinFilm_;
 
 
 public:
@@ -88,6 +77,9 @@ public:
             const dictionary& dict
         );
 
+        //- Disallow default bitwise copy construction
+        primaryRadiation(const primaryRadiation&) = delete;
+
 
     //- Destructor
     virtual ~primaryRadiation();
@@ -102,7 +94,13 @@ public:
 
             //- Return the radiation sensible enthalpy source
             //  Also updates qrNet
-            virtual tmp<volScalarField> Shs();
+            virtual tmp<volScalarField::Internal> Shs();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const primaryRadiation&) = delete;
 };
 
 

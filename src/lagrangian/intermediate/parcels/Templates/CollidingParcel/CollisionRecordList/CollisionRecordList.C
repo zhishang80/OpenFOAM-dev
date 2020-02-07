@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -385,27 +385,6 @@ void Foam::CollisionRecordList<PairType, WallType>::update()
 
         wallRecords_ = updatedRecords;
     }
-}
-
-
-// * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * * //
-
-template<class PairType, class WallType>
-void Foam::CollisionRecordList<PairType, WallType>::operator=
-(
-    const CollisionRecordList<PairType, WallType>& rhs
-)
-{
-    // Check for assignment to self
-    if (this == &rhs)
-    {
-        FatalErrorInFunction
-            << "Attempted assignment to self"
-            << abort(FatalError);
-    }
-
-    pairRecords_ = rhs.pairRecords_;
-    wallRecords_ = rhs.wallRecords_;
 }
 
 

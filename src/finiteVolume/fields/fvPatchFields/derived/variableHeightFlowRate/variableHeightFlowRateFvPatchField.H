@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::variableHeightFlowRateFvPatchScalarField
-
-Group
-    grpInletBoundaryConditions
 
 Description
     This boundary condition provides a phase fraction condition based on the
@@ -131,7 +128,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         variableHeightFlowRateFvPatchScalarField
         (
             const variableHeightFlowRateFvPatchScalarField&
@@ -146,7 +143,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         variableHeightFlowRateFvPatchScalarField
         (
             const variableHeightFlowRateFvPatchScalarField&,
@@ -166,7 +163,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         //- Update the coefficients associated with the patch field
         virtual void updateCoeffs();

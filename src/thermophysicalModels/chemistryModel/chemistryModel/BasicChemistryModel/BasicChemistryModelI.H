@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -26,13 +26,6 @@ License
 #include "BasicChemistryModel.H"
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
-
-template<class ReactionThermo>
-inline ReactionThermo& Foam::BasicChemistryModel<ReactionThermo>::thermo()
-{
-    return thermo_;
-}
-
 
 template<class ReactionThermo>
 inline const ReactionThermo&

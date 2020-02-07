@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::heatTransferModel
+    Foam::regionModels::surfaceFilmModels::heatTransferModel
 
 Description
     Base class for film heat transfer models
@@ -56,17 +56,6 @@ class heatTransferModel
 :
     public filmSubModelBase
 {
-private:
-
-    // Private Member Functions
-
-        //- Disallow default bitwise copy construct
-        heatTransferModel(const heatTransferModel&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const heatTransferModel&);
-
-
 public:
 
     //- Runtime type information
@@ -87,6 +76,7 @@ public:
              (film, dict)
          );
 
+
     // Constructors
 
         //- Construct null
@@ -99,6 +89,9 @@ public:
             surfaceFilmRegionModel& film,
             const dictionary& dict
         );
+
+        //- Disallow default bitwise copy construction
+        heatTransferModel(const heatTransferModel&) = delete;
 
 
     // Selectors
@@ -122,8 +115,14 @@ public:
             //- Correct
             virtual void correct() = 0;
 
-            //- Return the heat transfer coefficient [W/m2/K]
-            virtual tmp<volScalarField> h() const = 0;
+            //- Return the heat transfer coefficient [W/m^2/K]
+            virtual tmp<volScalarField::Internal> h() const = 0;
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const heatTransferModel&) = delete;
 };
 
 

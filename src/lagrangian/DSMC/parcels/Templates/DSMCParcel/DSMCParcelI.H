@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -41,13 +41,13 @@ inline Foam::DSMCParcel<ParcelType>::constantProperties::constantProperties
     const dictionary& dict
 )
 :
-    mass_(readScalar(dict.lookup("mass"))),
-    d_(readScalar(dict.lookup("diameter"))),
+    mass_(dict.template lookup<scalar>("mass")),
+    d_(dict.template lookup<scalar>("diameter")),
     internalDegreesOfFreedom_
     (
-        readInt(dict.lookup("internalDegreesOfFreedom"))
+        dict.template lookup<int>("internalDegreesOfFreedom")
     ),
-    omega_(readScalar(dict.lookup("omega")))
+    omega_(dict.template lookup<scalar>("omega"))
 {}
 
 

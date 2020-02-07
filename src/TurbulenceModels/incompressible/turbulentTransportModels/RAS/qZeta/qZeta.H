@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
+   \\    /   O peration     | Website:  https://openfoam.org
     \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::incompressible::RASModels::qZeta
-
-Group
-    grpIcoRASTurbulence
 
 Description
     Gibson and Dafa'Alla's q-zeta two-equation low-Re turbulence model
@@ -168,18 +165,20 @@ public:
         //- Return the effective diffusivity for q
         tmp<volScalarField> DqEff() const
         {
-            return tmp<volScalarField>
+            return volScalarField::New
             (
-                new volScalarField("DqEff", nut_ + nu())
+                "DqEff",
+                nut_ + nu()
             );
         }
 
         //- Return the effective diffusivity for epsilon
         tmp<volScalarField> DzetaEff() const
         {
-            return tmp<volScalarField>
+            return volScalarField::New
             (
-                new volScalarField("DzetaEff", nut_/sigmaZeta_ + nu())
+                "DzetaEff",
+                nut_/sigmaZeta_ + nu()
             );
         }
 

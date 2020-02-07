@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2013-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2013-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -62,8 +62,10 @@ bool Foam::cellVolumeWeightMethod::findInitialSeeds
 
         if (mapFlag[srcI])
         {
-            const pointField
-                pts(srcCells[srcI].points(srcFaces, srcPts).xfer());
+            const pointField pts
+            (
+                srcCells[srcI].points(srcFaces, srcPts)
+            );
 
             forAll(pts, ptI)
             {

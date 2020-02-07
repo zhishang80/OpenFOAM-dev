@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::functionObjects::processorField
-
-Group
-    grpFieldFunctionObjects
 
 Description
     Writes a scalar field whose value is the local processor ID.  The output
@@ -75,15 +72,6 @@ class processorField
 :
     public fvMeshFunctionObject
 {
-    // Private member functions
-
-        //- Disallow default bitwise copy construct
-        processorField(const processorField&);
-
-        //- Disallow default bitwise assignment
-        void operator=(const processorField&);
-
-
 public:
 
     //- Runtime type information
@@ -100,6 +88,9 @@ public:
             const dictionary& dict
         );
 
+        //- Disallow default bitwise copy construction
+        processorField(const processorField&) = delete;
+
 
     //- Destructor
     virtual ~processorField();
@@ -115,6 +106,12 @@ public:
 
         //- Write the processorID field
         virtual bool write();
+
+
+    // Member Operators
+
+        //- Disallow default bitwise assignment
+        void operator=(const processorField&) = delete;
 };
 
 

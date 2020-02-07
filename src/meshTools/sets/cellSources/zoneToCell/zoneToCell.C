@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -61,7 +61,8 @@ void Foam::zoneToCell::combine(topoSet& set, const bool add) const
             const labelList& cellLabels = mesh_.cellZones()[i];
 
             Info<< "    Found matching zone " << zone.name()
-                << " with " << cellLabels.size() << " cells." << endl;
+                << " with " << returnReduce(cellLabels.size(), sumOp<label>())
+                << " cells." << endl;
 
             hasMatched = true;
 

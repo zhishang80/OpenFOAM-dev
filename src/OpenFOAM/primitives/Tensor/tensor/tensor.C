@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -93,22 +93,22 @@ Foam::vector Foam::eigenValues(const tensor& t)
     {
         switch (roots.type(i))
         {
-            case roots::real:
+            case rootType::real:
                 lambda[i] = roots[i];
                 break;
-            case roots::complex:
+            case rootType::complex:
                 WarningInFunction
                     << "Complex eigenvalues detected for tensor: " << t
                     << endl;
                 lambda[i] = 0;
                 break;
-            case roots::posInf:
+            case rootType::posInf:
                 lambda[i] = vGreat;
                 break;
-            case roots::negInf:
+            case rootType::negInf:
                 lambda[i] = - vGreat;
                 break;
-            case roots::nan:
+            case rootType::nan:
                 FatalErrorInFunction
                     << "Eigenvalue calculation failed for tensor: " << t
                     << exit(FatalError);
@@ -148,7 +148,7 @@ Foam::vector Foam::eigenVector
     scalar sd0, sd1, sd2;
     scalar magSd0, magSd1, magSd2;
 
-    // Sub-determinants for a unique eivenvalue
+    // Sub-determinants for a unique eigenvalue
     sd0 = A.yy()*A.zz() - A.yz()*A.zy();
     sd1 = A.zz()*A.xx() - A.zx()*A.xz();
     sd2 = A.xx()*A.yy() - A.xy()*A.yx();

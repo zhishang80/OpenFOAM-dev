@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -49,11 +49,11 @@ Foam::XiEqModels::SCOPEXiEq::SCOPEXiEq
 )
 :
     XiEqModel(XiEqProperties, thermo, turbulence, Su),
-    XiEqCoef_(readScalar(XiEqModelCoeffs_.lookup("XiEqCoef"))),
-    XiEqExp_(readScalar(XiEqModelCoeffs_.lookup("XiEqExp"))),
-    lCoef_(readScalar(XiEqModelCoeffs_.lookup("lCoef"))),
+    XiEqCoef_(XiEqModelCoeffs_.lookup<scalar>("XiEqCoef")),
+    XiEqExp_(XiEqModelCoeffs_.lookup<scalar>("XiEqExp")),
+    lCoef_(XiEqModelCoeffs_.lookup<scalar>("lCoef")),
     SuMin_(0.01*Su.average()),
-    uPrimeCoef_(readScalar(XiEqModelCoeffs_.lookup("uPrimeCoef"))),
+    uPrimeCoef_(XiEqModelCoeffs_.lookup<scalar>("uPrimeCoef")),
     subGridSchelkin_
     (
         readBool(XiEqModelCoeffs_.lookup("subGridSchelkin"))
@@ -94,18 +94,11 @@ Foam::tmp<Foam::volScalarField> Foam::XiEqModels::SCOPEXiEq::XiEq() const
 
     tmp<volScalarField> tXiEq
     (
-        new volScalarField
+        volScalarField::New
         (
-            IOobject
-            (
-                "XiEq",
-                epsilon.time().timeName(),
-                epsilon.db(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE
-            ),
+            "XiEq",
             epsilon.mesh(),
-            dimensionedScalar("XiEq", dimless, 0.0)
+            dimensionedScalar(dimless, 0)
         )
     );
     volScalarField& xieq = tXiEq.ref();

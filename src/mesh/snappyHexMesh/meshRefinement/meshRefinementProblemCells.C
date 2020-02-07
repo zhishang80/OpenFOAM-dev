@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -634,8 +634,8 @@ Foam::labelList Foam::meshRefinement::markFacesOnProblemCells
 
     if (checkCollapse)
     {
-        minArea = readScalar(motionDict.lookup("minArea"));
-        maxNonOrtho = readScalar(motionDict.lookup("maxNonOrtho"));
+        minArea = motionDict.lookup<scalar>("minArea");
+        maxNonOrtho = motionDict.lookup<scalar>("maxNonOrtho");
 
         Info<< "markFacesOnProblemCells :"
             << " Deleting all-anchor surface cells only if"
@@ -772,7 +772,7 @@ Foam::labelList Foam::meshRefinement::markFacesOnProblemCells
             // cell sticking out which would get flattened.
 
             // Eugene: delete cell no matter what.
-            //if (nBfaces > 1)
+            // if (nBfaces > 1)
             {
                 if
                 (
@@ -781,7 +781,7 @@ Foam::labelList Foam::meshRefinement::markFacesOnProblemCells
                 )
                 {
                     nPrevented++;
-                    //Pout<< "Preventing baffling/removal of 8 anchor point"
+                    // Pout<< "Preventing baffling/removal of 8 anchor point"
                     //    << " cell "
                     //    << celli << " at " << mesh_.cellCentres()[celli]
                     //    << " since new volume "
@@ -866,7 +866,7 @@ Foam::labelList Foam::meshRefinement::markFacesOnProblemCells
                     )
                     {
                         nPrevented++;
-                        //Pout<< "Preventing baffling of 7 anchor cell "
+                        // Pout<< "Preventing baffling of 7 anchor cell "
                         //    << celli
                         //    << " at " << mesh_.cellCentres()[celli]
                         //    << " since new volume "
@@ -968,7 +968,7 @@ Foam::labelList Foam::meshRefinement::markFacesOnProblemCells
                 )
                 {
                     nPrevented++;
-                    //Pout<< "Preventing baffling (to avoid collapse) of face "
+                    // Pout<< "Preventing baffling (to avoid collapse) of face "
                     //    << facei
                     //    << " with all boundary edges "
                     //    << " at " << mesh_.faceCentres()[facei]
@@ -1025,7 +1025,7 @@ Foam::labelList Foam::meshRefinement::markFacesOnProblemCells
                         )
                         {
                             nPrevented++;
-                            //Pout<< "Preventing baffling of coupled face "
+                            // Pout<< "Preventing baffling of coupled face "
                             //    << facei
                             //    << " with all boundary edges "
                             //    << " at " << mesh_.faceCentres()[facei]
@@ -1152,7 +1152,7 @@ Foam::labelList Foam::meshRefinement::markFacesOnProblemCellsGeometric
             *this,
             snapParams,
             nInitErrors,
-            List<labelPair>(0), //baffles
+            List<labelPair>(0), // baffles
             meshMover
         );
 
@@ -1202,7 +1202,7 @@ Foam::labelList Foam::meshRefinement::markFacesOnProblemCellsGeometric
     {
         faceSet wrongFaces(mesh_, "wrongFaces", 100);
         {
-            //motionSmoother::checkMesh(false, mesh_, motionDict, wrongFaces);
+            // motionSmoother::checkMesh(false, mesh_, motionDict, wrongFaces);
 
             // Just check the errors from squashing
             // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1210,8 +1210,8 @@ Foam::labelList Foam::meshRefinement::markFacesOnProblemCellsGeometric
             const labelList allFaces(identity(mesh_.nFaces()));
             label nWrongFaces = 0;
 
-            //const scalar minV(readScalar(motionDict.lookup("minVol", true)));
-            //if (minV > -great)
+            // const scalar minV(motionDict.lookup<scalar>("minVol", true));
+            // if (minV > -great)
             //{
             //    polyMeshGeometry::checkFacePyramids
             //    (
@@ -1239,7 +1239,7 @@ Foam::labelList Foam::meshRefinement::markFacesOnProblemCellsGeometric
             //    nWrongFaces = nNewWrongFaces;
             //}
 
-            scalar minArea(readScalar(motionDict.lookup("minArea")));
+            scalar minArea(motionDict.lookup<scalar>("minArea"));
             if (minArea > -small)
             {
                 polyMeshGeometry::checkFaceArea
@@ -1266,7 +1266,7 @@ Foam::labelList Foam::meshRefinement::markFacesOnProblemCellsGeometric
                 nWrongFaces = nNewWrongFaces;
             }
 
-            scalar minDet(readScalar(motionDict.lookup("minDeterminant")));
+            scalar minDet(motionDict.lookup<scalar>("minDeterminant"));
             if (minDet > -1)
             {
                 polyMeshGeometry::checkCellDeterminant
@@ -1304,7 +1304,7 @@ Foam::labelList Foam::meshRefinement::markFacesOnProblemCellsGeometric
                 facePatch[iter.key()] = nearestAdaptPatch[iter.key()];
                 nBaffleFaces++;
 
-                //Pout<< "    " << iter.key()
+                // Pout<< "    " << iter.key()
                 //    //<< " on patch " << mesh_.boundaryMesh()[patchi].name()
                 //    << " is destined for patch " << facePatch[iter.key()]
                 //    << endl;

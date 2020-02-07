@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -69,7 +69,7 @@ inline Foam::RBD::cuboid::cuboid
     rigidBody(name, rigidBodyInertia()),
     L_(dict.lookup("L"))
 {
-    const scalar m(readScalar(dict.lookup("mass")));
+    const scalar m(dict.lookup<scalar>("mass"));
     const vector c(dict.lookup("centreOfMass"));
     rigidBodyInertia::operator=(rigidBodyInertia(m, c, I(m, L_)));
 }

@@ -1,8 +1,8 @@
 /*--------------------------------*- C++ -*----------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2020 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -21,12 +21,6 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
-Application
-    fluent3DMeshToFoam
-
-Description
-    Converts a Fluent mesh to OpenFOAM format.
-
 \*---------------------------------------------------------------------------*/
 
 %{
@@ -44,10 +38,11 @@ Description
 #include "polyMeshZipUpCells.H"
 #include "wallPolyPatch.H"
 #include "symmetryPolyPatch.H"
-#include "oldCyclicPolyPatch.H"
+#include "mergedCyclicPolyPatch.H"
 #include "Swap.H"
 #include "IFstream.H"
 #include "readHexLabel.H"
+#include "polyMeshUnMergeCyclics.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -151,7 +146,7 @@ dash                       "-"
 dotColonDash               [.:-]
 commaPipe                  [,\|]
 
-schemeSpecialInitial       [!$%&*/\\:<=>?~_^#.@']
+schemeSpecialInitial       [!$%&*/\\:;<=>?~_^#.@']
 schemeSpecialSubsequent    [.+-]
 schemeSymbol               (({some_space}|{alpha}|{quote}|{schemeSpecialInitial})({alpha}|{quote}|{digit}|{schemeSpecialInitial}|{schemeSpecialSubsequent})*)
 
@@ -666,7 +661,7 @@ endOfSection               {space}")"{space}
     }
 
 <readZoneBlock>{lbrac} {
-        //Warning
+        // Warning
         //    << "Found unknown block in zone: " << YYText() << nl
         //    << "    on line " << lineNo << endl;
         yy_push_state(ignoreBlock);
@@ -773,6 +768,12 @@ int main(int argc, char *argv[])
         "scale",
         "factor",
         "geometry scaling factor - default is 1"
+    );
+    argList::addOption
+    (
+        "includedAngle",
+        "angle",
+        "feature angle with which to split cyclics"
     );
     argList::addOption
     (
@@ -907,16 +908,13 @@ int main(int argc, char *argv[])
     fluentToFoamType.insert("interface", polyPatch::typeName);
     fluentToFoamType.insert("internal", polyPatch::typeName);
     fluentToFoamType.insert("solid", polyPatch::typeName);
-    fluentToFoamType.insert("fan", oldCyclicPolyPatch::typeName);
-    fluentToFoamType.insert("radiator", polyPatch::typeName);
-    fluentToFoamType.insert("porous-jump", polyPatch::typeName);
 
-    //- Periodic halves map directly into split cyclics. The problem is the
-    //  initial matching since we require knowledge of the transformation.
-    //  It is ok if the periodics are already ordered. We should read the
-    //  periodic shadow faces section (section 18) to give use the ordering
-    //  For now just disable.
-    //fluentToFoamType.insert("periodic", cyclicPolyPatch::typeName);
+    fluentToFoamType.insert("fan", mergedCyclicPolyPatch::typeName);
+    fluentToFoamType.insert("radiator", mergedCyclicPolyPatch::typeName);
+    fluentToFoamType.insert("porous-jump", mergedCyclicPolyPatch::typeName);
+
+    fluentToFoamType.insert("periodic", cyclicPolyPatch::typeName);
+    fluentToFoamType.insert("shadow", cyclicPolyPatch::typeName);
 
 
     // Foam patch type for Fluent zone type
@@ -925,6 +923,8 @@ int main(int argc, char *argv[])
     HashSet<word> fluentGroupToFoamPatch;
     fluentGroupToFoamPatch.insert("wall");
     fluentGroupToFoamPatch.insert("fan");
+    fluentGroupToFoamPatch.insert("radiator");
+    fluentGroupToFoamPatch.insert("porous-jump");
 
 
     // Create initial empty polyMesh
@@ -938,10 +938,10 @@ int main(int argc, char *argv[])
             runTime.constant(),
             runTime
         ),
-        xferCopy(pointField()),
-        xferCopy(faceList()),
-        xferCopy(labelList()),
-        xferCopy(labelList())
+        pointField(),
+        faceList(),
+        labelList(),
+        labelList()
     );
 
 
@@ -1029,6 +1029,76 @@ int main(int argc, char *argv[])
     faceZoneIDs.shrink();
 
 
+    // Pair up cyclics
+    // ~~~~~~~~~~~~~~~
+
+    labelList nbrPatchis(patchIDs.size(), -1);
+    forAll(patchIDs, patchi)
+    {
+        const label zonei = faceGroupZoneID[patchIDs[patchi]];
+        const word& name = groupName[zonei];
+        const word& type = groupType[zonei];
+
+        HashTable<word>::const_iterator iter = fluentToFoamType.find(type);
+
+        if (iter != fluentToFoamType.end())
+        {
+            if
+            (
+                iter() == cyclicPolyPatch::typeName
+             && nbrPatchis[patchi] == -1
+            )
+            {
+                // This is one half of a pair of patches defining a cyclic
+                // interface. Find the neighbouring patch.
+
+                forAll(patchIDs, nbrPatchi)
+                {
+                    const label nbrZonei = faceGroupZoneID[patchIDs[nbrPatchi]];
+                    const word& nbrName = groupName[nbrZonei];
+                    const word& nbrType = groupType[nbrZonei];
+
+                    HashTable<word>::const_iterator nbrIter =
+                    fluentToFoamType.find(nbrType);
+
+                    if (nbrIter != fluentToFoamType.end())
+                    {
+                        if
+                        (
+                            nbrIter() == cyclicPolyPatch::typeName
+                         && nbrPatchis[nbrPatchi] == -1
+                        )
+                        {
+                            // The neighbour must have a different type
+                            // (periodic =/= shadow) and its name must share a
+                            // prefix with the patch.
+
+                            if
+                            (
+                                nbrType != type
+                             && nbrName(min(name.size(), nbrName.size()))
+                             == name(min(name.size(), nbrName.size()))
+                            )
+                            {
+                                nbrPatchis[nbrPatchi] = patchi;
+                                nbrPatchis[patchi] = nbrPatchi;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (nbrPatchis[patchi] == -1)
+                {
+                    FatalErrorInFunction
+                        << "Could not find neighbour patch for " << type
+                        << " patch " << name << exit(FatalError);
+                }
+            }
+        }
+    }
+
+
     // Add empty patches
     // ~~~~~~~~~~~~~~~~~
 
@@ -1037,7 +1107,7 @@ int main(int argc, char *argv[])
 
     forAll(patchIDs, patchi)
     {
-        label zoneID = faceGroupZoneID[patchIDs[patchi] ];
+        const label zoneID = faceGroupZoneID[patchIDs[patchi]];
         word name = groupName[zoneID];
         const word& type = groupType[zoneID];
 
@@ -1053,32 +1123,11 @@ int main(int argc, char *argv[])
 
         if (iter != fluentToFoamType.end())
         {
-            // See if we have a periodic and can derive the other side.
-            word neighbPatchName;
             if (iter() == cyclicPolyPatch::typeName)
             {
-                // Periodic
-                size_t n = name.rfind("-SIDE-1");
-
-                if (n != string::npos)
-                {
-                    neighbPatchName = name.substr(0, n) + "-SIDE-2";
-                }
-                else
-                {
-                    n = name.rfind("-SIDE-2");
-                    if (n != string::npos)
-                    {
-                        neighbPatchName = name.substr(0, n) + "-SIDE-1";
-                    }
-                }
-            }
-
-            if (neighbPatchName.size())
-            {
-                Info<< "Adding cyclicPolyPatch for Fluent zone " << name
-                    << " with neighbour patch " << neighbPatchName
-                    << endl;
+                const label nbrPatchi = nbrPatchis[patchi];
+                const label nbrZoneID = faceGroupZoneID[patchIDs[nbrPatchi]];
+                const word nbrName = groupName[nbrZoneID];
 
                 newPatches[patchi] = new cyclicPolyPatch
                 (
@@ -1087,11 +1136,8 @@ int main(int argc, char *argv[])
                     0,
                     patchi,
                     mesh.boundaryMesh(),
-                    neighbPatchName,
-                    cyclicPolyPatch::NOORDERING,
-                    Zero,
-                    Zero,
-                    Zero
+                    cyclicPolyPatch::typeName,
+                    nbrName
                 );
             }
             else
@@ -1109,9 +1155,6 @@ int main(int argc, char *argv[])
         }
         else
         {
-            Info<< "Adding polyPatch for unknown Fluent type " << type
-                << endl;
-
             newPatches[patchi] = new polyPatch
             (
                 name,
@@ -1350,6 +1393,7 @@ int main(int argc, char *argv[])
                     );
                 }
             }
+
             // Mark face as being done
             owner[facei] = -1;
         }
@@ -1389,13 +1433,13 @@ int main(int argc, char *argv[])
                     faces[facei],
                     owner[facei],
                     neighbour[facei],
-                    -1,                 //masterPointID
-                    -1,                 //masterEdgeID
-                    facei,              //masterFace
-                    false,              //flipFaceFlux
-                    -1,                 //patchID
-                    -1,                 //zoneID
-                    false               //zoneFlip
+                    -1,                 // masterPointID
+                    -1,                 // masterEdgeID
+                    facei,              // masterFace
+                    false,              // flipFaceFlux
+                    -1,                 // patchID
+                    -1,                 // zoneID
+                    false               // zoneFlip
                 );
             }
         }
@@ -1419,12 +1463,22 @@ int main(int argc, char *argv[])
         polyMeshZipUpCells(mesh);
     }
 
+    // Un-merge any merged cyclics
+    if (args.optionFound("includedAngle"))
+    {
+        polyMeshUnMergeCyclics(mesh, args.optionRead<scalar>("includedAngle"));
+    }
+    else
+    {
+        polyMeshUnMergeCyclics(mesh);
+    }
+
     mesh.setInstance(runTime.constant());
 
     // Set the precision of the points data to 10
     IOstream::defaultPrecision(max(10u, IOstream::defaultPrecision()));
 
-    Info<< nl << "Writing mesh to " << mesh.objectPath() << endl;
+    Info<< nl << "Writing mesh to " << mesh.localObjectPath() << endl;
     mesh.write();
 
 

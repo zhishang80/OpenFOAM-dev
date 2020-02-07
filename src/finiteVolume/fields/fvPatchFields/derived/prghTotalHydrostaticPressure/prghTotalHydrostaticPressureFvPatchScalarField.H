@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::prghTotalHydrostaticPressureFvPatchScalarField
-
-Group
-    grpGenericBoundaryConditions
 
 Description
     This boundary condition provides static pressure condition for p_rgh,
@@ -142,7 +139,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         prghTotalHydrostaticPressureFvPatchScalarField
         (
             const prghTotalHydrostaticPressureFvPatchScalarField&
@@ -157,7 +154,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         prghTotalHydrostaticPressureFvPatchScalarField
         (
             const prghTotalHydrostaticPressureFvPatchScalarField&,
@@ -177,7 +174,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Evaluation functions
 

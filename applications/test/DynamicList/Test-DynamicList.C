@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -173,13 +173,13 @@ int main(int argc, char *argv[])
 
     printInfo("dlC", dlC, true);
 
-    List<label> lstB(dlC.xfer());
+    List<label> lstB(move(dlC));
 
-    Info<< "Transferred to normal list via the xfer() method" << endl;
+    Info<< "Moved to normal list" << endl;
     printInfo("lstB", lstB, true);
     printInfo("dlC", dlC, true);
 
-    DynamicList<label> dlD(lstB.xfer());
+    DynamicList<label> dlD(move(lstB));
 
     Info<< "Transfer construct from normal list" << endl;
     printInfo("lstB", lstB, true);

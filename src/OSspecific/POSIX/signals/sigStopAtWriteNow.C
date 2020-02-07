@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -45,7 +45,6 @@ class addstopAtWriteNowSignalToOpt
 :
     public ::Foam::simpleRegIOobject
 {
-
 public:
 
     addstopAtWriteNowSignalToOpt(const char* name)
@@ -59,7 +58,7 @@ public:
     virtual void readData(Foam::Istream& is)
     {
         sigStopAtWriteNow::signal_ = readLabel(is);
-        sigStopAtWriteNow::set(true);
+        sigStopAtWriteNow::set(writeInfoHeader);
     }
 
     virtual void writeData(Foam::Ostream& os) const
@@ -73,12 +72,10 @@ addstopAtWriteNowSignalToOpt addstopAtWriteNowSignalToOpt_
     "stopAtWriteNowSignal"
 );
 
-}
+} // End namespace Foam
 
 
 Foam::Time const* Foam::sigStopAtWriteNow::runTimePtr_ = nullptr;
-
-
 struct sigaction Foam::sigStopAtWriteNow::oldAction_;
 
 
@@ -100,10 +97,10 @@ void Foam::sigStopAtWriteNow::sigHandler(int)
     Info<< "sigStopAtWriteNow :"
         << " setting up write and stop at end of the next iteration"
         << nl << endl;
-    runTimePtr_->stopAt(Time::saWriteNow);
+    runTimePtr_->stopAt(Time::stopAtControl::writeNow);
 
     //// Throw signal (to old handler)
-    //raise(signal_);
+    // raise(signal_);
 }
 
 

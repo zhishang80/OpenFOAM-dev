@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -58,7 +58,7 @@ logFile(const word& name) const
 
 
 template<class ReactionThermo, class ThermoType>
-inline Foam::PtrList<Foam::volScalarField>&
+inline const Foam::PtrList<Foam::volScalarField>&
 Foam::TDACChemistryModel<ReactionThermo, ThermoType>::Y()
 {
     return this->Y_;

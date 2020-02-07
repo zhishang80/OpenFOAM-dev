@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
+   \\    /   O peration     | Website:  https://openfoam.org
     \\  /    A nd           | Copyright (C) YEAR OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::CONSTRUCT
-
-Group
-    grpGenericBoundaryConditions
 
 Description
     This boundary condition provides a NAME condition,
@@ -75,8 +72,8 @@ SourceFiles
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef CONSTRUCT_H
-#define CONSTRUCT_H
+#ifndef BC_H
+#define BC_H
 
 #include "BASEFvPatchFields.H"
 #include "Function1.H"
@@ -95,7 +92,7 @@ class CONSTRUCT
 :
     public PARENT
 {
-    // Private data
+    // Private Data
 
         //- Single valued scalar quantity, e.g. a coefficient
         scalar scalarData_;
@@ -160,7 +157,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         CONSTRUCT
         (
             const CLASS&
@@ -175,7 +172,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         CONSTRUCT
         (
             const CLASS&,
@@ -199,22 +196,17 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Mapping functions
 
             //- Map (and resize as needed) from self given a mapping object
-            virtual void autoMap
-            (
-                const fvPatchFieldMapper&
-            );
+            //  Used to update fields following mesh topology change
+            virtual void autoMap(const fvPatchFieldMapper&);
 
             //- Reverse map the given fvPatchField onto this fvPatchField
-            virtual void rmap
-            (
-                const FVPATCHF&,
-                const labelList&
-            );
+            //  Used to reconstruct fields
+            virtual void rmap(const FVPATCHF&, const labelList&);
 
 
         // Evaluation functions

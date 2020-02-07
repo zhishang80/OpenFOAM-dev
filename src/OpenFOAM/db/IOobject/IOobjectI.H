@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -38,6 +38,26 @@ inline Foam::word Foam::IOobject::groupName(Name name, const word& group)
     {
         return name;
     }
+}
+
+
+template<class Name>
+inline Foam::word Foam::IOobject::modelName(Name name, const word& model)
+{
+    if (model != word::null)
+    {
+        return name + (':' + model);
+    }
+    else
+    {
+        return name;
+    }
+}
+
+
+inline Foam::word Foam::IOobject::modelName(const char* name) const
+{
+    return type() + ':' + name;
 }
 
 
@@ -77,18 +97,13 @@ inline Stream& Foam::IOobject::writeBanner(Stream& os, bool noHint)
     }
 
     os  <<
-        "| =========                 |"
-        "                                                 |\n"
-        "| \\\\      /  F ield         |"
-        " OpenFOAM: The Open Source CFD Toolbox           |\n"
-        "|  \\\\    /   O peration     |"
-        " Version:  " << FOAMversion << spaces << "|\n"
-        "|   \\\\  /    A nd           |"
-        " Web:      www.OpenFOAM.org                      |\n"
-        "|    \\\\/     M anipulation  |"
-        "                                                 |\n"
-        "\\*-----------------------------------------"
-        "----------------------------------*/\n";
+    "  =========                 |\n"
+    "  \\\\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox\n"
+    "   \\\\    /   O peration     | Website:  https://openfoam.org\n"
+    "    \\\\  /    A nd           | Version:  " << FOAMversion << "\n"
+    "     \\\\/     M anipulation  |\n"
+    "\\*-----------------------------------------"
+    "----------------------------------*/\n";
 
     return os;
 }

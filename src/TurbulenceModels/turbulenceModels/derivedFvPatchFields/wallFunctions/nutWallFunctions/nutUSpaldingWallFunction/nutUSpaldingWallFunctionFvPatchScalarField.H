@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -23,9 +23,6 @@ License
 
 Class
     Foam::nutUSpaldingWallFunctionFvPatchScalarField
-
-Group
-    grpWallFunctions
 
 Description
     This boundary condition provides a turbulent kinematic viscosity condition
@@ -51,6 +48,7 @@ Usage
     <patchName>
     {
         type            nutUSpaldingWallFunction;
+        value           uniform 0;
     }
     \endverbatim
 
@@ -85,7 +83,7 @@ protected:
     // Protected Member Functions
 
         //- Calculate the turbulence viscosity
-        virtual tmp<scalarField> calcNut() const;
+        virtual tmp<scalarField> nut() const;
 
         //- Calculate the friction velocity
         virtual tmp<scalarField> calcUTau(const scalarField& magGradU) const;
@@ -125,7 +123,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         nutUSpaldingWallFunctionFvPatchScalarField
         (
             const nutUSpaldingWallFunctionFvPatchScalarField&
@@ -140,7 +138,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         nutUSpaldingWallFunctionFvPatchScalarField
         (
             const nutUSpaldingWallFunctionFvPatchScalarField&,
@@ -160,7 +158,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Evaluation functions
 

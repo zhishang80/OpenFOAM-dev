@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -57,7 +57,7 @@ class phaseModel
 :
     public volScalarField
 {
-    // Private data
+    // Private Data
 
         //- Reference to the phaseSystem to which this phase belongs
         const phaseSystem& fluid_;
@@ -192,6 +192,12 @@ public:
         //- Correct the thermodynamics
         virtual void correctThermo();
 
+        //- Correct the reactions
+        virtual void correctReactions();
+
+        //- Correct the species concentrations
+        virtual void correctSpecies();
+
         //- Correct the turbulence
         virtual void correctTurbulence();
 
@@ -205,10 +211,13 @@ public:
         virtual bool read();
 
 
-        // Compressibility (variable density)
+        // Density variation and compressibility
 
-            //- Return true if the phase is compressible otherwise false
-            virtual bool compressible() const = 0;
+            //- Return true if the phase is incompressible otherwise false
+            virtual bool incompressible() const = 0;
+
+            //- Return true if the phase is constant density otherwise false
+            virtual bool isochoric() const = 0;
 
             //- Return the phase dilatation rate (d(alpha)/dt + div(alpha*phi))
             virtual tmp<volScalarField> divU() const = 0;
@@ -219,12 +228,6 @@ public:
 
         // Thermo
 
-            //- Return whether the phase is isothermal
-            virtual bool isothermal() const = 0;
-
-            //- Return the enthalpy equation
-            virtual tmp<fvScalarMatrix> heEqn() = 0;
-
             //- Return the thermophysical model
             virtual const rhoThermo& thermo() const = 0;
 
@@ -233,6 +236,12 @@ public:
 
             //- Return the density field
             virtual tmp<volScalarField> rho() const = 0;
+
+            //- Return whether the phase is isothermal
+            virtual bool isothermal() const = 0;
+
+            //- Return the enthalpy equation
+            virtual tmp<fvScalarMatrix> heEqn() = 0;
 
 
         // Species
@@ -246,6 +255,9 @@ public:
             //- Return the species mass fractions
             virtual const PtrList<volScalarField>& Y() const = 0;
 
+            //- Return a species mass fraction by name
+            virtual const volScalarField& Y(const word& name) const = 0;
+
             //- Access the species mass fractions
             virtual PtrList<volScalarField>& YRef() = 0;
 
@@ -254,6 +266,9 @@ public:
 
             //- Access the active species mass fractions
             virtual UPtrList<volScalarField>& YActiveRef() = 0;
+
+            //- Return the fuel consumption rate matrix
+            virtual tmp<fvScalarMatrix> R(volScalarField& Yi) const = 0;
 
 
         // Momentum
@@ -324,42 +339,48 @@ public:
             //- Return the laminar kinematic viscosity on a patch
             virtual tmp<scalarField> nu(const label patchi) const = 0;
 
-            //- Return the laminar thermal conductivity
+            //- Thermal diffusivity for enthalpy of mixture [kg/m/s]
+            virtual tmp<volScalarField> alpha() const = 0;
+
+            //- Thermal diffusivity for enthalpy of mixture for patch [kg/m/s]
+            virtual tmp<scalarField> alpha(const label patchi) const = 0;
+
+            //- Thermal diffusivity for temperature of mixture [W/m/K]
             virtual tmp<volScalarField> kappa() const = 0;
 
-            //- Return the laminar thermal conductivity on a patch
+            //- Thermal diffusivity for temperature of mixture
+            //  for patch [W/m/K]
             virtual tmp<scalarField> kappa(const label patchi) const = 0;
 
-            //- Return the effective thermal conductivity, given the turbulent
-            //  thermal diffusivity
+            //- Thermal diffusivity for energy of mixture [kg/m/s]
+            virtual tmp<volScalarField> alphahe() const = 0;
+
+            //- Thermal diffusivity for energy of mixture for patch [kg/m/s]
+            virtual tmp<scalarField> alphahe(const label patchi) const = 0;
+
+            //- Effective thermal turbulent diffusivity for temperature
+            //  of mixture [W/m/K]
             virtual tmp<volScalarField> kappaEff
             (
                 const volScalarField& alphat
             ) const = 0;
 
-            //- Return the effective thermal conductivity on a patch, given the
-            //  turbulent thermal diffusivity
+            //- Effective thermal turbulent diffusivity for temperature
+            //  of mixture for patch [W/m/K]
             virtual tmp<scalarField> kappaEff
             (
                 const scalarField& alphat,
                 const label patchi
             ) const = 0;
 
-            //- Return the laminar thermal diffusivity for enthalpy
-            virtual tmp<volScalarField> alpha() const = 0;
-
-            //- Return the laminar thermal diffusivity for enthalpy on a patch
-            virtual tmp<scalarField> alpha(const label patchi) const = 0;
-
-            //- Return the effective thermal diffusivity for enthalpy, given the
-            //  turbulent thermal diffusivity
+            //- Effective thermal turbulent diffusivity of mixture [kg/m/s]
             virtual tmp<volScalarField> alphaEff
             (
                 const volScalarField& alphat
             ) const = 0;
 
-            //- Return the effective thermal diffusivity for enthalpy on a
-            //  patch, given the turbulent thermal diffusivity
+            //- Effective thermal turbulent diffusivity of mixture
+            //  for patch [kg/m/s]
             virtual tmp<scalarField> alphaEff
             (
                 const scalarField& alphat,
@@ -381,17 +402,19 @@ public:
             //- Return the effective kinematic viscosity
             virtual tmp<volScalarField> nuEff() const = 0;
 
-            //- Return the effective thermal conductivity
+            //- Effective thermal turbulent diffusivity for temperature
+            //  of mixture [W/m/K]
             virtual tmp<volScalarField> kappaEff() const = 0;
 
-            //- Return the effective thermal conductivity on a patch
+            //- Effective thermal turbulent diffusivity for temperature
+            //  of mixture for patch [W/m/K]
             virtual tmp<scalarField> kappaEff(const label patchi) const = 0;
 
-            //- Return the effective thermal diffusivity for enthalpy
+            //- Effective thermal turbulent diffusivity of mixture [kg/m/s]
             virtual tmp<volScalarField> alphaEff() const = 0;
 
-            //- Return the effective thermal conductivity for enthalpy on a
-            //  patch
+            //- Effective thermal turbulent diffusivity of mixture
+            //  for patch [kg/m/s]
             virtual tmp<scalarField> alphaEff(const label patchi) const = 0;
 
             //- Return the turbulent kinetic energy

@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2015-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,14 +22,15 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::Henry
+    Foam::interfaceCompositionModels::Henry
 
 Description
-    Henry's law for gas solubiliy in liquid. The concentration of the dissolved
-    species in the liquid is proportional to its partial pressure in the gas.
-    The dimensionless constant of proportionality between concentrations on
-    each side of the interface is \f$k\f$, and is given for each species.
-    Mixing in the gas is assumed to be ideal.
+    Henry's law for gas solubility in liquid. The concentration of a dissolved
+    species in the liquid is proportional to its partial pressure in the gas. A
+    dimensionless solubility, \f$k\f$, is given for each species. This is the
+    ratio of the concentration of the species in the liquid to the
+    corresponding concentration in the gas; i.e., \f$k =
+    c_{i,liq}/c_{i,gas}\f$. Mixing in the gas is assumed to be ideal.
 
 SourceFiles
     Henry.C
@@ -39,7 +40,7 @@ SourceFiles
 #ifndef Henry_H
 #define Henry_H
 
-#include "InterfaceCompositionModel.H"
+#include "interfaceCompositionModel.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -55,14 +56,13 @@ namespace interfaceCompositionModels
                          Class Henry Declaration
 \*---------------------------------------------------------------------------*/
 
-template<class Thermo, class OtherThermo>
 class Henry
 :
-    public InterfaceCompositionModel<Thermo, OtherThermo>
+    public interfaceCompositionModel
 {
-    // Private data
+    // Private Data
 
-        //- Solubility coefficients
+        //- Dimensionless solubility coefficients
         const scalarList k_;
 
         //- The remaining solvent species fraction
@@ -113,12 +113,6 @@ public:
 
 } // End namespace interfaceCompositionModels
 } // End namespace Foam
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
-#ifdef NoRepository
-    #include "Henry.C"
-#endif
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

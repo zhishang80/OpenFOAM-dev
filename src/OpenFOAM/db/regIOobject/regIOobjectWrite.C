@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -38,7 +38,7 @@ bool Foam::regIOobject::writeObject
     IOstream::streamFormat fmt,
     IOstream::versionNumber ver,
     IOstream::compressionType cmp,
-    const bool valid
+    const bool write
 ) const
 {
     if (!good())
@@ -62,7 +62,7 @@ bool Foam::regIOobject::writeObject
 
 
     //- uncomment this if you want to write global objects on master only
-    //bool isGlobal = global();
+    // bool isGlobal = global();
     bool isGlobal = false;
 
     if (instance() == time().timeName())
@@ -114,7 +114,7 @@ bool Foam::regIOobject::writeObject
 
     if (Pstream::master() || !masterOnly)
     {
-        //if (mkDir(path()))
+        // if (mkDir(path()))
         //{
         //    // Try opening an OFstream for object
         //    OFstream os(objectPath(), fmt, ver, cmp);
@@ -141,7 +141,7 @@ bool Foam::regIOobject::writeObject
         //
         //    osGood = os.good();
         //}
-        osGood = fileHandler().writeObject(*this, fmt, ver, cmp, valid);
+        osGood = fileHandler().writeObject(*this, fmt, ver, cmp, write);
     }
     else
     {
@@ -165,14 +165,14 @@ bool Foam::regIOobject::writeObject
 }
 
 
-bool Foam::regIOobject::write(const bool valid) const
+bool Foam::regIOobject::write(const bool write) const
 {
     return writeObject
     (
         time().writeFormat(),
         IOstream::currentVersion,
         time().writeCompression(),
-        valid
+        write
     );
 }
 

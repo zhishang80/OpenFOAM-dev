@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2016-2018 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -71,7 +71,7 @@ Foam::searchableExtrudedCircle::searchableExtrudedCircle
             ).objectPath()
         )
     ),
-    radius_(readScalar(dict.lookup("radius")))
+    radius_(dict.lookup<scalar>("radius"))
 {
     const edgeMesh& eMesh = eMeshPtr_();
 
@@ -244,7 +244,7 @@ void Foam::searchableExtrudedCircle::findParametricNearest
         label otherPointi = startE.otherVertex(pointi);
         curveLambdas[otherPointi] = -mag(points[otherPointi]-curvePoints[0]);
 
-        //Pout<< "for point:" << points[pointi] << " have distance "
+        // Pout<< "for point:" << points[pointi] << " have distance "
         //    << curveLambdas[pointi] << endl;
 
 
@@ -277,7 +277,7 @@ void Foam::searchableExtrudedCircle::findParametricNearest
             {
                 endDistance = curveLambdas[pointi] + mag(end-points[pointi]);
 
-                //Pout<< "Found end edge:" << edges[edgei].centre(points)
+                // Pout<< "Found end edge:" << edges[edgei].centre(points)
                 //    << " endPt:" << end
                 //    << " point before:" << points[pointi]
                 //    << " accumulated length:" << endDistance << endl;

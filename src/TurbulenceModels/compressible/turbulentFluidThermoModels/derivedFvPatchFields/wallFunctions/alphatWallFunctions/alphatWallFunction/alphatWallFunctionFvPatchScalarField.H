@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -24,11 +24,8 @@ License
 Class
     Foam::compressible::alphatWallFunctionFvPatchScalarField
 
-Group
-    grpCmpWallFunctions
-
 Description
-    This boundary condition provides a turbulent thermal diffusivity conditon
+    This boundary condition provides a turbulent thermal diffusivity condition
     when using wall functions
     - replicates OpenFOAM v1.5 (and earlier) behaviour
 
@@ -41,8 +38,8 @@ Description
     where
 
     \vartable
-        \alpha_t| turblence thermal diffusivity
-        \mu_t   | turblence viscosity
+        \alpha_t| turbulence thermal diffusivity
+        \mu_t   | turbulence viscosity
         Pr_t    | turblent Prandtl number
     \endvartable
 
@@ -92,7 +89,7 @@ class alphatWallFunctionFvPatchScalarField
 :
     public fixedValueFvPatchScalarField
 {
-    // Private data
+    // Private Data
 
         //- Turbulent Prandtl number (default = 0.85)
         scalar Prt_;
@@ -132,7 +129,7 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
+        //- Copy constructor
         alphatWallFunctionFvPatchScalarField
         (
             const alphatWallFunctionFvPatchScalarField&
@@ -147,7 +144,7 @@ public:
             );
         }
 
-        //- Construct as copy setting internal field reference
+        //- Copy constructor setting internal field reference
         alphatWallFunctionFvPatchScalarField
         (
             const alphatWallFunctionFvPatchScalarField&,
@@ -167,7 +164,7 @@ public:
         }
 
 
-    // Member functions
+    // Member Functions
 
         // Evaluation functions
 

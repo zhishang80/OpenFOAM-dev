@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
+   \\    /   O peration     | Website:  https://openfoam.org
     \\  /    A nd           | Copyright (C) 2014-2018 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
@@ -146,7 +146,7 @@ buoyantKEpsilon<BasicTurbulenceModel>::epsilonSource() const
         volScalarField u
         (
             mag(this->U_ - gHat*v)
-          + dimensionedScalar("small", dimVelocity, small)
+          + dimensionedScalar(dimVelocity, small)
         );
 
         return -fvm::SuSp(this->C1_*tanh(mag(v)/u)*Gcoef(), this->epsilon_);

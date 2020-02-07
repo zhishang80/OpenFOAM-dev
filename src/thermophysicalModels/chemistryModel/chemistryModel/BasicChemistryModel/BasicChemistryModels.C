@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2017 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -46,7 +46,7 @@ namespace Foam
     makeChemistryModel(psiReactionThermo);
     makeChemistryModel(rhoReactionThermo);
 
-    // Chemistry moldels based on sensibleEnthalpy
+    // Chemistry models based on sensibleEnthalpy
     makeChemistryModelType
     (
         StandardChemistryModel,
@@ -82,6 +82,27 @@ namespace Foam
         icoPoly8HThermoPhysics
     );
 
+    makeChemistryModelType
+    (
+        StandardChemistryModel,
+        psiReactionThermo,
+        constFluidHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModel,
+        psiReactionThermo,
+        constAdiabaticFluidHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModel,
+        psiReactionThermo,
+        constHThermoPhysics
+    );
+
 
     makeChemistryModelType
     (
@@ -118,6 +139,27 @@ namespace Foam
         icoPoly8HThermoPhysics
     );
 
+    makeChemistryModelType
+    (
+        StandardChemistryModel,
+        rhoReactionThermo,
+        constFluidHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModel,
+        rhoReactionThermo,
+        constAdiabaticFluidHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModel,
+        rhoReactionThermo,
+        constHThermoPhysics
+    );
+
 
     makeChemistryModelType
     (
@@ -154,6 +196,27 @@ namespace Foam
         icoPoly8HThermoPhysics
     );
 
+    makeChemistryModelType
+    (
+        TDACChemistryModel,
+        psiReactionThermo,
+        constFluidHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        TDACChemistryModel,
+        psiReactionThermo,
+        constAdiabaticFluidHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        TDACChemistryModel,
+        psiReactionThermo,
+        constHThermoPhysics
+    );
+
 
     makeChemistryModelType
     (
@@ -190,8 +253,29 @@ namespace Foam
         icoPoly8HThermoPhysics
     );
 
+    makeChemistryModelType
+    (
+        TDACChemistryModel,
+        rhoReactionThermo,
+        constFluidHThermoPhysics
+    );
 
-    // Chemistry moldels based on sensibleInternalEnergy
+    makeChemistryModelType
+    (
+        TDACChemistryModel,
+        rhoReactionThermo,
+        constAdiabaticFluidHThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        TDACChemistryModel,
+        rhoReactionThermo,
+        constHThermoPhysics
+    );
+
+
+    // Chemistry models based on sensibleInternalEnergy
     makeChemistryModelType
     (
         StandardChemistryModel,
@@ -227,6 +311,28 @@ namespace Foam
         icoPoly8EThermoPhysics
     );
 
+    makeChemistryModelType
+    (
+        StandardChemistryModel,
+        psiReactionThermo,
+        constFluidEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModel,
+        psiReactionThermo,
+        constAdiabaticFluidEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModel,
+        psiReactionThermo,
+        constEThermoPhysics
+    );
+
+
 
     makeChemistryModelType
     (
@@ -263,6 +369,27 @@ namespace Foam
         icoPoly8EThermoPhysics
     );
 
+    makeChemistryModelType
+    (
+        StandardChemistryModel,
+        rhoReactionThermo,
+        constFluidEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModel,
+        rhoReactionThermo,
+        constAdiabaticFluidEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        StandardChemistryModel,
+        rhoReactionThermo,
+        constEThermoPhysics
+    );
+
 
     makeChemistryModelType
     (
@@ -299,6 +426,27 @@ namespace Foam
         icoPoly8EThermoPhysics
     );
 
+    makeChemistryModelType
+    (
+        TDACChemistryModel,
+        psiReactionThermo,
+        constFluidEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        TDACChemistryModel,
+        psiReactionThermo,
+        constAdiabaticFluidEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        TDACChemistryModel,
+        psiReactionThermo,
+        constEThermoPhysics
+    );
+
 
     makeChemistryModelType
     (
@@ -333,6 +481,27 @@ namespace Foam
         TDACChemistryModel,
         rhoReactionThermo,
         icoPoly8EThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        TDACChemistryModel,
+        rhoReactionThermo,
+        constFluidEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        TDACChemistryModel,
+        rhoReactionThermo,
+        constAdiabaticFluidEThermoPhysics
+    );
+
+    makeChemistryModelType
+    (
+        TDACChemistryModel,
+        rhoReactionThermo,
+        constEThermoPhysics
     );
 }
 

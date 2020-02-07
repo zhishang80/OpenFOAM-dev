@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
-   \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2012-2016 OpenFOAM Foundation
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2012-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -195,7 +195,7 @@ void Foam::porosityModels::fixedCoeff::calcForce
     scalarField Udiag(U.size(), 0.0);
     vectorField Usource(U.size(), Zero);
     const scalarField& V = mesh_.V();
-    scalar rhoRef = readScalar(coeffs_.lookup("rhoRef"));
+    scalar rhoRef = coeffs_.lookup<scalar>("rhoRef");
 
     apply(Udiag, Usource, V, U, rhoRef);
 
